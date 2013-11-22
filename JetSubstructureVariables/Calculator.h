@@ -10,12 +10,17 @@ namespace JetSubstructureVariables {
 		virtual public asg::AsgTool {
 			
 			public:
-			// Constructor and destructor
-			Calculator();
+				// Constructor and destructor
+				Calculator();
 
-			int process() const;
+				void setJetCollection(const char *jetCollectionName);
 
-			double nSubJettiness(JetAnalysisEDM::ParticleContainer &constituents, unsigned int nSubJets) const;
+				int process() const;
+				double nSubJettiness(JetAnalysisEDM::ParticleContainer &constituents, unsigned int nSubJets) const;
+
+			private:
+				const char *m_jetCollectionName;
+				
 		};
 
 }

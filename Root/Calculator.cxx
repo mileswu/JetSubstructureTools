@@ -18,7 +18,15 @@ using JetAnalysisEDM::LorentzVector_t;
 
 using fastjet::PseudoJet;
 
-Calculator::Calculator() {
+Calculator::Calculator() : 
+	m_jetCollectionName("")
+{
+	
+}
+
+void Calculator::setJetCollection(const char *jetCollectionName)
+{
+	m_jetCollectionName = jetCollectionName;
 }
 
 int Calculator::process() const {
@@ -26,13 +34,10 @@ int Calculator::process() const {
 	const CaloClusterContainer* clusters = 0;
 	StatusCode status;
 
-	//const char *collection_name = "jet_CamKt12LCTopoSplitFilteredminSplitR0";
-	const char *collection_name = "jet_CamKt12LCTopoSplitFilteredmassFraction67minSplitR0";
-
 	//Tau2
-	status = evtStore()->retrieve(jets, collection_name);
+	status = evtStore()->retrieve(jets, m_jetCollectionName);
 	if(status.isFailure() || jets == 0) {
-		ATH_MSG_ERROR("Unable to retrieve jets from collection: " << collection_name);
+		ATH_MSG_ERROR("Unable to retrieve jets from collection: " << m_jetCollectionName);
 		return 1;
 	}
 

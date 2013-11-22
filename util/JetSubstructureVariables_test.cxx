@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
 	}
 
 	JetSubstructureVariables::Calculator *calc = new JetSubstructureVariables::Calculator();
+	calc->setJetCollection("jet_CamKt12LCTopoSplitFilteredmassFraction67minSplitR0");
 	JetAnalysisEDM::EventManager event(tree);
 	asg::AsgTool::event(&event, true);
 
