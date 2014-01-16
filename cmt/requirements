@@ -1,0 +1,20 @@
+package JetSubstructureVariables
+
+author Miles Wu
+
+public
+use  AtlasPolicy                AtlasPolicy-*                   
+use  AsgExJetEvent              AsgExJetEvent-*                 AsgEx
+use  AsgExTool                  AsgExTool-*                     AsgEx
+use  AsgExToolInterface         AsgExToolInterface-*            AsgEx
+use  AthLinks                   AthLinks-*                      Control
+use  JetAnalysisEDM             JetAnalysisEDM-*                Reconstruction/Jet/JetAnalysisTools
+use  xAODCaloEvent              xAODCaloEvent-*                 Event/xAOD
+use  xAODJet                    xAODJet-*                       Event/xAOD
+private
+use  AthenaBaseComps            AthenaBaseComps-*               Control
+use  GaudiInterface             GaudiInterface-*                External
+use  AtlasFastJet               AtlasFastJet-*                  External
+end_private
+
+apply_pattern dual_use_library files="../Root/Calculator.cxx ../src/AthenaCalculator.cxx"

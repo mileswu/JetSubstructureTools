@@ -3,6 +3,14 @@
 
 #include "AsgExTool/AsgTool.h"
 #include "AsgExToolInterface/IProcessTool.h"
+#include "JetAnalysisEDM/JetDualUseEDMInclude.h"
+#include <vector>
+
+using namespace std;
+
+namespace fastjet {
+	class PsuedoJet;
+}
 
 namespace JetSubstructureVariables {
 	class Calculator :
@@ -16,7 +24,8 @@ namespace JetSubstructureVariables {
 				void setJetCollection(const char *jetCollectionName);
 
 				int process() const;
-				double nSubJettiness(JetAnalysisEDM::ParticleContainer &constituents, unsigned int nSubJets) const;
+				double nSubJettiness(CaloClusterContainer &constituents, unsigned int nSubJets) const;
+				double nSubJettiness(vector<fastjet::PseudoJet> constit_pseudojets, unsigned int nSubJets) const;
 
 			private:
 				const char *m_jetCollectionName;
