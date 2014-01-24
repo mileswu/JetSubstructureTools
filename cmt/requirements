@@ -8,7 +8,6 @@ use  AsgExJetEvent              AsgExJetEvent-*                 AsgEx
 use  AsgExTool                  AsgExTool-*                     AsgEx
 use  AsgExToolInterface         AsgExToolInterface-*            AsgEx
 use  AthLinks                   AthLinks-*                      Control
-use  JetAnalysisEDM             JetAnalysisEDM-*                Reconstruction/Jet/JetAnalysisTools
 use  xAODCaloEvent              xAODCaloEvent-*                 Event/xAOD
 use  xAODJet                    xAODJet-*                       Event/xAOD
 private

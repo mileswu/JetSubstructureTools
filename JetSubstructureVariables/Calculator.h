@@ -1,15 +1,18 @@
 #ifndef jetsubstructurevariables_calculator_header
 #define jetsubstructurevariables_calculator_header
 
+#include "xAODCaloEvent/CaloCluster.h"
+#include "xAODJet/Jet.h"
+#include "xAODJet/JetContainer.h"
+
 #include "AsgExTool/AsgTool.h"
 #include "AsgExToolInterface/IProcessTool.h"
-#include "JetAnalysisEDM/JetDualUseEDMInclude.h"
 #include <vector>
 
 using namespace std;
 
 namespace fastjet {
-	class PsuedoJet;
+	class PseudoJet;
 }
 
 namespace JetSubstructureVariables {
@@ -24,8 +27,11 @@ namespace JetSubstructureVariables {
 				void setJetCollection(const char *jetCollectionName);
 
 				int process() const;
-				double nSubJettiness(CaloClusterContainer &constituents, unsigned int nSubJets) const;
-				double nSubJettiness(vector<fastjet::PseudoJet> constit_pseudojets, unsigned int nSubJets) const;
+				int modify(const xAOD::JetContainer &jets) const;
+				int modify(const xAOD::Jet &jet) const;
+				
+				double nSubJettiness(const xAOD::Jet &jet, unsigned int nSubJets) const;
+				double nSubJettiness(vector<fastjet::PseudoJet> &constit_pseudojets, unsigned int nSubJets) const;
 
 			private:
 				const char *m_jetCollectionName;
