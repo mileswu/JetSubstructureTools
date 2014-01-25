@@ -6,7 +6,7 @@
 #include "xAODJet/JetContainer.h"
 
 #include "AsgTools/AsgTool.h"
-#include "JetInterface/IJetExecuteTool.h"
+#include "JetInterface/IJetModifier.h"
 #include <vector>
 
 using namespace std;
@@ -17,25 +17,21 @@ namespace fastjet {
 
 //namespace JetSubstructureVariables {
 	class Calculator :
-		virtual public IJetExecuteTool,
+		virtual public IJetModifier,
 		virtual public asg::AsgTool {
-			ASG_TOOL_CLASS(Calculator, IJetExecuteTool)
+			ASG_TOOL_CLASS(Calculator, IJetModifier)
 			
 			public:
 				// Constructor and destructor
 				Calculator(std::string name);
 
-				void setJetCollection(const char *jetCollectionName);
-
-				int execute() const;
-				int modify(const xAOD::JetContainer &jets) const;
-				int modify(const xAOD::Jet &jet) const;
+				int modify(xAOD::JetContainer &jets) const;
+				int modify(xAOD::Jet &jet) const;
 				
 				double nSubJettiness(const xAOD::Jet &jet, unsigned int nSubJets) const;
 				double nSubJettiness(vector<fastjet::PseudoJet> &constit_pseudojets, unsigned int nSubJets) const;
 
 			private:
-				const char *m_jetCollectionName;
 				
 		};
 

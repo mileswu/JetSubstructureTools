@@ -11,36 +11,12 @@ using namespace std;
 using fastjet::PseudoJet;
 
 Calculator::Calculator(std::string name) : 
-	AsgTool(name),
-	m_jetCollectionName("AntiKt4LCTopoJets")
+	AsgTool(name)
 {
 	
 }
 
-void Calculator::setJetCollection(const char *jetCollectionName)
-{
-	m_jetCollectionName = jetCollectionName;
-}
-
-int Calculator::execute() const {
-	const xAOD::JetContainer* jets = 0;
-	jets = evtStore()->retrieve<const xAOD::JetContainer>(m_jetCollectionName);
-	if(jets == 0) {
-		ATH_MSG_ERROR("Unable to retrieve jets from collection: " << m_jetCollectionName);
-		return 1;
-	}
-
-	const xAOD::JetContainer *clusters = 0;
-	clusters = evtStore()->retrieve<const xAOD::JetContainer>("JetClusters");
-	if(clusters == 0) {
-		ATH_MSG_ERROR("Unable to retrieve jets from collection: " << "JetClusters");
-		return 1;
-	}
-
-	return modify(*jets);
-}
-
-int Calculator::modify(const xAOD::JetContainer &jets) const {
+int Calculator::modify(xAOD::JetContainer &jets) const {
 	int retval = 0;
 
 	cout << "Number of jets: " << jets.size() << endl;
@@ -52,7 +28,7 @@ int Calculator::modify(const xAOD::JetContainer &jets) const {
 	return retval;
 }
 
-int Calculator::modify(const xAOD::Jet &jet) const {
+int Calculator::modify(xAOD::Jet &jet) const {
 	cout << "Jet pt = " << jet.pt() << endl;
 	//cout << "Jet const pt = " << jets->at(iJ)->jetP4(xAOD::P4SignalState::JETCONSTITUENTSCALE).pt() << endl;
 	cout << "Jet num const = " << jet.numConstituents() << endl;
@@ -67,16 +43,16 @@ int Calculator::modify(const xAOD::Jet &jet) const {
 	cout << "My tau2: " << nSubJettiness(constits, 2) << endl;
 	cout << "Ntuple tau2: " << jets->at(iJ)->get<float>("Tau2") << endl;
 	cout << "My tau25: " << nSubJettiness(constits, 25) << endl;*/
-	cout << "tau1: " << nSubJettiness(jet, 1) << endl;
+	float tau1 = nSubJettiness(jet, 1);
+	jet.setAttribute("tau1", tau1);
+	cout << "tau1: " << tau1 << endl;
 	return 0;
 }
 
 double Calculator::nSubJettiness(const xAOD::Jet &jet, unsigned int nSubJets) const {
 	xAOD::JetConstituentVector constit = jet.getConstituents();
 	vector<fastjet::PseudoJet> constit_pseudojets;
-	/*for(int i=0; i<constit.size(); i++) {
-		cout << "m=" << constit[i].m() << endl;
-	}*/
+
 	for(xAOD::JetConstituentVector::iterator it=constit.begin(); it!=constit.end(); it++) {
 		constit_pseudojets.push_back(fastjet::PseudoJet(it->px(), it->py(), it->pz(), it->e()));
 	}
