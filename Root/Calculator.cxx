@@ -7,10 +7,11 @@
 
 using namespace std;
 
-using JetSubstructureVariables::Calculator;
+//using JetSubstructureVariables::Calculator;
 using fastjet::PseudoJet;
 
-Calculator::Calculator() : 
+Calculator::Calculator(std::string name) : 
+	AsgTool(name),
 	m_jetCollectionName("AntiKt4LCTopoJets")
 {
 	
@@ -21,7 +22,7 @@ void Calculator::setJetCollection(const char *jetCollectionName)
 	m_jetCollectionName = jetCollectionName;
 }
 
-int Calculator::process() const {
+int Calculator::execute() const {
 	const xAOD::JetContainer* jets = 0;
 	jets = evtStore()->retrieve<const xAOD::JetContainer>(m_jetCollectionName);
 	if(jets == 0) {

@@ -1,7 +1,8 @@
 // JetSubstructureVariables_entries.cxx
 
-#include "../AthenaCalculator.h"
+#include "JetSubstructureVariables/Calculator.h"
 #include "GaudiKernel/DeclareFactoryEntries.h"
+
 
 DECLARE_TOOL_FACTORY(Calculator)
 
