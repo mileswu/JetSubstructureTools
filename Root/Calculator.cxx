@@ -76,6 +76,9 @@ double Calculator::nSubJettiness(const xAOD::Jet &jet, unsigned int nSubJets) co
 	/*for(int i=0; i<constit.size(); i++) {
 		cout << "m=" << constit[i].m() << endl;
 	}*/
+	for(xAOD::JetConstituentVector::iterator it=constit.begin(); it!=constit.end(); it++) {
+		constit_pseudojets.push_back(fastjet::PseudoJet(it->px(), it->py(), it->pz(), it->e()));
+	}
 
 	return nSubJettiness(constit_pseudojets, nSubJets);
 }
