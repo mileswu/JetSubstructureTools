@@ -147,3 +147,24 @@ if 1:
   jdmp2.OutputLevel = INFO
   jetalg.Tools += [jdmp2]
 
+
+# Create a POOL output file with the StoreGate contents:
+from OutputStreamAthenaPool.MultipleStreamManager import MSMgr
+xaodStream = MSMgr.NewPoolStream( "StreamXAOD", "xAOD.root" )
+
+# compactify calo cell
+from CaloTools.CaloToolsConf import CaloCompactCellTool
+svcMgr.ToolSvc += CaloCompactCellTool()
+
+# Set up its contents:
+xaodStream.AddItem( "xAOD::JetContainer_v1#*" )
+xaodStream.AddItem( "xAOD::JetAuxContainer_v1#*" )
+xaodStream.AddMetaDataItem( "xAOD::EventFormat_v1#*" )
+xaodStream.Print()
+
+# Split all branches:
+ServiceMgr.AthenaPoolCnvSvc.PoolAttributes += [
+        "DEFAULT_SPLITLEVEL='99'" ]
+
+# Force POOL to just simply use the StoreGate keys as branch names:
+ServiceMgr.AthenaPoolCnvSvc.SubLevelBranchName = "<key>"
