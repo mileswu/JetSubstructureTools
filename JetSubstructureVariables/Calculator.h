@@ -12,31 +12,27 @@
 using namespace std;
 
 namespace fastjet {
-	class PseudoJet;
+  class PseudoJet;
 }
 
-//namespace JetSubstructureVariables {
-	class Calculator :
-		virtual public IJetModifier,
-		virtual public asg::AsgTool {
-			ASG_TOOL_CLASS(Calculator, IJetModifier)
-			
-			public:
-				// Constructor and destructor
-				Calculator(std::string name);
+class Calculator :
+  virtual public IJetModifier,
+  virtual public asg::AsgTool {
+    ASG_TOOL_CLASS(Calculator, IJetModifier)
+    
+    public:
+      // Constructor and destructor
+      Calculator(std::string name);
 
-				int modify(xAOD::JetContainer &jets) const;
-				int modify(xAOD::Jet &jet) const;
-				
-				double nSubJettiness(const xAOD::Jet &jet, unsigned int nSubJets) const;
-				double nSubJettiness(vector<fastjet::PseudoJet> &constit_pseudojets, unsigned int nSubJets) const;
+      int modify(xAOD::JetContainer &jets) const;
+      int modify(xAOD::Jet &jet) const;
+      
+      double nSubJettiness(const xAOD::Jet &jet, unsigned int nSubJets) const;
+      double nSubJettiness(vector<fastjet::PseudoJet> &constit_pseudojets, unsigned int nSubJets) const;
 
-			private:
-				
-		};
-
-//}
-
+    private:
+      
+};
 
 
 #endif
