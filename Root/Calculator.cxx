@@ -38,13 +38,14 @@ double Calculator::nSubJettiness(const xAOD::Jet &jet, unsigned int nSubJets) co
     constit_pseudojets.push_back(fastjet::PseudoJet(it->px(), it->py(), it->pz(), it->e()));
   }
 
-  return nSubJettiness(constit_pseudojets, nSubJets);
+  float jetRadius = jet.getAttribute<float>("JetRadius");
+
+  return nSubJettiness(constit_pseudojets, nSubJets, jetRadius);
 }
 
 double Calculator::nSubJettiness(vector<fastjet::PseudoJet> &constit_pseudojets,
-                                 unsigned int nSubJets) const
+                                 unsigned int nSubJets, float jetRadius) const
 {
-  double jet_rad=1.2;
   double alpha=1;
                  
   fastjet::JetDefinition jet_def = fastjet::JetDefinition(fastjet::kt_algorithm,
@@ -71,7 +72,7 @@ double Calculator::nSubJettiness(vector<fastjet::PseudoJet> &constit_pseudojets,
     }
 
     tauNum += constit_pseudojets[iC].pt() * pow(minDR, alpha);
-    tauDen += constit_pseudojets[iC].pt() * pow(jet_rad, alpha);
+    tauDen += constit_pseudojets[iC].pt() * pow(jetRadius, alpha);
   }
 
   return tauNum/tauDen;

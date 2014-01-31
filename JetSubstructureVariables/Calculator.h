@@ -28,7 +28,8 @@ class Calculator :
       int modify(xAOD::Jet &jet) const;
       
       double nSubJettiness(const xAOD::Jet &jet, unsigned int nSubJets) const;
-      double nSubJettiness(vector<fastjet::PseudoJet> &constit_pseudojets, unsigned int nSubJets) const;
+      double nSubJettiness(vector<fastjet::PseudoJet> &constit_pseudojets,
+                           unsigned int nSubJets, float jetRadius) const;
 
     private:
       
