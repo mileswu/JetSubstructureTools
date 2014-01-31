@@ -25,7 +25,9 @@ int Calculator::modify(xAOD::JetContainer &jets) const {
 }
 
 int Calculator::modify(xAOD::Jet &jet) const {
-  jet.setAttribute("tau1", nSubJettiness(jet, 1));
+  jet.setAttribute("Tau1", nSubJettiness(jet, 1));
+  jet.setAttribute("Tau2", nSubJettiness(jet, 2));
+  jet.setAttribute("Tau3", nSubJettiness(jet, 3));
 
   return 0;
 }

@@ -142,7 +142,7 @@ if 1:
   jdmp2.Detail = 2
   jdmp2.LineDetail = 3
   jdmp2.MaxObject = 20
-  jdmp2.FloatMoments = ["tau1"]
+  jdmp2.FloatMoments = ["Tau1", "Tau2", "Tau3"]
  # jdmp2.FourVectorMoments = ["ActiveArea4vec"]
   jdmp2.OutputLevel = INFO
   jetalg.Tools += [jdmp2]
