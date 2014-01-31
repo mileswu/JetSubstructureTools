@@ -49,17 +49,16 @@ double Calculator::nSubJettiness(vector<fastjet::PseudoJet> &constit_pseudojets,
                                  unsigned int nSubJets, float jetRadius) const
 {
   double alpha=1;
+  if(constit_pseudojets.size() < nSubJets) {
+    ATH_MSG_WARNING("We were asked to calculate nSubjettiness, but there are not enough constituents");
+    return 0.0;
+  }
                  
   fastjet::JetDefinition jet_def = fastjet::JetDefinition(fastjet::kt_algorithm,
                                                           M_PI/2,fastjet::E_scheme,
                                                           fastjet::Best);
   fastjet::ClusterSequence kt_clust_seq(constit_pseudojets, jet_def);
   vector<fastjet::PseudoJet> kt_subjets = kt_clust_seq.exclusive_jets((int)nSubJets);
-
-  if(kt_subjets.size() != nSubJets) {
-    ATH_MSG_ERROR("For some reason we did not find enough subjets");
-    return 0.0;
-  }
 
   double tauNum = 0.0, tauDen = 0.0;
 
