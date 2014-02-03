@@ -128,7 +128,7 @@ if 1:
 
 # Add filter for copied jets.
 if 1:
-  from JetSubstructureVariables.JetSubstructureVariablesConf import NSubjettinessTool
+  from JetSubstructureTools.JetSubstructureToolsConf import NSubjettinessTool
   ToolSvc += NSubjettinessTool("nsubjettiness")
   nsubjettiness = ToolSvc.nsubjettiness
   jetrec2.JetModifiers += [nsubjettiness]

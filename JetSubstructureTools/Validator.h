@@ -1,5 +1,5 @@
-#ifndef jetsubstructurevariables_validator_header
-#define jetsubstructurevariables_validator_header
+#ifndef jetsubstructuretools_validator_header
+#define jetsubstructuretools_validator_header
 
 #include "xAODCaloEvent/CaloCluster.h"
 #include "xAODJet/Jet.h"

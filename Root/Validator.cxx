@@ -1,7 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <float.h>
-#include "JetSubstructureVariables/Validator.h"
+#include "JetSubstructureTools/Validator.h"
 #include <TFile.h>
 #include <TH1.h>
 #include "GaudiKernel/ITHistSvc.h"
