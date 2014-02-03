@@ -1,5 +1,5 @@
-#ifndef jetsubstructurevariables_calculator_header
-#define jetsubstructurevariables_calculator_header
+#ifndef jetsubstructurevariables_nsubjetinesstool_header
+#define jetsubstructurevariables_nsubjetinesstool_header
 
 #include "xAODCaloEvent/CaloCluster.h"
 #include "xAODJet/Jet.h"
@@ -15,20 +15,20 @@ namespace fastjet {
   class PseudoJet;
 }
 
-class Calculator :
+class NSubjettinessTool :
   virtual public IJetModifier,
   virtual public asg::AsgTool {
-    ASG_TOOL_CLASS(Calculator, IJetModifier)
+    ASG_TOOL_CLASS(NSubjettinessTool, IJetModifier)
     
     public:
       // Constructor and destructor
-      Calculator(std::string name);
+      NSubjettinessTool(std::string name);
 
       int modify(xAOD::JetContainer &jets) const;
       int modify(xAOD::Jet &jet) const;
       
-      double nSubJettiness(const xAOD::Jet &jet, unsigned int nSubJets) const;
-      double nSubJettiness(vector<fastjet::PseudoJet> &constit_pseudojets,
+      double nSubjettiness(const xAOD::Jet &jet, unsigned int nSubJets) const;
+      double nSubjettiness(vector<fastjet::PseudoJet> &constit_pseudojets,
                            unsigned int nSubJets, float jetRadius) const;
 
     private:

@@ -1,20 +1,20 @@
 #include <iostream>
 #include <math.h>
 #include <float.h>
-#include "JetSubstructureVariables/Calculator.h"
+#include "JetSubstructureVariables/NSubjettinessTool.h"
 
 #include "fastjet/ClusterSequence.hh"
 
 using namespace std;
 using fastjet::PseudoJet;
 
-Calculator::Calculator(std::string name) : 
+NSubjettinessTool::NSubjettinessTool(std::string name) : 
   AsgTool(name)
 {
   
 }
 
-int Calculator::modify(xAOD::JetContainer &jets) const {
+int NSubjettinessTool::modify(xAOD::JetContainer &jets) const {
   int retval = 0;
 
   for(size_t iJ=0; iJ < jets.size(); iJ++) {
@@ -24,15 +24,15 @@ int Calculator::modify(xAOD::JetContainer &jets) const {
   return retval;
 }
 
-int Calculator::modify(xAOD::Jet &jet) const {
-  jet.setAttribute("Tau1", nSubJettiness(jet, 1));
-  jet.setAttribute("Tau2", nSubJettiness(jet, 2));
-  jet.setAttribute("Tau3", nSubJettiness(jet, 3));
+int NSubjettinessTool::modify(xAOD::Jet &jet) const {
+  jet.setAttribute("Tau1", nSubjettiness(jet, 1));
+  jet.setAttribute("Tau2", nSubjettiness(jet, 2));
+  jet.setAttribute("Tau3", nSubjettiness(jet, 3));
 
   return 0;
 }
 
-double Calculator::nSubJettiness(const xAOD::Jet &jet, unsigned int nSubJets) const {
+double NSubjettinessTool::nSubjettiness(const xAOD::Jet &jet, unsigned int nSubJets) const {
   xAOD::JetConstituentVector constit = jet.getConstituents();
   vector<fastjet::PseudoJet> constit_pseudojets;
 
@@ -42,10 +42,10 @@ double Calculator::nSubJettiness(const xAOD::Jet &jet, unsigned int nSubJets) co
 
   float jetRadius = jet.getAttribute<float>("JetRadius");
 
-  return nSubJettiness(constit_pseudojets, nSubJets, jetRadius);
+  return nSubjettiness(constit_pseudojets, nSubJets, jetRadius);
 }
 
-double Calculator::nSubJettiness(vector<fastjet::PseudoJet> &constit_pseudojets,
+double NSubjettinessTool::nSubjettiness(vector<fastjet::PseudoJet> &constit_pseudojets,
                                  unsigned int nSubJets, float jetRadius) const
 {
   double alpha=1;

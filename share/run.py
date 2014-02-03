@@ -128,10 +128,10 @@ if 1:
 
 # Add filter for copied jets.
 if 1:
-  from JetSubstructureVariables.JetSubstructureVariablesConf import Calculator
-  ToolSvc += Calculator("calc")
-  calc = ToolSvc.calc
-  jetrec2.JetModifiers += [calc]
+  from JetSubstructureVariables.JetSubstructureVariablesConf import NSubjettinessTool
+  ToolSvc += NSubjettinessTool("nsubjettiness")
+  nsubjettiness = ToolSvc.nsubjettiness
+  jetrec2.JetModifiers += [nsubjettiness]
 
 # Dump copied jets.
 if 1:
