@@ -11,7 +11,7 @@ using fastjet::PseudoJet;
 NSubjettinessTool::NSubjettinessTool(std::string name) : 
   AsgTool(name)
 {
-  
+  declareProperty("Alpha", m_Alpha = 1.0);
 }
 
 int NSubjettinessTool::modify(xAOD::JetContainer &jets) const {
@@ -48,7 +48,6 @@ double NSubjettinessTool::nSubjettiness(const xAOD::Jet &jet, unsigned int nSubJ
 double NSubjettinessTool::nSubjettiness(vector<fastjet::PseudoJet> &constit_pseudojets,
                                  unsigned int nSubJets, float jetRadius) const
 {
-  double alpha=1;
   if(constit_pseudojets.size() < nSubJets) {
     ATH_MSG_WARNING("We were asked to calculate nSubjettiness, but there are not enough constituents");
     return 0.0;
@@ -72,8 +71,8 @@ double NSubjettinessTool::nSubjettiness(vector<fastjet::PseudoJet> &constit_pseu
         minDR = dr;
     }
 
-    tauNum += constit_pseudojets[iC].pt() * pow(minDR, alpha);
-    tauDen += constit_pseudojets[iC].pt() * pow(jetRadius, alpha);
+    tauNum += constit_pseudojets[iC].pt() * pow(minDR, m_Alpha);
+    tauDen += constit_pseudojets[iC].pt() * pow(jetRadius, m_Alpha);
   }
 
   return tauNum/tauDen;

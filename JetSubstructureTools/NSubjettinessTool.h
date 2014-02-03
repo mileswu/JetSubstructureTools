@@ -32,6 +32,7 @@ class NSubjettinessTool :
                            unsigned int nSubJets, float jetRadius) const;
 
     private:
+      float m_Alpha;
       
 };
 
