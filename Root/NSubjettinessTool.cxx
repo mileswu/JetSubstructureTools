@@ -1,7 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <float.h>
-#include "JetSubstructureTools/NSubjettinessTool.h"
+#include "JetSubStructure/NSubjettinessTool.h"
 
 #include "fastjet/ClusterSequence.hh"
 

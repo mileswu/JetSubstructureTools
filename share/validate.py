@@ -45,7 +45,7 @@ ServiceMgr.THistSvc.Output = ["JetSubstructureMoments DATAFILE='validation.root'
 # Configure tools.
 #--------------------------------------------------------------
 
-from JetSubstructureTools.JetSubstructureToolsConf import Validator
+from JetSubStructure.JetSubStructureConf import Validator
 ToolSvc += Validator("validator")
 validator = ToolSvc.validator
 validator.InputContainer = clname

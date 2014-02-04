@@ -1,5 +1,5 @@
-#ifndef jetsubstructuretools_nsubjetinesstool_header
-#define jetsubstructuretools_nsubjetinesstool_header
+#ifndef jetsubstructure_nsubjetinesstool_header
+#define jetsubstructure_nsubjetinesstool_header
 
 #include "xAODCaloEvent/CaloCluster.h"
 #include "xAODJet/Jet.h"

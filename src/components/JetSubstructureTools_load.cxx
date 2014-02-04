@@ -1,5 +1,5 @@
-// JetSubstructureTools_load.cxx
+// JetSubStructure_load.cxx
 
 #include "GaudiKernel/LoadFactoryEntries.h"
 
-LOAD_FACTORY_ENTRIES(JetSubstructureTools)
+LOAD_FACTORY_ENTRIES(JetSubStructure)
