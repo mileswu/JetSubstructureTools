@@ -14,16 +14,6 @@ NSubjettinessTool::NSubjettinessTool(std::string name) :
   declareProperty("Alpha", m_Alpha = 1.0);
 }
 
-int NSubjettinessTool::modify(xAOD::JetContainer &jets) const {
-  int retval = 0;
-
-  for(size_t iJ=0; iJ < jets.size(); iJ++) {
-    retval |= modify(*jets[iJ]);
-  }
-
-  return retval;
-}
-
 int NSubjettinessTool::modify(xAOD::Jet &jet) const {
   jet.setAttribute("Tau1", nSubjettiness(jet, 1));
   jet.setAttribute("Tau2", nSubjettiness(jet, 2));
@@ -33,13 +23,7 @@ int NSubjettinessTool::modify(xAOD::Jet &jet) const {
 }
 
 double NSubjettinessTool::nSubjettiness(const xAOD::Jet &jet, unsigned int nSubJets) const {
-  xAOD::JetConstituentVector constit = jet.getConstituents();
-  vector<fastjet::PseudoJet> constit_pseudojets;
-
-  for(xAOD::JetConstituentVector::iterator it=constit.begin(); it!=constit.end(); it++) {
-    constit_pseudojets.push_back(fastjet::PseudoJet(it->px(), it->py(), it->pz(), it->e()));
-  }
-
+  vector<fastjet::PseudoJet> constit_pseudojets = getConstituentPseudoJets(jet);
   float jetRadius = jet.getAttribute<float>("JetRadius");
 
   return nSubjettiness(constit_pseudojets, nSubJets, jetRadius);

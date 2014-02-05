@@ -1,22 +1,10 @@
 #ifndef jetsubstructure_nsubjetinesstool_header
 #define jetsubstructure_nsubjetinesstool_header
 
-#include "xAODCaloEvent/CaloCluster.h"
-#include "xAODJet/Jet.h"
-#include "xAODJet/JetContainer.h"
-
-#include "AsgTools/AsgTool.h"
-#include "JetInterface/IJetModifier.h"
-#include <vector>
-
-using namespace std;
-
-namespace fastjet {
-  class PseudoJet;
-}
+#include "JetSubStructure/JetSubStructureBase.h"
 
 class NSubjettinessTool :
-  virtual public IJetModifier,
+  public JetSubStructureBase,
   virtual public asg::AsgTool {
     ASG_TOOL_CLASS(NSubjettinessTool, IJetModifier)
     
@@ -24,7 +12,7 @@ class NSubjettinessTool :
       // Constructor and destructor
       NSubjettinessTool(std::string name);
 
-      int modify(xAOD::JetContainer &jets) const;
+      using JetSubStructureBase::modify;
       int modify(xAOD::Jet &jet) const;
       
       double nSubjettiness(const xAOD::Jet &jet, unsigned int nSubJets) const;
