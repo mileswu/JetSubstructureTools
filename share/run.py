@@ -133,6 +133,11 @@ if 1:
   nsubjettiness = ToolSvc.nsubjettiness
   jetrec2.JetModifiers += [nsubjettiness]
 
+  from JetSubStructure.JetSubStructureConf import KTSplittingScaleTool
+  ToolSvc += KTSplittingScaleTool("ktsplittingscale")
+  ktsplittingscale = ToolSvc.ktsplittingscale
+  jetrec2.JetModifiers += [ktsplittingscale]
+
 # Dump copied jets.
 if 1:
   from JetRec.JetRecConf import JetDumper
@@ -143,6 +148,7 @@ if 1:
   jdmp2.LineDetail = 3
   jdmp2.MaxObject = 20
   jdmp2.FloatMoments = ["Tau1", "Tau2", "Tau3"]
+  jdmp2.FloatMoments += ["SPLIT12", "SPLIT23", "SPLIT34"]
  # jdmp2.FourVectorMoments = ["ActiveArea4vec"]
   jdmp2.OutputLevel = INFO
   jetalg.Tools += [jdmp2]
