@@ -12,6 +12,7 @@ Validator::Validator(std::string name) :
 	AsgTool(name)
 {
   declareProperty("InputContainer", m_InputContainer = "");
+  declareProperty("FloatMoments", m_FloatMoments);
 }
 
 int Validator::execute() const
@@ -35,35 +36,39 @@ int Validator::execute() const
 	if(jets->size() == 0) return 0;
 	const xAOD::Jet *jet = jets->at(0); // This assumes the container is sorted
 
-	// Loop over plots
-	vector<std::string> plots;
-	plots.push_back("Tau1");
-	plots.push_back("Tau2");
-	plots.push_back("Tau3");
-
-	for(unsigned int i=0; i<plots.size(); i++) {
+	// Loop over float moments
+	for(unsigned int i=0; i<m_FloatMoments.size(); i++) {
 		TH1 *outputHist;
-		if(histSvc->exists("/JetSubstructureMoments/" + plots[i])) {
-			sc = histSvc->getHist("/JetSubstructureMoments/" + plots[i], outputHist);
+		if(histSvc->exists("/JetSubstructureMoments/" + m_FloatMoments[i])) {
+			sc = histSvc->getHist("/JetSubstructureMoments/" + m_FloatMoments[i], outputHist);
 			if(sc.isFailure()) { 
 				ATH_MSG_ERROR("Unable to retrieve histogram");
 				return 1;
 			}
 		}
 		else {
-			outputHist = new TH1F(plots[i].c_str(), "", 100, 0, 1);
-			sc = histSvc->regHist("/JetSubstructureMoments/" + plots[i], outputHist);
+      unsigned int nbins = 100;
+      float xlow = 0, xhigh = 1.0;
+      bool isMomentNormalized = true;
+      if(m_FloatMoments[i].find("SPLIT") != string::npos) {
+        isMomentNormalized = false;
+      }
+
+      if(isMomentNormalized == false) {
+        nbins = 1000;
+        xhigh = 2000000;
+      }
+
+			outputHist = new TH1F(m_FloatMoments[i].c_str(), "", nbins, xlow, xhigh);
+			sc = histSvc->regHist("/JetSubstructureMoments/" + m_FloatMoments[i], outputHist);
 			if(sc.isFailure()) {
 				ATH_MSG_ERROR("Unable to register histogram");
 				return 1;
 			}
 		}
 
-		outputHist->Fill(jet->getAttribute<float>(plots[i].c_str()));
+		outputHist->Fill(jet->getAttribute<float>(m_FloatMoments[i].c_str()));
 	}
-
-
-
 
 	return 0;
 }

@@ -25,6 +25,7 @@ class Validator :
 
     private:
       std::string m_InputContainer;
+      vector<string> m_FloatMoments;
 
 };
 
