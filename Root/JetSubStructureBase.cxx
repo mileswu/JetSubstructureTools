@@ -19,12 +19,17 @@ int JetSubStructureBase::modify(xAOD::JetContainer &jets) const {
 }
 
 vector<fastjet::PseudoJet> JetSubStructureBase::getConstituentPseudoJets(const xAOD::Jet &jet) const {
-  xAOD::JetConstituentVector constit = jet.getConstituents();
-  vector<fastjet::PseudoJet> constit_pseudojets;
-
-  for(xAOD::JetConstituentVector::iterator it=constit.begin(); it!=constit.end(); it++) {
-    constit_pseudojets.push_back(fastjet::PseudoJet(it->px(), it->py(), it->pz(), it->e()));
+  if(jet.getPseudoJet() != NULL) { // Use existing pseudojet if it exists
+    return jet.getPseudoJet()->constituents();
   }
+  else { // Use JetConstituentVector as fallback
+    xAOD::JetConstituentVector constit = jet.getConstituents();
+    vector<fastjet::PseudoJet> constit_pseudojets;
 
-  return constit_pseudojets;
+    for(xAOD::JetConstituentVector::iterator it=constit.begin(); it!=constit.end(); it++) {
+      constit_pseudojets.push_back(fastjet::PseudoJet(it->px(), it->py(), it->pz(), it->e()));
+    }
+
+    return constit_pseudojets;
+  }
 }
