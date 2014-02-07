@@ -14,9 +14,9 @@ KTSplittingScaleTool::KTSplittingScaleTool(std::string name) :
 }
 
 int KTSplittingScaleTool::modify(xAOD::Jet &jet) const {
-  jet.setAttribute("SPLIT12", kTSplittingScale(jet, 1));
-  jet.setAttribute("SPLIT23", kTSplittingScale(jet, 2));
-  jet.setAttribute("SPLIT34", kTSplittingScale(jet, 3));
+  jet.setAttribute("Split12", kTSplittingScale(jet, 1));
+  jet.setAttribute("Split23", kTSplittingScale(jet, 2));
+  jet.setAttribute("Split34", kTSplittingScale(jet, 3));
 
   return 0;
 }

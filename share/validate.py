@@ -50,6 +50,6 @@ ToolSvc += Validator("validator")
 validator = ToolSvc.validator
 validator.InputContainer = clname
 validator.FloatMoments = ["Tau1", "Tau2", "Tau3"]
-validator.FloatMoments += ["SPLIT12", "SPLIT23", "SPLIT34"]
+validator.FloatMoments += ["Split12", "Split23", "Split34"]
 jetalg.Tools += [validator]
 

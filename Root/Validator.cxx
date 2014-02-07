@@ -50,7 +50,7 @@ int Validator::execute() const
       unsigned int nbins = 100;
       float xlow = 0, xhigh = 1.0;
       bool isMomentNormalized = true;
-      if(m_FloatMoments[i].find("SPLIT") != string::npos) {
+      if(m_FloatMoments[i].find("Split") != string::npos) {
         isMomentNormalized = false;
       }
 
