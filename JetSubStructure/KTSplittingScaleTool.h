@@ -19,6 +19,11 @@ class KTSplittingScaleTool :
       double kTSplittingScale(vector<fastjet::PseudoJet> &constit_pseudojets,
                            unsigned int nSubJets) const;
 
+      double zCut(const xAOD::Jet &jet, unsigned int nSubJets) const;
+      double zCut(vector<fastjet::PseudoJet> &constit_pseudojets,
+                  unsigned int nSubJets) const;
+
+
     private:
       
 };
