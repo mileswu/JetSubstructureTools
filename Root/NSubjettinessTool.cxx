@@ -9,12 +9,12 @@ using namespace std;
 using fastjet::PseudoJet;
 
 NSubjettinessTool::NSubjettinessTool(std::string name) : 
-  AsgTool(name)
+  JetSubStructureBase(name)
 {
   declareProperty("Alpha", m_Alpha = 1.0);
 }
 
-int NSubjettinessTool::modify(xAOD::Jet &jet) const {
+int NSubjettinessTool::modifyJet(xAOD::Jet &jet) const {
   jet.setAttribute("Tau1", nSubjettiness(jet, 1));
   jet.setAttribute("Tau2", nSubjettiness(jet, 2));
   jet.setAttribute("Tau3", nSubjettiness(jet, 3));

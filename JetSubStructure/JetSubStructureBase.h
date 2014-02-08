@@ -5,8 +5,7 @@
 #include "xAODJet/Jet.h"
 #include "xAODJet/JetContainer.h"
 
-#include "AsgTools/AsgTool.h"
-#include "JetInterface/IJetModifier.h"
+#include "JetRec/JetModifierBase.h"
 #include <vector>
 
 using namespace std;
@@ -16,11 +15,10 @@ namespace fastjet {
 }
 
 class JetSubStructureBase :
-  virtual public IJetModifier {
-    
+  public JetModifierBase {
     public:
-      int modify(xAOD::JetContainer &jets) const;
-      virtual int modify(xAOD::Jet &jet) const = 0;
+      // Constructor and destructor
+      JetSubStructureBase(std::string name);
 
       vector<fastjet::PseudoJet> getConstituentPseudoJets(const xAOD::Jet &jet) const;
 };

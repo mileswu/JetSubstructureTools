@@ -9,11 +9,11 @@ using namespace std;
 using fastjet::PseudoJet;
 
 KTSplittingScaleTool::KTSplittingScaleTool(std::string name) : 
-  AsgTool(name)
+  JetSubStructureBase(name)
 {
 }
 
-int KTSplittingScaleTool::modify(xAOD::Jet &jet) const {
+int KTSplittingScaleTool::modifyJet(xAOD::Jet &jet) const {
   jet.setAttribute("Split12", kTSplittingScale(jet, 1));
   jet.setAttribute("Split23", kTSplittingScale(jet, 2));
   jet.setAttribute("Split34", kTSplittingScale(jet, 3));

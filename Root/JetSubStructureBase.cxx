@@ -8,14 +8,9 @@
 using namespace std;
 using fastjet::PseudoJet;
 
-int JetSubStructureBase::modify(xAOD::JetContainer &jets) const {
-  int retval = 0;
-
-  for(size_t iJ=0; iJ < jets.size(); iJ++) {
-    retval |= modify(*jets[iJ]);
-  }
-
-  return retval;
+JetSubStructureBase::JetSubStructureBase(std::string name) : 
+  JetModifierBase(name)
+{
 }
 
 vector<fastjet::PseudoJet> JetSubStructureBase::getConstituentPseudoJets(const xAOD::Jet &jet) const {

@@ -9,6 +9,7 @@ use  AthLinks                   AthLinks-*                      Control
 use  xAODCaloEvent              xAODCaloEvent-*                 Event/xAOD
 use  xAODJet                    xAODJet-*                       Event/xAOD
 use  JetInterface               JetInterface-*                  Reconstruction/Jet
+use  JetRec                     JetRec-*                        Reconstruction/Jet
 
 private
 use  AthenaBaseComps            AthenaBaseComps-*               Control

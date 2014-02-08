@@ -86,7 +86,7 @@ if 0:
   from JetRec.JetRecConf import JetFinder
   ToolSvc += JetFinder("jfind")
   jfind = ToolSvc.jfind
-  jfind.JetAlgorithm = "akt"
+  jfind.JetAlgorithm = "AntiKt"
   jfind.JetRadius = 0.8
   jfind.GhostArea = 0.01;
   jfind.PtMin = 20000.0
