@@ -19,8 +19,6 @@ class JetSubStructureBase :
     public:
       // Constructor and destructor
       JetSubStructureBase(std::string name);
-
-      vector<fastjet::PseudoJet> getConstituentPseudoJets(const xAOD::Jet &jet) const;
 };
 
 

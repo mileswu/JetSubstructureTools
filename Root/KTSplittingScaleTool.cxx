@@ -2,6 +2,7 @@
 #include <math.h>
 #include <float.h>
 #include "JetSubStructure/KTSplittingScaleTool.h"
+#include "JetEDM/JetConstituentFiller.h"
 
 #include "fastjet/ClusterSequence.hh"
 
@@ -26,7 +27,7 @@ int KTSplittingScaleTool::modifyJet(xAOD::Jet &jet) const {
 
 double KTSplittingScaleTool::kTSplittingScale(const xAOD::Jet &jet, unsigned int nSubJets) const
 {
-  vector<fastjet::PseudoJet> constit_pseudojets = getConstituentPseudoJets(jet);
+  vector<fastjet::PseudoJet> constit_pseudojets = jet::JetConstituentFiller::constituentPseudoJets(jet);
 
   return kTSplittingScale(constit_pseudojets, nSubJets);
 }
@@ -46,7 +47,7 @@ double KTSplittingScaleTool::kTSplittingScale(vector<fastjet::PseudoJet> &consti
 
 double KTSplittingScaleTool::zCut(const xAOD::Jet &jet, unsigned int nSubJets) const
 {
-  vector<fastjet::PseudoJet> constit_pseudojets = getConstituentPseudoJets(jet);
+  vector<fastjet::PseudoJet> constit_pseudojets = jet::JetConstituentFiller::constituentPseudoJets(jet);
   return zCut(constit_pseudojets, nSubJets);
 }
 

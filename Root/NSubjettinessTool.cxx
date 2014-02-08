@@ -2,6 +2,7 @@
 #include <math.h>
 #include <float.h>
 #include "JetSubStructure/NSubjettinessTool.h"
+#include "JetEDM/JetConstituentFiller.h"
 
 #include "fastjet/ClusterSequence.hh"
 
@@ -23,7 +24,7 @@ int NSubjettinessTool::modifyJet(xAOD::Jet &jet) const {
 }
 
 double NSubjettinessTool::nSubjettiness(const xAOD::Jet &jet, unsigned int nSubJets) const {
-  vector<fastjet::PseudoJet> constit_pseudojets = getConstituentPseudoJets(jet);
+  vector<fastjet::PseudoJet> constit_pseudojets = jet::JetConstituentFiller::constituentPseudoJets(jet);
   float jetRadius = jet.getSizeParameter();
 
   return nSubjettiness(constit_pseudojets, nSubJets, jetRadius);
