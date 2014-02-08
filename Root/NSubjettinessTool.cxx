@@ -24,7 +24,7 @@ int NSubjettinessTool::modify(xAOD::Jet &jet) const {
 
 double NSubjettinessTool::nSubjettiness(const xAOD::Jet &jet, unsigned int nSubJets) const {
   vector<fastjet::PseudoJet> constit_pseudojets = getConstituentPseudoJets(jet);
-  float jetRadius = jet.getAttribute<float>("JetRadius");
+  float jetRadius = jet.getSizeParameter();
 
   return nSubjettiness(constit_pseudojets, nSubJets, jetRadius);
 }
