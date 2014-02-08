@@ -138,6 +138,11 @@ if 1:
   ktsplittingscale = ToolSvc.ktsplittingscale
   jetrec2.JetModifiers += [ktsplittingscale]
 
+  from JetSubStructure.JetSubStructureConf import DipolarityTool
+  ToolSvc += DipolarityTool("dipolarity")
+  dipolarity = ToolSvc.dipolarity
+  jetrec2.JetModifiers += [dipolarity]
+
 # Dump copied jets.
 if 1:
   from JetRec.JetRecConf import JetDumper
@@ -150,6 +155,7 @@ if 1:
   jdmp2.FloatMoments = ["Tau1", "Tau2", "Tau3"]
   jdmp2.FloatMoments += ["Split12", "Split23", "Split34"]
   jdmp2.FloatMoments += ["ZCut12", "ZCut23", "ZCut34"]
+  jdmp2.FloatMoments += ["Dip12", "Dip13", "Dip23", "DipExcl12"]
  # jdmp2.FourVectorMoments = ["ActiveArea4vec"]
   jdmp2.OutputLevel = INFO
   jetalg.Tools += [jdmp2]
