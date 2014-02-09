@@ -88,33 +88,25 @@ double DipolarityTool::exclusiveDipolarity(vector<fastjet::PseudoJet> &constit_p
   return dipolarity(constit_pseudojets, jet1, jet2);
 }
 
-float dphiConvention(float dphi)
-{
-  if(dphi >  4.*std::atan(1.)) return dphi - 8.*std::atan(1.);
-  if(dphi < -4.*std::atan(1.)) return dphi + 8.*std::atan(1.);
-  return dphi;
-}
-
 double DipolarityTool::dipolarity(vector<fastjet::PseudoJet> &constit_pseudojets,
                                   fastjet::PseudoJet jet1, fastjet::PseudoJet jet2) const
 {
   float dipolarity = 0;
   float sumpt = 0;
 
-  CLHEP::Hep2Vector v12(jet2.eta() - jet1.eta(), dphiConvention(jet2.phi() - jet1.phi()));
+  CLHEP::Hep2Vector v12(jet2.eta() - jet1.eta(), jet1.delta_phi_to(jet2));
   if(v12.mag2() < 0.001) return -1;
-
-  CLHEP::Hep2Vector v;
-  float test;
 
   for(unsigned int iConstit = 0; iConstit < constit_pseudojets.size(); iConstit++) {
     fastjet::PseudoJet constituent = constit_pseudojets[iConstit];
 
     sumpt += constituent.perp();
 
+    CLHEP::Hep2Vector v;
+
     v.setX(constituent.eta() - jet1.eta());
-    v.setY(dphiConvention(constituent.phi() - jet1.phi()));
-    test = v.dot(v12.unit());
+    v.setY(jet1.delta_phi_to(constituent));
+    float test = v.dot(v12.unit());
 
     if(test < 0)
       dipolarity += constituent.perp()*v.mag2(); 
@@ -122,7 +114,7 @@ double DipolarityTool::dipolarity(vector<fastjet::PseudoJet> &constit_pseudojets
       dipolarity += constituent.perp()*(v.mag2() - pow(v.dot(v12.unit()), 2));                                              
     else {
       v.setX(constituent.eta() - jet2.eta());
-      v.setY(dphiConvention(constituent.phi() - jet2.phi()));
+      v.setY(jet2.delta_phi_to(constituent));
       dipolarity += constituent.perp()*v.mag2();                                                                           
     }
   }
