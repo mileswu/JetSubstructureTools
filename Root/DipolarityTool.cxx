@@ -13,6 +13,7 @@ using fastjet::PseudoJet;
 DipolarityTool::DipolarityTool(std::string name) : 
   JetSubStructureBase(name)
 {
+  declareProperty("SubJetRadius", m_SubJetRadius = 0.3);
 }
 
 int DipolarityTool::modifyJet(xAOD::Jet &jet) const {
@@ -40,7 +41,7 @@ double DipolarityTool::dipolarity(vector<fastjet::PseudoJet> &constit_pseudojets
     return 0.0;
   }
 
-  fastjet::JetDefinition jet_def = fastjet::JetDefinition(fastjet::kt_algorithm, 0.3,
+  fastjet::JetDefinition jet_def = fastjet::JetDefinition(fastjet::kt_algorithm, m_SubJetRadius,
                                                           fastjet::E_scheme, fastjet::Best);
   fastjet::ClusterSequence kt_clust_seq(constit_pseudojets, jet_def);
   vector<fastjet::PseudoJet> kt_subjets = fastjet::sorted_by_pt(kt_clust_seq.inclusive_jets(5000.0));

@@ -24,6 +24,7 @@ class DipolarityTool :
                         fastjet::PseudoJet jet1, fastjet::PseudoJet jet2) const;
 
     private:
+      double m_SubJetRadius;
       
 };
 
