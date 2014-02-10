@@ -3,7 +3,6 @@
 #include <float.h>
 #include "JetSubStructure/AngularityTool.h"
 #include "JetEDM/JetConstituentFiller.h"
-#include "CLHEP/Vector/TwoVector.h"
 
 #include "fastjet/ClusterSequence.hh"
 
@@ -27,10 +26,7 @@ double AngularityTool::angularity(const xAOD::Jet &jet) const
 {
   vector<fastjet::PseudoJet> constit_pseudojets = jet::JetConstituentFiller::constituentPseudoJets(jet);
 
-  TLorentzVector jet_p4;
-  jet_p4.SetPxPyPzE(jet.px(), jet.py(), jet.pz(), jet.e());
-
-  return angularity(constit_pseudojets, jet_p4);
+  return angularity(constit_pseudojets, jet.p4());
 }
 
 double AngularityTool::angularity(vector<fastjet::PseudoJet> &constit_pseudojets, TLorentzVector jet_p4) const

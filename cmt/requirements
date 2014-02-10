@@ -17,7 +17,6 @@ use  GaudiInterface             GaudiInterface-*                External
 use  AtlasFastJet               AtlasFastJet-*                  External
 use  AtlasROOT                  AtlasROOT-*                     External
 use  JetEDM                     JetEDM-*                        Reconstruction/Jet
-use  AtlasCLHEP                 AtlasCLHEP-*                    External
 end_private
 
 apply_pattern dual_use_library files="../Root/NSubjettinessTool.cxx ../Root/Validator.cxx \ 
