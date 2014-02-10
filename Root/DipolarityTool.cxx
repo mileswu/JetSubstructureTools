@@ -3,7 +3,6 @@
 #include <float.h>
 #include "JetSubStructure/DipolarityTool.h"
 #include "JetEDM/JetConstituentFiller.h"
-#include "CLHEP/Vector/TwoVector.h"
 
 #include "fastjet/ClusterSequence.hh"
 
@@ -94,31 +93,29 @@ double DipolarityTool::dipolarity(vector<fastjet::PseudoJet> &constit_pseudojets
   float dipolarity = 0;
   float sumpt = 0;
 
-  CLHEP::Hep2Vector v12(jet2.eta() - jet1.eta(), jet1.delta_phi_to(jet2));
-  if(v12.mag2() < 0.001) return -1;
+  TVector2 v12(jet2.eta() - jet1.eta(), jet1.delta_phi_to(jet2));
+  if(v12.Mod2() < 0.001) return -1;
 
   for(unsigned int iConstit = 0; iConstit < constit_pseudojets.size(); iConstit++) {
     fastjet::PseudoJet constituent = constit_pseudojets[iConstit];
 
     sumpt += constituent.perp();
 
-    CLHEP::Hep2Vector v;
+    TVector2 v;
 
-    v.setX(constituent.eta() - jet1.eta());
-    v.setY(jet1.delta_phi_to(constituent));
-    float test = v.dot(v12.unit());
+    v.Set(constituent.eta() - jet1.eta(), jet1.delta_phi_to(constituent));
+    float test = v * v12.Unit();
 
     if(test < 0)
-      dipolarity += constituent.perp()*v.mag2(); 
-    else if(test < v12.mag())
-      dipolarity += constituent.perp()*(v.mag2() - pow(v.dot(v12.unit()), 2));                                              
+      dipolarity += constituent.perp()*v.Mod2(); 
+    else if(test < v12.Mod())
+      dipolarity += constituent.perp()*(v.Mod2() - pow(v * v12.Unit(), 2));                                              
     else {
-      v.setX(constituent.eta() - jet2.eta());
-      v.setY(jet2.delta_phi_to(constituent));
-      dipolarity += constituent.perp()*v.mag2();                                                                           
+      v.Set(constituent.eta() - jet2.eta(), jet2.delta_phi_to(constituent));
+      dipolarity += constituent.perp()*v.Mod2();                                                                           
     }
   }
 
   if(sumpt < 0.001) return -1;
-  return dipolarity/(sumpt*v12.mag2()); 
+  return dipolarity/(sumpt*v12.Mod2());
 }

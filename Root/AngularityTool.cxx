@@ -3,7 +3,6 @@
 #include <float.h>
 #include "JetSubStructure/AngularityTool.h"
 #include "JetEDM/JetConstituentFiller.h"
-#include "CLHEP/Vector/TwoVector.h"
 
 #include "fastjet/ClusterSequence.hh"
 
