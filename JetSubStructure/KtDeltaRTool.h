@@ -2,32 +2,32 @@
 #define JETSUBSTRUCTURE_KTDELTARTOOL_H
 
 #include "JetRec/JetModifierBase.h"
-
 #include "GaudiKernel/ToolHandle.h"
-#include "JetInterface/IFastJetInterfaceTool.h"
 
-#define ASG_DERIVED_TOOL_CLASS( CLASSNAME )\
-public: \
-  CLASSNAME(const std::string&, const std::string& myname, const IInterface*) \
-  : CLASSNAME(myname) { \
-  }
+class KtDeltaRTool : public JetModifierBase {
+  ASG_TOOL_CLASS(KtDeltaRTool, IJetModifier)
 
-class KtDeltaRTool : public JetModifierBase
-{
-    ASG_DERIVED_TOOL_CLASS(KtDeltaRTool);
-    
-    public:
-        KtDeltaRTool(const std::string& t);
+public:
 
-        virtual StatusCode initialize();
+  // Ctor.
+  KtDeltaRTool(const std::string& t);
 
-        virtual int modifyJet(xAOD::Jet&) const;
+  // Initialization.
+  StatusCode initialize();
 
-    private:
-        ToolHandle<IFastJetInterfaceTool> m_fastjetTool;
-        std::string m_fromAssociation;
-        double m_ptCut;
+  // Add moment to a jet.
+  int modifyJet(xAOD::Jet&) const;
+
+  // Display properties.
+  void print() const;
+
+  // Calculate KtDeltaR.
+  double ktDeltaR(const xAOD::Jet& jet) const;
+
+private:
+
+  double m_jetrad;
+
 };
 
-#undef ASG_DERIVED_TOOL_CLASS
 #endif
