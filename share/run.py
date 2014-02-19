@@ -148,6 +148,11 @@ if 1:
   angularity = ToolSvc.angularity
   jetrec2.JetModifiers += [angularity]
 
+  from JetSubStructure.JetSubStructureConf import KtDeltaRTool
+  ToolSvc += KtDeltaRTool("ktdr")
+  ktdr = ToolSvc.ktdr
+  jetrec2.JetModifiers += [ktdr]
+
 # Dump copied jets.
 if 1:
   from JetRec.JetRecConf import JetDumper
@@ -162,6 +167,7 @@ if 1:
   jdmp2.FloatMoments += ["ZCut12", "ZCut23", "ZCut34"]
   jdmp2.FloatMoments += ["Dip12", "Dip13", "Dip23", "DipExcl12"]
   jdmp2.FloatMoments += ["Angularity"]
+  jdmp2.FloatMoments += ["KtDR"]
  # jdmp2.FourVectorMoments = ["ActiveArea4vec"]
   jdmp2.OutputLevel = INFO
   jetalg.Tools += [jdmp2]
