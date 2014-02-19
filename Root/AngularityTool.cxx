@@ -12,11 +12,13 @@ using fastjet::PseudoJet;
 AngularityTool::AngularityTool(std::string name) : 
   JetSubStructureBase(name)
 {
+  ATH_MSG_DEBUG("Initializing angularity tool.");
 }
 
 int AngularityTool::modifyJet(xAOD::Jet &jet) const {
-  jet.setAttribute("Angularity", angularity(jet));
-
+  double val = angularity(jet);
+  ATH_MSG_VERBOSE("Adding jet angularity: " << val);
+  jet.setAttribute("Angularity", val);
   return 0;
 }
 
