@@ -1,5 +1,5 @@
-#ifndef jetsubstructure_jetsubstructurebase_header
-#define jetsubstructure_jetsubstructurebase_header
+#ifndef jetsubstructuremomenttools_jetsubstructurebase_header
+#define jetsubstructuremomenttools_jetsubstructurebase_header
 
 #include "xAODCaloEvent/CaloCluster.h"
 #include "xAODJet/Jet.h"
@@ -14,11 +14,11 @@ namespace fastjet {
   class PseudoJet;
 }
 
-class JetSubStructureBase :
+class JetSubStructureMomentToolsBase :
   public JetModifierBase {
     public:
       // Constructor and destructor
-      JetSubStructureBase(std::string name);
+      JetSubStructureMomentToolsBase(std::string name);
 };
 
 

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <float.h>
-#include "JetSubStructure/KTSplittingScaleTool.h"
+#include "JetSubStructureMomentTools/KTSplittingScaleTool.h"
 #include "JetEDM/JetConstituentFiller.h"
 
 #include "fastjet/ClusterSequence.hh"
@@ -10,7 +10,7 @@ using namespace std;
 using fastjet::PseudoJet;
 
 KTSplittingScaleTool::KTSplittingScaleTool(std::string name) : 
-  JetSubStructureBase(name)
+  JetSubStructureMomentToolsBase(name)
 {
 }
 

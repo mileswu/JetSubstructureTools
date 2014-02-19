@@ -1,14 +1,14 @@
 #include <iostream>
 #include <math.h>
 #include <float.h>
-#include "JetSubStructure/JetSubStructureBase.h"
+#include "JetSubStructureMomentTools/JetSubStructureMomentToolsBase.h"
 
 #include "fastjet/ClusterSequence.hh"
 
 using namespace std;
 using fastjet::PseudoJet;
 
-JetSubStructureBase::JetSubStructureBase(std::string name) : 
+JetSubStructureMomentToolsBase::JetSubStructureMomentToolsBase(std::string name) : 
   JetModifierBase(name)
 {
 }

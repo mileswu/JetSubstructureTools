@@ -128,27 +128,27 @@ if 1:
 
 # Add filter for copied jets.
 if 1:
-  from JetSubStructure.JetSubStructureConf import NSubjettinessTool
+  from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import NSubjettinessTool
   ToolSvc += NSubjettinessTool("nsubjettiness")
   nsubjettiness = ToolSvc.nsubjettiness
   jetrec2.JetModifiers += [nsubjettiness]
 
-  from JetSubStructure.JetSubStructureConf import KTSplittingScaleTool
+  from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import KTSplittingScaleTool
   ToolSvc += KTSplittingScaleTool("ktsplittingscale")
   ktsplittingscale = ToolSvc.ktsplittingscale
   jetrec2.JetModifiers += [ktsplittingscale]
 
-  from JetSubStructure.JetSubStructureConf import DipolarityTool
+  from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import DipolarityTool
   ToolSvc += DipolarityTool("dipolarity")
   dipolarity = ToolSvc.dipolarity
   jetrec2.JetModifiers += [dipolarity]
 
-  from JetSubStructure.JetSubStructureConf import AngularityTool
+  from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import AngularityTool
   ToolSvc += AngularityTool("angularity")
   angularity = ToolSvc.angularity
   jetrec2.JetModifiers += [angularity]
 
-  from JetSubStructure.JetSubStructureConf import KtDeltaRTool
+  from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import KtDeltaRTool
   ToolSvc += KtDeltaRTool("ktdr")
   ktdr = ToolSvc.ktdr
   jetrec2.JetModifiers += [ktdr]

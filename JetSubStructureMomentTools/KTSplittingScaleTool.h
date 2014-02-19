@@ -1,10 +1,10 @@
-#ifndef jetsubstructure_ktsplittingscaletool_header
-#define jetsubstructure_ktsplittingscaletool_header
+#ifndef jetsubstructuremomenttools_ktsplittingscaletool_header
+#define jetsubstructuremomenttools_ktsplittingscaletool_header
 
-#include "JetSubStructure/JetSubStructureBase.h"
+#include "JetSubStructureMomentTools/JetSubStructureMomentToolsBase.h"
 
 class KTSplittingScaleTool :
-  public JetSubStructureBase {
+  public JetSubStructureMomentToolsBase {
     ASG_TOOL_CLASS(KTSplittingScaleTool, IJetModifier)
     
     public:

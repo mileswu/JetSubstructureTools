@@ -1,7 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <float.h>
-#include "JetSubStructure/DipolarityTool.h"
+#include "JetSubStructureMomentTools/DipolarityTool.h"
 #include "JetEDM/JetConstituentFiller.h"
 
 #include "fastjet/ClusterSequence.hh"
@@ -10,7 +10,7 @@ using namespace std;
 using fastjet::PseudoJet;
 
 DipolarityTool::DipolarityTool(std::string name) : 
-  JetSubStructureBase(name)
+  JetSubStructureMomentToolsBase(name)
 {
   declareProperty("SubJetRadius", m_SubJetRadius = 0.3);
 }

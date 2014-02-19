@@ -1,10 +1,10 @@
-#ifndef jetsubstructure_angularitytool_header
-#define jetsubstructure_angularitytool_header
+#ifndef jetsubstructuremomenttools_angularitytool_header
+#define jetsubstructuremomenttools_angularitytool_header
 
-#include "JetSubStructure/JetSubStructureBase.h"
+#include "JetSubStructureMomentTools/JetSubStructureMomentToolsBase.h"
 
 class AngularityTool :
-  public JetSubStructureBase {
+  public JetSubStructureMomentToolsBase {
     ASG_TOOL_CLASS(AngularityTool, IJetModifier)
     
     public:

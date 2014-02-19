@@ -1,10 +1,10 @@
-#ifndef jetsubstructure_dipolaritytool_header
-#define jetsubstructure_dipolaritytool_header
+#ifndef jetsubstructuremomenttools_dipolaritytool_header
+#define jetsubstructuremomenttools_dipolaritytool_header
 
-#include "JetSubStructure/JetSubStructureBase.h"
+#include "JetSubStructureMomentTools/JetSubStructureMomentToolsBase.h"
 
 class DipolarityTool :
-  public JetSubStructureBase {
+  public JetSubStructureMomentToolsBase {
     ASG_TOOL_CLASS(DipolarityTool, IJetModifier)
     
     public:

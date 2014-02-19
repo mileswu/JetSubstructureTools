@@ -1,7 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <float.h>
-#include "JetSubStructure/AngularityTool.h"
+#include "JetSubStructureMomentTools/AngularityTool.h"
 #include "JetEDM/JetConstituentFiller.h"
 
 #include "fastjet/ClusterSequence.hh"
@@ -10,7 +10,7 @@ using namespace std;
 using fastjet::PseudoJet;
 
 AngularityTool::AngularityTool(std::string name) : 
-  JetSubStructureBase(name)
+  JetSubStructureMomentToolsBase(name)
 {
   ATH_MSG_DEBUG("Initializing angularity tool.");
 }

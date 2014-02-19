@@ -1,11 +1,11 @@
-// JetSubStructure_entries.cxx
+// JetSubStructureMomentTools_entries.cxx
 
-#include "JetSubStructure/KtDeltaRTool.h"
-#include "JetSubStructure/NSubjettinessTool.h"
-#include "JetSubStructure/KTSplittingScaleTool.h"
-#include "JetSubStructure/DipolarityTool.h"
-#include "JetSubStructure/AngularityTool.h"
-#include "JetSubStructure/Validator.h"
+#include "JetSubStructureMomentTools/KtDeltaRTool.h"
+#include "JetSubStructureMomentTools/NSubjettinessTool.h"
+#include "JetSubStructureMomentTools/KTSplittingScaleTool.h"
+#include "JetSubStructureMomentTools/DipolarityTool.h"
+#include "JetSubStructureMomentTools/AngularityTool.h"
+#include "JetSubStructureMomentTools/Validator.h"
 #include "GaudiKernel/DeclareFactoryEntries.h"
 
 
@@ -16,7 +16,7 @@ DECLARE_TOOL_FACTORY(DipolarityTool)
 DECLARE_TOOL_FACTORY(AngularityTool)
 DECLARE_TOOL_FACTORY(Validator)
 
-DECLARE_FACTORY_ENTRIES(JetSubStructure) {
+DECLARE_FACTORY_ENTRIES(JetSubStructureMomentTools) {
   DECLARE_TOOL(KtDeltaRTool)
   DECLARE_TOOL(NSubjettinessTool)
   DECLARE_TOOL(KTSplittingScaleTool)

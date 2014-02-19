@@ -1,10 +1,10 @@
-#ifndef jetsubstructure_nsubjetinesstool_header
-#define jetsubstructure_nsubjetinesstool_header
+#ifndef jetsubstructuremomenttools_nsubjetinesstool_header
+#define jetsubstructuremomenttools_nsubjetinesstool_header
 
-#include "JetSubStructure/JetSubStructureBase.h"
+#include "JetSubStructureMomentTools/JetSubStructureMomentToolsBase.h"
 
 class NSubjettinessTool :
-  public JetSubStructureBase {
+  public JetSubStructureMomentToolsBase {
     ASG_TOOL_CLASS(NSubjettinessTool, IJetModifier)
 
     public:

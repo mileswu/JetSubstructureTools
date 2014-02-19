@@ -1,7 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <float.h>
-#include "JetSubStructure/NSubjettinessTool.h"
+#include "JetSubStructureMomentTools/NSubjettinessTool.h"
 #include "JetEDM/JetConstituentFiller.h"
 
 #include "fastjet/ClusterSequence.hh"
@@ -10,7 +10,7 @@ using namespace std;
 using fastjet::PseudoJet;
 
 NSubjettinessTool::NSubjettinessTool(std::string name) : 
-  JetSubStructureBase(name)
+  JetSubStructureMomentToolsBase(name)
 {
   declareProperty("Alpha", m_Alpha = 1.0);
 }

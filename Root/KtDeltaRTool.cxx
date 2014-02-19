@@ -1,6 +1,6 @@
 // KtDeltaRTool.cxx
 
-#include "JetSubStructure/KtDeltaRTool.h"
+#include "JetSubStructureMomentTools/KtDeltaRTool.h"
 #include "JetEDM/JetConstituentFiller.h"
 #include "fastjet/PseudoJet.hh"
 #include "fastjet/JetDefinition.hh"
