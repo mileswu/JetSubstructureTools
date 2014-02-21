@@ -69,8 +69,6 @@ int Validator::execute() const
 		}
 
     if(m_FloatMoments[i] == "pt") {
-      printf("Jet pt %.10f\n", jet->pt());
-      cout << "jet pt: " << jet->pt() << endl;
       outputHist->Fill(jet->pt());
     }
     else {
