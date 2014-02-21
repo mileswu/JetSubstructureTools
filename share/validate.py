@@ -54,6 +54,7 @@ validator.FloatMoments += ["Split12", "Split23", "Split34"]
 validator.FloatMoments += ["ZCut12", "ZCut23", "ZCut34"]
 validator.FloatMoments += ["Dip12", "Dip13", "Dip23", "DipExcl12"]
 validator.FloatMoments += ["Angularity"]
+validator.FloatMoments += ["PlanarFlow"]
 validator.FloatMoments += ["pt"]
 jetalg.Tools += [validator]
 

@@ -158,6 +158,11 @@ if 1:
   ktmassdrop = ToolSvc.ktmassdrop
   jetrec2.JetModifiers += [ktmassdrop]
 
+  from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import PlanarFlowTool
+  ToolSvc += PlanarFlowTool("planarflow")
+  planarflow = ToolSvc.planarflow
+  jetrec2.JetModifiers += [planarflow]
+
 # Dump copied jets.
 if 1:
   from JetRec.JetRecConf import JetDumper
@@ -174,6 +179,7 @@ if 1:
   jdmp2.FloatMoments += ["Angularity"]
   jdmp2.FloatMoments += ["KtDR"]
   jdmp2.FloatMoments += ["Mu12"]
+  jdmp2.FloatMoments += ["PlanarFlow"]
  # jdmp2.FourVectorMoments = ["ActiveArea4vec"]
   jdmp2.OutputLevel = INFO
   jetalg.Tools += [jdmp2]
