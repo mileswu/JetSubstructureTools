@@ -21,4 +21,5 @@ end_private
 
 apply_pattern dual_use_library files="../Root/NSubjettinessTool.cxx ../Root/Validator.cxx \ 
 ../Root/JetSubStructureMomentToolsBase.cxx ../Root/KTSplittingScaleTool.cxx ../Root/DipolarityTool.cxx \
-../Root/AngularityTool.cxx ../Root/KtDeltaRTool.cxx"
+../Root/AngularityTool.cxx ../Root/KtDeltaRTool.cxx \
+../Root/KtMassDropTool.cxx"

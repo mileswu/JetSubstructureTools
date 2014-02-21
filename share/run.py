@@ -153,6 +153,11 @@ if 1:
   ktdr = ToolSvc.ktdr
   jetrec2.JetModifiers += [ktdr]
 
+  from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import KtMassDropTool
+  ToolSvc += KtMassDropTool("ktmassdrop")
+  ktmassdrop = ToolSvc.ktmassdrop
+  jetrec2.JetModifiers += [ktmassdrop]
+
 # Dump copied jets.
 if 1:
   from JetRec.JetRecConf import JetDumper
@@ -168,6 +173,7 @@ if 1:
   jdmp2.FloatMoments += ["Dip12", "Dip13", "Dip23", "DipExcl12"]
   jdmp2.FloatMoments += ["Angularity"]
   jdmp2.FloatMoments += ["KtDR"]
+  jdmp2.FloatMoments += ["Mu12"]
  # jdmp2.FourVectorMoments = ["ActiveArea4vec"]
   jdmp2.OutputLevel = INFO
   jetalg.Tools += [jdmp2]
