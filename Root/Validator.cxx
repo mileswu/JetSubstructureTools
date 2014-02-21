@@ -50,7 +50,8 @@ int Validator::execute() const
       unsigned int nbins = 100;
       float xlow = 0, xhigh = 1.0;
       bool isMomentNormalized = true;
-      if(m_FloatMoments[i].find("Split") != string::npos) {
+      if(m_FloatMoments[i].find("Split") != string::npos ||
+         m_FloatMoments[i] == "pt") {
         isMomentNormalized = false;
       }
 
@@ -67,7 +68,14 @@ int Validator::execute() const
 			}
 		}
 
-		outputHist->Fill(jet->getAttribute<float>(m_FloatMoments[i].c_str()));
+    if(m_FloatMoments[i] == "pt") {
+      printf("Jet pt %.10f\n", jet->pt());
+      cout << "jet pt: " << jet->pt() << endl;
+      outputHist->Fill(jet->pt());
+    }
+    else {
+  		outputHist->Fill(jet->getAttribute<float>(m_FloatMoments[i].c_str()));
+    }
 	}
 
 	return 0;
