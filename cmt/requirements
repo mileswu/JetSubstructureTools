@@ -23,4 +23,6 @@ apply_pattern dual_use_library files="../Root/NSubjettinessTool.cxx ../Root/Vali
 ../Root/JetSubStructureMomentToolsBase.cxx ../Root/KTSplittingScaleTool.cxx ../Root/DipolarityTool.cxx \
 ../Root/AngularityTool.cxx ../Root/KtDeltaRTool.cxx \
 ../Root/KtMassDropTool.cxx \
-../Root/PlanarFlowTool.cxx"
+../Root/PlanarFlowTool.cxx \
+../Root/CenterOfMassShapesTool.cxx \
+../Root/Moments/*.cxx"

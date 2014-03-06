@@ -163,6 +163,11 @@ if 1:
   planarflow = ToolSvc.planarflow
   jetrec2.JetModifiers += [planarflow]
 
+  from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import CenterOfMassShapesTool
+  ToolSvc += CenterOfMassShapesTool("centerofmassshapes")
+  centerofmassshapes = ToolSvc.centerofmassshapes
+  jetrec2.JetModifiers += [centerofmassshapes]
+
 # Dump copied jets.
 if 1:
   from JetRec.JetRecConf import JetDumper
@@ -180,6 +185,7 @@ if 1:
   jdmp2.FloatMoments += ["KtDR"]
   jdmp2.FloatMoments += ["Mu12"]
   jdmp2.FloatMoments += ["PlanarFlow"]
+  jdmp2.FloatMoments += ["ThrustMin", "ThrustMaj"]
  # jdmp2.FourVectorMoments = ["ActiveArea4vec"]
   jdmp2.OutputLevel = INFO
   jetalg.Tools += [jdmp2]
