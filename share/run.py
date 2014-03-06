@@ -185,7 +185,9 @@ if 1:
   jdmp2.FloatMoments += ["KtDR"]
   jdmp2.FloatMoments += ["Mu12"]
   jdmp2.FloatMoments += ["PlanarFlow"]
-  jdmp2.FloatMoments += ["ThrustMin", "ThrustMaj", "FoxWolfram0", "FoxWolfram1", "FoxWolfram2", "FoxWolfram3", "FoxWolfram4"]
+  jdmp2.FloatMoments += ["ThrustMin", "ThrustMaj"]
+  jdmp2.FloatMoments += ["FoxWolfram0", "FoxWolfram1", "FoxWolfram2", "FoxWolfram3", "FoxWolfram4"]
+  jdmp2.FloatMoments += ["Sphericity", "Aplanarity"]
  # jdmp2.FourVectorMoments = ["ActiveArea4vec"]
   jdmp2.OutputLevel = INFO
   jetalg.Tools += [jdmp2]

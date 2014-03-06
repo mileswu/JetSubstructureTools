@@ -6,6 +6,7 @@
 
 #include "JetSubStructureMomentTools/Moments/Thrust.h"
 #include "JetSubStructureMomentTools/Moments/FoxWolfram.h"
+#include "JetSubStructureMomentTools/Moments/SphericityTensor.h"
 
 #include "fastjet/ClusterSequence.hh"
 
@@ -21,6 +22,7 @@ CenterOfMassShapesTool::CenterOfMassShapesTool(std::string name) :
 int CenterOfMassShapesTool::modifyJet(xAOD::Jet &jet) const {
   Thrust t;
   FoxWolfram foxwolfram;
+  SphericityTensor sphericity;
   map<const char*, double> res;
   
   res = t.result(jet);
@@ -33,6 +35,10 @@ int CenterOfMassShapesTool::modifyJet(xAOD::Jet &jet) const {
   jet.setAttribute("FoxWolfram2", res["FoxWolfram2"]);
   jet.setAttribute("FoxWolfram3", res["FoxWolfram3"]);
   jet.setAttribute("FoxWolfram4", res["FoxWolfram4"]);
+
+  res = sphericity.result(jet);
+  jet.setAttribute("Sphericity", res["Sphericity"]);
+  jet.setAttribute("Aplanarity", res["Aplanarity"]);
 
   return 0;
 }
