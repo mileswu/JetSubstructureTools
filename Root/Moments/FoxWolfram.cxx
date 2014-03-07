@@ -3,7 +3,8 @@
 
 map<const char *, double> FoxWolfram::result(const xAOD::Jet &jet) const
 {
-  vector<fastjet::PseudoJet> constit_pseudojets = jet::JetConstituentFiller::constituentPseudoJets(jet);
+  vector<fastjet::PseudoJet> constit_pseudojets =
+    jet::JetConstituentFiller::constituentPseudoJets(jet);
   fastjet::PseudoJet jet_p4(jet.px(), jet.py(), jet.pz(), jet.e());
 
   return result(constit_pseudojets, jet_p4);
@@ -14,9 +15,9 @@ map<const char *, double> FoxWolfram::result(vector<fastjet::PseudoJet> &constit
 {
   map<const char *, double> Variables;
 
-  double bx=jet_p4.px()/jet_p4.e();
-  double by=jet_p4.py()/jet_p4.e();
-  double bz=jet_p4.pz()/jet_p4.e();
+  double bx = jet_p4.px()/jet_p4.e();
+  double by = jet_p4.py()/jet_p4.e();
+  double bz = jet_p4.pz()/jet_p4.e();
 
   Variables["FoxWolfram0"] =  -999.*1000.;
   Variables["FoxWolfram1"] =  -999.*1000.;
@@ -27,7 +28,7 @@ map<const char *, double> FoxWolfram::result(vector<fastjet::PseudoJet> &constit
   double FoxWolframMoments[5] = {0};
 
   double ESum = 0;
-  typename  std::vector<fastjet::PseudoJet> clusters;
+  std::vector<fastjet::PseudoJet> clusters;
 
   for(unsigned int i1=0; i1 < constit_pseudojets.size(); i1++) {
     TLorentzVector v;
@@ -37,25 +38,18 @@ map<const char *, double> FoxWolfram::result(vector<fastjet::PseudoJet> &constit
     clusters.push_back(v2);
   }
 
-  for(unsigned int i1=0; i1<clusters.size(); i1++)
-    // for ( typename std::vector<T>::const_iterator i = iBeg; i != iEnd; ++i) 
-  {
-    //   const T & i1 = *i;
-
+  for(unsigned int i1=0; i1<clusters.size(); i1++) {
     double p1 = sqrt(clusters.at(i1).px()*clusters.at(i1).px()
         +      clusters.at(i1).py()*clusters.at(i1).py()
         +      clusters.at(i1).pz()*clusters.at(i1).pz());
 
-    for(unsigned int i2=i1+1; i2<clusters.size(); i2++)
-    {
-
+    for(unsigned int i2=i1+1; i2<clusters.size(); i2++) {
       double p2 = sqrt(clusters.at(i2).px()*clusters.at(i2).px()
           +      clusters.at(i2).py()*clusters.at(i2).py()
           +      clusters.at(i2).pz()*clusters.at(i2).pz());
 
-      TVector3 cj( clusters[i2].px(), clusters[i2].py(), clusters[i2].pz() );
-      TLorentzVector quadvec( clusters[i1].px(), clusters[i1].py(), clusters[i1].pz(),  clusters[i1].e());
-
+      TVector3 cj(clusters[i2].px(), clusters[i2].py(), clusters[i2].pz());
+      TLorentzVector quadvec(clusters[i1].px(), clusters[i1].py(), clusters[i1].pz(),  clusters[i1].e());
 
       double CosTheta12 = TMath::Cos(quadvec.Angle(cj)); 
 
@@ -70,28 +64,21 @@ map<const char *, double> FoxWolfram::result(vector<fastjet::PseudoJet> &constit
       FoxWolframMoments[2] += p1*p2*P2;
       FoxWolframMoments[3] += p1*p2*P3;
       FoxWolframMoments[4] += p1*p2*P4;
-
     }
 
     ESum += clusters[i1].e();
-
   }
 
   vector<double> R;
 
-
-  if(ESum > 0)
-  {
-
-    for(int i=0; i<5; i++)
-    {
+  if(ESum > 0) {
+    for(int i=0; i<5; i++) {
       FoxWolframMoments[i] /= ESum*ESum;
-      R.push_back( FoxWolframMoments[i]);
+      R.push_back(FoxWolframMoments[i]);
     }
-
   }
 
-  if(R.size()==0) return Variables;
+  if(R.size() == 0) return Variables;
 
   Variables["FoxWolfram0"] = R.at(0);
   Variables["FoxWolfram1"] = R.at(1);

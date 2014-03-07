@@ -30,7 +30,6 @@ map<const char *, double> Thrust::result(vector<fastjet::PseudoJet> &constit_pse
 
   Variables["ThrustMin"] = -999. * 1000.;
   Variables["ThrustMaj"] = -999. * 1000.;
-  //bool useThreeD = false;
   bool useThreeD = true;
 
   /*
@@ -69,7 +68,6 @@ map<const char *, double> Thrust::result(vector<fastjet::PseudoJet> &constit_pse
   short add2[20] = { 0, 0, 1, 0, 1, 1,-1,-1, 1, 1,-1,-1, 1, 1,-1,-1, 1, 1,-1,-1 };
   short add3[20] = { 0, 0, 0, 1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1, 1,-1 };
 
-
   std::vector<fastjet::PseudoJet> clusters_Esorted = fastjet::sorted_by_E(clusters);
   std::vector<fastjet::PseudoJet> v_copy(4);
   for(int i=0; i<4; i++) {
@@ -91,23 +89,16 @@ map<const char *, double> Thrust::result(vector<fastjet::PseudoJet> &constit_pse
     if (!useThreeD)
       n_0[n_tests].SetZ(0);
 
-    /* // my convention : x is always positive (thrust axis has two fold ambiguity)
-       if(n_0[n_tests].x()<0)
-       n_0[n_tests] = - n_0[n_tests]; */
-
     // protect against small number of input particles (smaller than 4!)
     if (n_0[n_tests].Mag() > 0)
-      //n_0[n_tests] /= n_0[n_tests].Mag();
       n_0[n_tests] *= 1/n_0[n_tests].Mag();
 
     int loop = 0;
     bool run = false;
     do {
       TVector3 n_1(0,0,0);
-      //  for ( typename std::vector<T>::iterator itr = iBeg; itr != iEnd; ++itr) {
-      for ( typename std::vector<fastjet::PseudoJet>::const_iterator i = iBeg; i != iEnd; ++i) {
+      for (std::vector<fastjet::PseudoJet>::const_iterator i = iBeg; i != iEnd; ++i) {
         const fastjet::PseudoJet &itr = *i;
-        //  if(((itr)->hlv()).vect().Dot(n_0[n_tests])>0)
         if ((itr).px() * n_0[n_tests].x() +
             (itr).py() * n_0[n_tests].y() +
             (itr).pz() * n_0[n_tests].z() > 0)
@@ -147,14 +138,11 @@ map<const char *, double> Thrust::result(vector<fastjet::PseudoJet> &constit_pse
     double denominator = 0;
     double numerator_t = 0;
     double numerator_m = 0;
-    //   for ( typename std::vector<T>::iterator itr = iBeg; itr != iEnd; ++itr) {
-    for ( typename std::vector<fastjet::PseudoJet>::const_iterator i = iBeg; i != iEnd; ++i) {
-
+    for(std::vector<fastjet::PseudoJet>::const_iterator i = iBeg; i != iEnd; ++i) {
       const fastjet::PseudoJet & itr = *i;
 
       TLorentzVector v((itr).px(), (itr).py(), (itr).pz(), (itr).e());
       TVector3 c(v.Vect());
-      //      c.SetZ(0);
       numerator_t += fabs(c.Dot(n_0[n_tests]));
       numerator_m += (c.Cross(n_0[n_tests])).Mag();
       denominator += c.Mag();
