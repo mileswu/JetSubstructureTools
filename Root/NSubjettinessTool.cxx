@@ -34,7 +34,7 @@ double NSubjettinessTool::nSubjettiness(vector<fastjet::PseudoJet> &constit_pseu
                                  unsigned int nSubJets, float jetRadius) const
 {
   if(constit_pseudojets.size() < nSubJets) {
-    ATH_MSG_WARNING("We were asked to calculate nSubjettiness, but there are not enough constituents");
+    ATH_MSG_VERBOSE("We were asked to calculate nSubjettiness, but there are not enough constituents");
     return 0.0;
   }
                  

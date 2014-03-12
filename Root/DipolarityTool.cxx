@@ -46,7 +46,7 @@ double DipolarityTool::dipolarity(vector<fastjet::PseudoJet> &constit_pseudojets
   vector<fastjet::PseudoJet> kt_subjets = fastjet::sorted_by_pt(kt_clust_seq.inclusive_jets(5000.0));
 
   if(kt_subjets.size() < n2) {
-    ATH_MSG_INFO("Not enough subjets");
+    ATH_MSG_VERBOSE("Not enough subjets");
     return 0.0;
   }
 
@@ -72,7 +72,7 @@ double DipolarityTool::exclusiveDipolarity(vector<fastjet::PseudoJet> &constit_p
     return 0.0;
   }
   if(n2 > constit_pseudojets.size()) {
-    ATH_MSG_INFO("We were asked to calculate exclusiveDipolarity, but there are not enough constituents");
+    ATH_MSG_VERBOSE("We were asked to calculate exclusiveDipolarity, but there are not enough constituents");
     return 0.0;
   }
 
