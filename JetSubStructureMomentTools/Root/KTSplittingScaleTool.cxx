@@ -59,7 +59,7 @@ double KTSplittingScaleTool::zCut(vector<fastjet::PseudoJet> &constit_pseudojets
   fastjet::ClusterSequence kt_clust_seq(constit_pseudojets, jet_def);
 
   if(constit_pseudojets.size() < nSubJets) {
-    ATH_MSG_VERBOSE("We were asked to calculate zCut, but there are not enough constituents");
+    ATH_MSG_DEBUG("We were asked to calculate zCut, but there are not enough constituents");
     return 0.0;
   }
   vector<fastjet::PseudoJet> subjets = kt_clust_seq.exclusive_jets((int)nSubJets);
@@ -77,7 +77,7 @@ double KTSplittingScaleTool::zCut(vector<fastjet::PseudoJet> &constit_pseudojets
   }
 
   if(lastSplitSubjet == NULL) {
-    ATH_MSG_VERBOSE("None of the subjets were split.");
+    ATH_MSG_DEBUG("None of the subjets were split.");
     return 0.0;
   }
 

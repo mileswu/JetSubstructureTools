@@ -59,7 +59,7 @@ double PlanarFlowTool::planarFlow(vector<fastjet::PseudoJet> &constit_pseudojets
   double mag2 = sqrt(nvec[0]*nvec[0] + nvec[1]*nvec[1]);
 
   if(mag3 <= 0) {
-    ATH_MSG_VERBOSE("Rotation axis is null");
+    ATH_MSG_DEBUG("Rotation axis is null");
     return PF;
   }
 
