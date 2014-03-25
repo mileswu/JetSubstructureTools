@@ -5,7 +5,7 @@
 #include "TDecompSVD.h"
  
 
-map<const char *, double> SphericityTensor::result(const xAOD::Jet &jet) const
+map<string, double> SphericityTensor::result(const xAOD::Jet &jet) const
 {
   vector<fastjet::PseudoJet> constit_pseudojets = jet::JetConstituentFiller::constituentPseudoJets(jet);
   fastjet::PseudoJet jet_p4(jet.px(), jet.py(), jet.pz(), jet.e());
@@ -13,10 +13,10 @@ map<const char *, double> SphericityTensor::result(const xAOD::Jet &jet) const
   return result(constit_pseudojets, jet_p4);
 }
 
-map<const char *, double> SphericityTensor::result(vector<fastjet::PseudoJet> &constit_pseudojets,
+map<string, double> SphericityTensor::result(vector<fastjet::PseudoJet> &constit_pseudojets,
         fastjet::PseudoJet jet_p4) const
 {
-  map<const char *, double> Variables;
+  map<string, double> Variables;
 
   Variables["Sphericity"] = -999.*1000.;
   Variables["Aplanarity"] = -999.*1000.;

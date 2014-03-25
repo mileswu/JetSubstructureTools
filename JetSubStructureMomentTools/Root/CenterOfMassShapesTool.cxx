@@ -23,7 +23,7 @@ int CenterOfMassShapesTool::modifyJet(xAOD::Jet &jet) const {
   Thrust t;
   FoxWolfram foxwolfram;
   SphericityTensor sphericity;
-  map<const char*, double> res;
+  map<string, double> res;
   
   res = t.result(jet);
   jet.setAttribute("ThrustMin", res["ThrustMin"]);

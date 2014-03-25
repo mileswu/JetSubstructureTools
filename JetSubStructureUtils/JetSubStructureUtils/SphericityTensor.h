@@ -9,8 +9,8 @@ using namespace std;
 
 class SphericityTensor { 
   public:
-    map<const char *, double> result(const xAOD::Jet &jet) const;
-    map<const char *, double> result(vector<fastjet::PseudoJet> &constit_pseudojets,
+    map<string, double> result(const xAOD::Jet &jet) const;
+    map<string, double> result(vector<fastjet::PseudoJet> &constit_pseudojets,
         fastjet::PseudoJet jet_p4) const;
 };
 
