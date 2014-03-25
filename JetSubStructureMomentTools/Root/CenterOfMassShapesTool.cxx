@@ -4,9 +4,9 @@
 #include "JetSubStructureMomentTools/CenterOfMassShapesTool.h"
 #include "JetEDM/JetConstituentFiller.h"
 
-#include "JetSubStructureMomentTools/Moments/Thrust.h"
-#include "JetSubStructureMomentTools/Moments/FoxWolfram.h"
-#include "JetSubStructureMomentTools/Moments/SphericityTensor.h"
+#include "JetSubStructureUtils/Thrust.h"
+#include "JetSubStructureUtils/FoxWolfram.h"
+#include "JetSubStructureUtils/SphericityTensor.h"
 
 #include "fastjet/ClusterSequence.hh"
 

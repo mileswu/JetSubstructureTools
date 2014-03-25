@@ -1,4 +1,4 @@
-#include "JetSubStructureMomentTools/Moments/Thrust.h"
+#include "JetSubStructureUtils/Thrust.h"
 #include "JetEDM/JetConstituentFiller.h"
 
 map<const char *, double> Thrust::result(const xAOD::Jet &jet) const

@@ -1,4 +1,4 @@
-#include "JetSubStructureMomentTools/Moments/SphericityTensor.h"
+#include "JetSubStructureUtils/SphericityTensor.h"
 #include "JetEDM/JetConstituentFiller.h"
 
 #include "TMatrixD.h"

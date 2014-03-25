@@ -1,0 +1,16 @@
+package JetSubStructureUtils
+
+author Miles Wu
+
+public
+use  AtlasPolicy                AtlasPolicy-*                   
+use  xAODJet                    xAODJet-*                       Event/xAOD
+
+private
+use  AtlasFastJet               AtlasFastJet-*                  External
+use  AtlasROOT                  AtlasROOT-*                     External
+use  JetEDM                     JetEDM-*                        Reconstruction/Jet
+end_private
+
+library JetSubStructureUtils ../Root/*.cxx
+apply_pattern installed_library

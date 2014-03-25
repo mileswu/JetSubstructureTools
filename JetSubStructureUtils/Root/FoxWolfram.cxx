@@ -1,4 +1,4 @@
-#include "JetSubStructureMomentTools/Moments/FoxWolfram.h"
+#include "JetSubStructureUtils/FoxWolfram.h"
 #include "JetEDM/JetConstituentFiller.h"
 
 map<const char *, double> FoxWolfram::result(const xAOD::Jet &jet) const
