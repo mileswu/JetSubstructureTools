@@ -1,13 +1,6 @@
 #include "JetSubStructureUtils/Thrust.h"
-#include "JetEDM/JetConstituentFiller.h"
 
-map<string, double> Thrust::result(const xAOD::Jet &jet) const
-{
-  vector<fastjet::PseudoJet> constit_pseudojets = jet::JetConstituentFiller::constituentPseudoJets(jet);
-  fastjet::PseudoJet jet_p4(jet.px(), jet.py(), jet.pz(), jet.e());
-
-  return result(constit_pseudojets, jet_p4);
-}
+using namespace std;
 
 map<string, double> Thrust::result(vector<fastjet::PseudoJet> &constit_pseudojets,
         fastjet::PseudoJet jet_p4) const

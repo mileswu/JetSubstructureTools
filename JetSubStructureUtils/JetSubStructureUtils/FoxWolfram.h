@@ -1,16 +1,12 @@
 #ifndef jetsubstructuremoments_foxwolfram_header
 #define jetsubstructuremoments_foxwolfram_header
 
-#include <vector>
-#include "xAODJet/Jet.h"
-#include "fastjet/PseudoJet.hh"
+#include "JetSubStructureUtils/SubstructureMultiCalculator.h"
 
-using namespace std;
-
-class FoxWolfram { 
+class FoxWolfram : public SubstructureMultiCalculator { 
   public:
-    map<string, double> result(const xAOD::Jet &jet) const;
-    map<string, double> result(vector<fastjet::PseudoJet> &constit_pseudojets,
+    using SubstructureMultiCalculator::result;
+    virtual std::map<std::string, double> result(std::vector<fastjet::PseudoJet> &constit_pseudojets,
         fastjet::PseudoJet jet_p4) const;
 };
 
