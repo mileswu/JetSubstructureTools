@@ -12,12 +12,6 @@ class KtMassDropTool :
       KtMassDropTool(std::string name);
 
       int modifyJet(xAOD::Jet &jet) const;
-      
-      double ktMassDrop(const xAOD::Jet &jet) const;
-      double ktMassDrop(vector<fastjet::PseudoJet> &constit_pseudojets,
-                        TLorentzVector jet_p4) const;
-
-    private:
 };
 
 

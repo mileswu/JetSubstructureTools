@@ -1,14 +1,7 @@
-#include <iostream>
-#include <math.h>
-#include <float.h>
 #include "JetSubStructureMomentTools/CenterOfMassShapesTool.h"
-#include "JetEDM/JetConstituentFiller.h"
-
 #include "JetSubStructureUtils/Thrust.h"
 #include "JetSubStructureUtils/FoxWolfram.h"
 #include "JetSubStructureUtils/SphericityTensor.h"
-
-#include "fastjet/ClusterSequence.hh"
 
 using namespace std;
 using fastjet::PseudoJet;

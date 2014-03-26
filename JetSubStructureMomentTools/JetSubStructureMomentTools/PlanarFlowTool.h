@@ -12,12 +12,6 @@ class PlanarFlowTool :
       PlanarFlowTool(std::string name);
 
       int modifyJet(xAOD::Jet &jet) const;
-      
-      double planarFlow(const xAOD::Jet &jet) const;
-      double planarFlow(vector<fastjet::PseudoJet> &constit_pseudojets,
-                        TLorentzVector jet_p4) const;
-
-    private:
 };
 
 

@@ -12,18 +12,6 @@ class KTSplittingScaleTool :
       KTSplittingScaleTool(std::string name);
 
       int modifyJet(xAOD::Jet &jet) const;
-      
-      double kTSplittingScale(const xAOD::Jet &jet, unsigned int nSubJets) const;
-      double kTSplittingScale(vector<fastjet::PseudoJet> &constit_pseudojets,
-                           unsigned int nSubJets) const;
-
-      double zCut(const xAOD::Jet &jet, unsigned int nSubJets) const;
-      double zCut(vector<fastjet::PseudoJet> &constit_pseudojets,
-                  unsigned int nSubJets) const;
-
-
-    private:
-      
 };
 
 

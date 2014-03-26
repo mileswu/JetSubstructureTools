@@ -21,9 +21,6 @@ public:
   // Display properties.
   void print() const;
 
-  // Calculate KtDeltaR.
-  double ktDeltaR(const xAOD::Jet& jet) const;
-
 private:
 
   double m_jetrad;

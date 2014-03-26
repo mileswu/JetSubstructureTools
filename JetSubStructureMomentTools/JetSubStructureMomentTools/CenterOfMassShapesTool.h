@@ -12,8 +12,6 @@ class CenterOfMassShapesTool :
       CenterOfMassShapesTool(std::string name);
 
       int modifyJet(xAOD::Jet &jet) const;
-
-    private:
 };
 
 

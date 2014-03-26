@@ -1,4 +1,5 @@
 #include "JetSubStructureUtils/Thrust.h"
+#include "TLorentzVector.h"
 
 using namespace std;
 

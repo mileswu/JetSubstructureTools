@@ -1,4 +1,5 @@
 #include "JetSubStructureUtils/FoxWolfram.h"
+#include "TLorentzVector.h"
 
 using namespace std;
 
