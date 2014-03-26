@@ -2,14 +2,14 @@
 
 using namespace std;
 
-map<string, double> Thrust::result(vector<fastjet::PseudoJet> &constit_pseudojets,
-        fastjet::PseudoJet jet_p4) const
+map<string, double> Thrust::result(const fastjet::PseudoJet &jet) const
 {
+  vector<fastjet::PseudoJet> constit_pseudojets = jet.constituents();
   map<string, double> Variables;
 
-  double bx = jet_p4.px() / jet_p4.e();
-  double by = jet_p4.py() / jet_p4.e();
-  double bz = jet_p4.pz() / jet_p4.e();
+  double bx = jet.px() / jet.e();
+  double by = jet.py() / jet.e();
+  double bz = jet.pz() / jet.e();
 
   std::vector<fastjet::PseudoJet> clusters;
 

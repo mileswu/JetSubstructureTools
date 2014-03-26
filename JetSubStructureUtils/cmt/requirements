@@ -5,11 +5,11 @@ author Miles Wu
 public
 use  AtlasPolicy                AtlasPolicy-*                   
 use  xAODJet                    xAODJet-*                       Event/xAOD
+use  JetEDM                     JetEDM-*                        Reconstruction/Jet
 
 private
 use  AtlasFastJet               AtlasFastJet-*                  External
 use  AtlasROOT                  AtlasROOT-*                     External
-use  JetEDM                     JetEDM-*                        Reconstruction/Jet
 end_private
 
 library JetSubStructureUtils ../Root/*.cxx

@@ -1,13 +1,12 @@
 #ifndef jetsubstructuremoments_foxwolfram_header
 #define jetsubstructuremoments_foxwolfram_header
 
-#include "JetSubStructureUtils/SubstructureMultiCalculator.h"
+#include "JetSubStructureUtils/SubstructureCalculator.h"
 
-class FoxWolfram : public SubstructureMultiCalculator { 
+class FoxWolfram : public SubstructureCalculator<std::map<std::string, double> > { 
   public:
-    using SubstructureMultiCalculator::result;
-    virtual std::map<std::string, double> result(std::vector<fastjet::PseudoJet> &constit_pseudojets,
-        fastjet::PseudoJet jet_p4) const;
+    using SubstructureCalculator::result;
+    virtual std::map<std::string, double> result(const fastjet::PseudoJet &jet) const;
 };
 
 #endif
