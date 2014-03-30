@@ -5,6 +5,7 @@
 #include <float.h>
 
 using namespace std;
+using namespace JetSubStructureUtils;
 
 double KtMassDrop::result(const fastjet::PseudoJet &jet) const
 {

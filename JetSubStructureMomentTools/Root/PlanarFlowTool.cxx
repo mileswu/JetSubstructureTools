@@ -11,7 +11,7 @@ PlanarFlowTool::PlanarFlowTool(std::string name) :
 }
 
 int PlanarFlowTool::modifyJet(xAOD::Jet &jet) const {
-  PlanarFlow pf;
+  JetSubStructureUtils::PlanarFlow pf;
   double val = pf.result(jet);
   ATH_MSG_VERBOSE("Adding jet PlanarFlow: " << val);
   jet.setAttribute("PlanarFlow", val);

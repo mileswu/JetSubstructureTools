@@ -3,10 +3,12 @@
 
 #include "JetSubStructureUtils/SubstructureCalculator.h"
 
-class FoxWolfram : public SubstructureCalculator<std::map<std::string, double> > { 
-  public:
-    using SubstructureCalculator::result;
-    virtual std::map<std::string, double> result(const fastjet::PseudoJet &jet) const;
-};
+namespace JetSubStructureUtils {
+  class FoxWolfram : public SubstructureCalculator<std::map<std::string, double> > { 
+    public:
+      using SubstructureCalculator::result;
+      virtual std::map<std::string, double> result(const fastjet::PseudoJet &jet) const;
+  };
+}
 
 #endif

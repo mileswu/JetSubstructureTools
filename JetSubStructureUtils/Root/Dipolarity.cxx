@@ -6,6 +6,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace JetSubStructureUtils;
 
 Dipolarity::Dipolarity(unsigned int m_n1, unsigned int m_n2, bool exclusive, double subjetR) :
   m_exclusive(exclusive),

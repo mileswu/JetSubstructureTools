@@ -9,20 +9,22 @@
 #include "fastjet/FunctionOfPseudoJet.hh"
 #include "JetEDM/JetConstituentFiller.h"
 
-template<typename TOut>
-class SubstructureCalculator :
-  public fastjet::FunctionOfPseudoJet<TOut>
-{ 
-  public:
-    using fastjet::FunctionOfPseudoJet<TOut>::result;
+namespace JetSubStructureUtils {
+  template<typename TOut>
+  class SubstructureCalculator :
+    public fastjet::FunctionOfPseudoJet<TOut>
+  { 
+    public:
+      using fastjet::FunctionOfPseudoJet<TOut>::result;
 
-    virtual TOut result(const xAOD::Jet &jet) const {
-      std::vector<fastjet::PseudoJet> constit_pseudojets =
-        jet::JetConstituentFiller::constituentPseudoJets(jet);
-      fastjet::PseudoJet pjet = fastjet::join(constit_pseudojets);
+      virtual TOut result(const xAOD::Jet &jet) const {
+        std::vector<fastjet::PseudoJet> constit_pseudojets =
+          jet::JetConstituentFiller::constituentPseudoJets(jet);
+        fastjet::PseudoJet pjet = fastjet::join(constit_pseudojets);
 
-      return result(pjet);
-    }
-};
+        return result(pjet);
+      }
+  };
+}
 
 #endif

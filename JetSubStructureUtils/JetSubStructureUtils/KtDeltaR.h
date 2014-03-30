@@ -3,15 +3,17 @@
 
 #include "JetSubStructureUtils/SubstructureCalculator.h"
 
-class KtDeltaR : public SubstructureCalculator<double> { 
-  public:
-    KtDeltaR(double jetrad) : m_jetrad(jetrad) {};
+namespace JetSubStructureUtils {
+  class KtDeltaR : public SubstructureCalculator<double> { 
+    public:
+      KtDeltaR(double jetrad) : m_jetrad(jetrad) {};
 
-    using SubstructureCalculator::result;
-    virtual double result(const fastjet::PseudoJet &jet) const;
+      using SubstructureCalculator::result;
+      virtual double result(const fastjet::PseudoJet &jet) const;
 
-  private:
-    double m_jetrad;
-};
+    private:
+      double m_jetrad;
+  };
+}
 
 #endif

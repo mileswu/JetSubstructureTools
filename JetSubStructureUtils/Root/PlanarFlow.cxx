@@ -4,6 +4,7 @@
 #include "TLorentzVector.h"
 
 using namespace std;
+using namespace JetSubStructureUtils;
 
 double PlanarFlow::result(const fastjet::PseudoJet &jet) const
 {

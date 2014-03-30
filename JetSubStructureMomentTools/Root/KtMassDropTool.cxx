@@ -10,7 +10,7 @@ KtMassDropTool::KtMassDropTool(std::string name) :
 }
 
 int KtMassDropTool::modifyJet(xAOD::Jet &jet) const {
-  KtMassDrop ktmassdrop;
+  JetSubStructureUtils::KtMassDrop ktmassdrop;
   double val = ktmassdrop.result(jet);
   ATH_MSG_VERBOSE("Adding jet ktMassDrop: " << val);
   jet.setAttribute("Mu12", val);

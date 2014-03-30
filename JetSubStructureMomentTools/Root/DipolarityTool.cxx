@@ -11,10 +11,10 @@ DipolarityTool::DipolarityTool(std::string name) :
 
 int DipolarityTool::modifyJet(xAOD::Jet &jet) const
 {
-  Dipolarity dip12(1, 2, false, m_SubJetRadius);
-  Dipolarity dip13(1, 3, false, m_SubJetRadius);
-  Dipolarity dip23(2, 3, false, m_SubJetRadius);
-  Dipolarity dipexcl12(1, 2, true, m_SubJetRadius);
+  JetSubStructureUtils::Dipolarity dip12(1, 2, false, m_SubJetRadius);
+  JetSubStructureUtils::Dipolarity dip13(1, 3, false, m_SubJetRadius);
+  JetSubStructureUtils::Dipolarity dip23(2, 3, false, m_SubJetRadius);
+  JetSubStructureUtils::Dipolarity dipexcl12(1, 2, true, m_SubJetRadius);
 
   jet.setAttribute("Dip12", dip12.result(jet));
   jet.setAttribute("Dip13", dip13.result(jet));

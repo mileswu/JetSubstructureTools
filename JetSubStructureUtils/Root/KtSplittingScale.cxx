@@ -3,6 +3,7 @@
 #include "fastjet/JetDefinition.hh"
 
 using namespace std;
+using namespace JetSubStructureUtils;
 
 double KtSplittingScale::result(const fastjet::PseudoJet &jet) const
 {

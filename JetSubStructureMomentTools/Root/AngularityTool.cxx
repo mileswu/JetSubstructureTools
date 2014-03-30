@@ -11,7 +11,7 @@ AngularityTool::AngularityTool(std::string name) :
 }
 
 int AngularityTool::modifyJet(xAOD::Jet &jet) const {
-  Angularity angularity;
+  JetSubStructureUtils::Angularity angularity;
   double val = angularity.result(jet);
   ATH_MSG_VERBOSE("Adding jet angularity: " << val);
   jet.setAttribute("Angularity", val);

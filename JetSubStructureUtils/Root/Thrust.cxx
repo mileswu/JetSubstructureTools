@@ -2,6 +2,7 @@
 #include "TLorentzVector.h"
 
 using namespace std;
+using namespace JetSubStructureUtils;
 
 map<string, double> Thrust::result(const fastjet::PseudoJet &jet) const
 {

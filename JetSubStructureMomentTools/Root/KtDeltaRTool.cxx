@@ -13,7 +13,7 @@ StatusCode KtDeltaRTool::initialize() {
 }
 
 int KtDeltaRTool::modifyJet(xAOD::Jet& jet) const {
-  KtDeltaR ktdr(m_jetrad);
+  JetSubStructureUtils::KtDeltaR ktdr(m_jetrad);
   jet.setAttribute("KtDR", ktdr.result(jet));
   return 0;
 }

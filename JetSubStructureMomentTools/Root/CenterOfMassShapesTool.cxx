@@ -13,9 +13,9 @@ CenterOfMassShapesTool::CenterOfMassShapesTool(std::string name) :
 }
 
 int CenterOfMassShapesTool::modifyJet(xAOD::Jet &jet) const {
-  Thrust t;
-  FoxWolfram foxwolfram;
-  SphericityTensor sphericity;
+  JetSubStructureUtils::Thrust t;
+  JetSubStructureUtils::FoxWolfram foxwolfram;
+  JetSubStructureUtils::SphericityTensor sphericity;
   map<string, double> res;
   
   res = t.result(jet);

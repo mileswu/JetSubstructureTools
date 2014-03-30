@@ -4,6 +4,7 @@
 #include <math.h>
 
 using namespace std;
+using namespace JetSubStructureUtils;
 
 double KtDeltaR::result(const fastjet::PseudoJet &jet) const
 {

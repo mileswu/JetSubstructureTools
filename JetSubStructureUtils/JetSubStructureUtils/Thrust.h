@@ -3,10 +3,12 @@
 
 #include "JetSubStructureUtils/SubstructureCalculator.h"
 
-class Thrust : public SubstructureCalculator<std::map<std::string, double> > { 
-  public:
-    using SubstructureCalculator::result;
-    virtual std::map<std::string, double> result(const fastjet::PseudoJet &jet) const;
-};
+namespace JetSubStructureUtils {
+  class Thrust : public SubstructureCalculator<std::map<std::string, double> > { 
+    public:
+      using SubstructureCalculator::result;
+      virtual std::map<std::string, double> result(const fastjet::PseudoJet &jet) const;
+  };
+}
 
 #endif

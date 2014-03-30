@@ -3,15 +3,17 @@
 
 #include "JetSubStructureUtils/SubstructureCalculator.h"
 
-class KtSplittingScale : public SubstructureCalculator<double> { 
-  public:
-    KtSplittingScale(unsigned int nSubJets) : m_nSubJets(nSubJets) {};
+namespace JetSubStructureUtils {
+  class KtSplittingScale : public SubstructureCalculator<double> { 
+    public:
+      KtSplittingScale(unsigned int nSubJets) : m_nSubJets(nSubJets) {};
 
-    using SubstructureCalculator::result;
-    virtual double result(const fastjet::PseudoJet &jet) const;
+      using SubstructureCalculator::result;
+      virtual double result(const fastjet::PseudoJet &jet) const;
 
-  private:
-    unsigned int m_nSubJets;
-};
+    private:
+      unsigned int m_nSubJets;
+  };
+}
 
 #endif

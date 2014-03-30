@@ -4,6 +4,7 @@
 #include "fastjet/JetDefinition.hh"
 
 using namespace std;
+using namespace JetSubStructureUtils;
 
 double ZCut::result(const fastjet::PseudoJet &jet) const
 {
