@@ -65,16 +65,13 @@ double PlanarFlow::result(const fastjet::PseudoJet &jet) const
     double pz_rot = RotationMatrix[2][0] * (p.Px())+RotationMatrix[2][1]
       * (p.Py())+RotationMatrix[2][2]*(p.Pz());
 
-    TLorentzVector* prot =new TLorentzVector();
-    prot->SetPx(px_rot);
-    prot->SetPy(py_rot);
-    prot->SetPz(pz_rot);
-    prot->SetE(p.E());
+    TLorentzVector prot;
+    prot.SetPxPyPzE(px_rot, py_rot, pz_rot, p.E() );
 
-    MomentumTensor(0,0) += n * prot->Px() * prot->Px();
-    MomentumTensor(0,1) += n * prot->Py() * prot->Px();
-    MomentumTensor(1,0) += n * prot->Px() * prot->Py();
-    MomentumTensor(1,1) += n * prot->Py() * prot->Py();
+    MomentumTensor(0,0) += n * prot.Px() * prot.Px();
+    MomentumTensor(0,1) += n * prot.Py() * prot.Px();
+    MomentumTensor(1,0) += n * prot.Px() * prot.Py();
+    MomentumTensor(1,1) += n * prot.Py() * prot.Py();
   }
 
   TMatrixDSymEigen eigen(MomentumTensor);

@@ -5,6 +5,8 @@ using namespace std;
 
 double Angularity::result(const fastjet::PseudoJet &jet) const
 {
+  if(jet.m()==0.0) return -1;
+
   vector<fastjet::PseudoJet> constit_pseudojets = jet.constituents();
   TLorentzVector jet_p4(jet.px(), jet.py(), jet.pz(), jet.e());
 
@@ -21,6 +23,7 @@ double Angularity::result(const fastjet::PseudoJet &jet) const
     sum_a2 += e_theta_i_a2;
   }
 
+  if ( jet.m() < 1.e-20 ) return -1.0;
   Angularity2 = sum_a2/jet.m(); 
   return Angularity2;
 }
