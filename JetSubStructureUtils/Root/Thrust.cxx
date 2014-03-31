@@ -8,6 +8,9 @@ map<string, double> Thrust::result(const fastjet::PseudoJet &jet) const
 {
   vector<fastjet::PseudoJet> constit_pseudojets = jet.constituents();
   map<string, double> Variables;
+  Variables["ThrustMin"] = -999. * 1000.;
+  Variables["ThrustMaj"] = -999. * 1000.;
+  if(constit_pseudojets.size() < 2) return Variables;
 
   double bx = jet.px() / jet.e();
   double by = jet.py() / jet.e();
@@ -23,8 +26,6 @@ map<string, double> Thrust::result(const fastjet::PseudoJet &jet) const
     clusters.push_back(v2);
   }
 
-  Variables["ThrustMin"] = -999. * 1000.;
-  Variables["ThrustMaj"] = -999. * 1000.;
   bool useThreeD = true;
 
   /*

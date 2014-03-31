@@ -18,6 +18,7 @@ map<string, double> FoxWolfram::result(const fastjet::PseudoJet &jet) const
   Variables["FoxWolfram2"] =  -999.*1000.;
   Variables["FoxWolfram3"] =  -999.*1000.;
   Variables["FoxWolfram4"] =  -999.*1000.;
+  if(constit_pseudojets.size() < 2) return Variables;
 
   double FoxWolframMoments[5] = {0};
 
