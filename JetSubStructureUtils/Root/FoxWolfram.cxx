@@ -35,13 +35,13 @@ map<string, double> FoxWolfram::result(const fastjet::PseudoJet &jet) const
 
   for(unsigned int i1=0; i1<clusters.size(); i1++) {
     double p1 = sqrt(clusters.at(i1).px()*clusters.at(i1).px()
-        +      clusters.at(i1).py()*clusters.at(i1).py()
-        +      clusters.at(i1).pz()*clusters.at(i1).pz());
+                     +      clusters.at(i1).py()*clusters.at(i1).py()
+                     +      clusters.at(i1).pz()*clusters.at(i1).pz());
 
     for(unsigned int i2=i1+1; i2<clusters.size(); i2++) {
       double p2 = sqrt(clusters.at(i2).px()*clusters.at(i2).px()
-          +      clusters.at(i2).py()*clusters.at(i2).py()
-          +      clusters.at(i2).pz()*clusters.at(i2).pz());
+                       +      clusters.at(i2).py()*clusters.at(i2).py()
+                       +      clusters.at(i2).pz()*clusters.at(i2).pz());
 
       TVector3 cj(clusters[i2].px(), clusters[i2].py(), clusters[i2].pz());
       TLorentzVector quadvec(clusters[i1].px(), clusters[i1].py(), clusters[i1].pz(),  clusters[i1].e());
@@ -53,7 +53,7 @@ map<string, double> FoxWolfram::result(const fastjet::PseudoJet &jet) const
       double P2 = 0.5*(3.*CosTheta12*CosTheta12 - 1.);
       double P3 = 0.5*(5.*CosTheta12*CosTheta12*CosTheta12 - 3.*CosTheta12);
       double P4 = 0.125*(35.*CosTheta12*CosTheta12*CosTheta12*CosTheta12 - 30.*CosTheta12*CosTheta12 + 3.);
-
+      
       FoxWolframMoments[0] += p1*p2*P0;
       FoxWolframMoments[1] += p1*p2*P1;
       FoxWolframMoments[2] += p1*p2*P2;

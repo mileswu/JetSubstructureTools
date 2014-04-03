@@ -26,7 +26,7 @@ double ZCut::result(const fastjet::PseudoJet &jet) const
   for(size_t iSubjet=0; iSubjet < subjets.size(); iSubjet++) {
     fastjet::PseudoJet parent1, parent2;
     if(kt_clust_seq.has_parents(subjets[iSubjet], parent1, parent2) &&
-            subjets[iSubjet].cluster_hist_index() > max_cluster_hist_index) {
+       subjets[iSubjet].cluster_hist_index() > max_cluster_hist_index) {
       max_cluster_hist_index = subjets[iSubjet].cluster_hist_index();
       lastSplitSubjet = &subjets[iSubjet];
     }

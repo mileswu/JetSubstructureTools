@@ -43,7 +43,7 @@ double Dipolarity::result(const fastjet::PseudoJet &jet) const
     }
 
     fastjet::JetDefinition jet_def = fastjet::JetDefinition(fastjet::kt_algorithm, 1.5,
-        fastjet::E_scheme, fastjet::Best);
+                                                            fastjet::E_scheme, fastjet::Best);
     fastjet::ClusterSequence kt_clust_seq(constit_pseudojets, jet_def);
     kt_subjets = fastjet::sorted_by_pt(kt_clust_seq.exclusive_jets((int)m_n2));
   }

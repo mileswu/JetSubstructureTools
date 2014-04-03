@@ -144,7 +144,7 @@ map<string, double> Thrust::result(const fastjet::PseudoJet &jet) const
       denominator += c.Mag();
     }
 
-    if (numerator_t / denominator > thrust_major) {
+    if ( bool(denominator) && (numerator_t / denominator > thrust_major) ){
       thrust_major = numerator_t / denominator;
       thrust_minor = numerator_m / denominator;
       thrust=n_0[n_tests];
