@@ -77,6 +77,9 @@ double PlanarFlow::result(const fastjet::PseudoJet &jet) const
 
   TMatrixDSymEigen eigen(MomentumTensor);
   TVectorD Lambda = eigen.GetEigenValues();
-  PF = (4*Lambda[0]*Lambda[1]) / ((Lambda[0]+Lambda[1]) * (Lambda[0]+Lambda[1]));
+  double num = 4*Lambda[0]*Lambda[1];
+  double den = (Lambda[0]+Lambda[1]) * (Lambda[0]+Lambda[1]);
+  if ( fabs(den) < 1.e-20 ) return PF;
+  PF = num/den;
   return PF;
 }
