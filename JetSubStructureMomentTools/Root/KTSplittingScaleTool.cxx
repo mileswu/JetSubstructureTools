@@ -21,7 +21,7 @@ int KTSplittingScaleTool::modifyJet(xAOD::Jet &jet) const
 
   JetSubStructureUtils::ZCut zcut12(1);
   JetSubStructureUtils::ZCut zcut23(2);
-  JetSubStructureUtils::ZCut zcut34(1);
+  JetSubStructureUtils::ZCut zcut34(3);
   jet.setAttribute("ZCut12", zcut12.result(jet));
   jet.setAttribute("ZCut23", zcut23.result(jet));
   jet.setAttribute("ZCut34", zcut34.result(jet));
