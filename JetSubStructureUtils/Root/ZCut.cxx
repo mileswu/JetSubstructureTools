@@ -39,7 +39,12 @@ double ZCut::result(const fastjet::PseudoJet &jet) const
 
   KtSplittingScale split(m_nSubJets);
   double dmin = pow(split.result(jet), 2.0);
-  double zcut = dmin / (dmin + lastSplitSubjet->m2());
-  return zcut;
 
+  double zcut = -1;
+  if(dmin == 0)
+    zcut = 0;
+  else
+    zcut = dmin / (dmin + lastSplitSubjet->m2());
+
+  return zcut;
 }
