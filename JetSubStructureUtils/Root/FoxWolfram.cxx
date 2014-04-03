@@ -1,37 +1,24 @@
 #include "JetSubStructureUtils/FoxWolfram.h"
 #include "TLorentzVector.h"
+#include "./BoostToCenterOfMass.h"
 
 using namespace std;
 using namespace JetSubStructureUtils;
 
 map<string, double> FoxWolfram::result(const fastjet::PseudoJet &jet) const
 {
-  vector<fastjet::PseudoJet> constit_pseudojets = jet.constituents();
   map<string, double> Variables;
-
-  double bx = jet.px()/jet.e();
-  double by = jet.py()/jet.e();
-  double bz = jet.pz()/jet.e();
-
   Variables["FoxWolfram0"] =  -999.*1000.;
   Variables["FoxWolfram1"] =  -999.*1000.;
   Variables["FoxWolfram2"] =  -999.*1000.;
   Variables["FoxWolfram3"] =  -999.*1000.;
   Variables["FoxWolfram4"] =  -999.*1000.;
-  if(constit_pseudojets.size() < 2) return Variables;
 
   double FoxWolframMoments[5] = {0};
-
   double ESum = 0;
-  std::vector<fastjet::PseudoJet> clusters;
 
-  for(unsigned int i1=0; i1 < constit_pseudojets.size(); i1++) {
-    TLorentzVector v;
-    v.SetPxPyPzE(constit_pseudojets.at(i1).px(), constit_pseudojets.at(i1).py(),constit_pseudojets.at(i1).pz(),constit_pseudojets.at(i1).e());
-    v.Boost(-bx,-by,-bz);
-    fastjet::PseudoJet v2(v.Px(), v.Py(), v.Pz(), v.E());
-    clusters.push_back(v2);
-  }
+  vector<fastjet::PseudoJet> clusters = boostToCenterOfMass(jet, jet.constituents());
+  if(clusters.size() < 2) return Variables;
 
   for(unsigned int i1=0; i1<clusters.size(); i1++) {
     double p1 = sqrt(clusters.at(i1).px()*clusters.at(i1).px()
@@ -72,8 +59,9 @@ map<string, double> FoxWolfram::result(const fastjet::PseudoJet &jet) const
       R.push_back(FoxWolframMoments[i]);
     }
   }
-
-  if(R.size() == 0) return Variables;
+  else {
+    return Variables;
+  }
 
   Variables["FoxWolfram0"] = R.at(0);
   Variables["FoxWolfram1"] = R.at(1);
