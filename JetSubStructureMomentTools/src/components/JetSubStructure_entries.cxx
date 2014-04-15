@@ -8,6 +8,7 @@
 #include "JetSubStructureMomentTools/KtMassDropTool.h"
 #include "JetSubStructureMomentTools/PlanarFlowTool.h"
 #include "JetSubStructureMomentTools/CenterOfMassShapesTool.h"
+#include "JetSubStructureMomentTools/EnergyCorrelatorTool.h"
 #include "JetSubStructureMomentTools/Validator.h"
 #include "GaudiKernel/DeclareFactoryEntries.h"
 
@@ -20,6 +21,7 @@ DECLARE_TOOL_FACTORY(AngularityTool)
 DECLARE_TOOL_FACTORY(KtMassDropTool)
 DECLARE_TOOL_FACTORY(PlanarFlowTool)
 DECLARE_TOOL_FACTORY(CenterOfMassShapesTool)
+DECLARE_TOOL_FACTORY(EnergyCorrelatorTool)
 DECLARE_TOOL_FACTORY(Validator)
 
 DECLARE_FACTORY_ENTRIES(JetSubStructureMomentTools) {
@@ -31,6 +33,7 @@ DECLARE_FACTORY_ENTRIES(JetSubStructureMomentTools) {
   DECLARE_TOOL(KtMassDropTool)
   DECLARE_TOOL(PlanarFlowTool)
   DECLARE_TOOL(CenterOfMassShapesTool)
+  DECLARE_TOOL(EnergyCorrelatorTool)
   DECLARE_TOOL(Validator)
 }
 

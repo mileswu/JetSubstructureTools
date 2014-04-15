@@ -25,4 +25,5 @@ apply_pattern dual_use_library files="../Root/NSubjettinessTool.cxx ../Root/Vali
 ../Root/AngularityTool.cxx ../Root/KtDeltaRTool.cxx \
 ../Root/KtMassDropTool.cxx \
 ../Root/PlanarFlowTool.cxx \
-../Root/CenterOfMassShapesTool.cxx"
+../Root/CenterOfMassShapesTool.cxx \
+../Root/EnergyCorrelatorTool.cxx"

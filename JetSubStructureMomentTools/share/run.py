@@ -168,6 +168,12 @@ if 1:
   centerofmassshapes = ToolSvc.centerofmassshapes
   jetrec2.JetModifiers += [centerofmassshapes]
 
+  from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import EnergyCorrelatorTool
+  ToolSvc += EnergyCorrelatorTool("energycorrelator")
+  energycorrelator = ToolSvc.energycorrelator
+  #energycorrelator.Beta = 0.5
+  jetrec2.JetModifiers += [energycorrelator]
+
 # Dump copied jets.
 if 1:
   from JetRec.JetRecConf import JetDumper
@@ -188,6 +194,7 @@ if 1:
   jdmp2.FloatMoments += ["ThrustMin", "ThrustMaj"]
   jdmp2.FloatMoments += ["FoxWolfram0", "FoxWolfram1", "FoxWolfram2", "FoxWolfram3", "FoxWolfram4"]
   jdmp2.FloatMoments += ["Sphericity", "Aplanarity"]
+  jdmp2.FloatMoments += ["ECF1", "ECF2", "ECF3"]
  # jdmp2.FourVectorMoments = ["ActiveArea4vec"]
   jdmp2.OutputLevel = INFO
   jetalg.Tools += [jdmp2]
