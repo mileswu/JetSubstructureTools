@@ -2,6 +2,7 @@
 #define jetsubstructuremomenttools_nsubjetinesstool_header
 
 #include "JetSubStructureMomentTools/JetSubStructureMomentToolsBase.h"
+#include "TStopwatch.h"
 
 class NSubjettinessTool :
   public JetSubStructureMomentToolsBase {
@@ -19,6 +20,7 @@ class NSubjettinessTool :
 
     private:
       float m_Alpha;
+      mutable TStopwatch normal, onepass, wta, old;
       
 };
 
