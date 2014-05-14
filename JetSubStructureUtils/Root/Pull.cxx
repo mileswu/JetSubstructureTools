@@ -38,7 +38,7 @@ map<string, double> Pull::result(const fastjet::PseudoJet &jet) const
     T[2] += (ceta*ceta) - (jeta*jeta);
     T[3] += r_i.X() * r_i.Y();
     T[4] += r_i.Y() * r_i.X();
-    T[5] += (constit.phi() * constit.phi()) - (jet.phi() * jet.phi());
+    T[5] += (constit.phi_std() * constit.phi_std()) - (jet.phi_std() * jet.phi_std());
     r_i *= (constit.pt() * r_i.Mod());
     r_pull += r_i;
   }
@@ -47,7 +47,7 @@ map<string, double> Pull::result(const fastjet::PseudoJet &jet) const
     T[0] = r_pull.Mod()/jet.pt();
   }
 
-  T[1] = r_pull.Phi(); //this means something quite different than statshape package at ANL!!
+  T[1] = TVector2::Phi_mpi_pi(r_pull.Phi()); //this means something quite different than statshape package at ANL!!
 
   Variables["PullMag"]  = T[0];
   Variables["PullPhi"]  = T[1];
