@@ -49,15 +49,21 @@ int Validator::execute() const
 		else {
       unsigned int nbins = 100;
       float xlow = 0, xhigh = 1.0;
-      bool isMomentNormalized = true;
       if(m_FloatMoments[i].find("Split") != string::npos ||
          m_FloatMoments[i] == "pt") {
-        isMomentNormalized = false;
-      }
-
-      if(isMomentNormalized == false) {
         nbins = 1000;
         xhigh = 2000000;
+      }
+      else if(m_FloatMoments[i].find("Pull") != string::npos) {
+        if(m_FloatMoments[i].find("PullMag") != string::npos) {
+          xhigh = 0.1;
+          nbins = 100;
+        }
+        else {
+          xlow = -10;
+          xhigh = 10;
+          nbins = 200;
+        }
       }
 
 			outputHist = new TH1F(m_FloatMoments[i].c_str(), "", nbins, xlow, xhigh);
