@@ -27,5 +27,5 @@ apply_pattern dual_use_library files="../Root/NSubjettinessTool.cxx ../Root/Vali
 ../Root/PlanarFlowTool.cxx \
 ../Root/CenterOfMassShapesTool.cxx \
 ../Root/EnergyCorrelatorTool.cxx \
-../Root/PullTool.cxx \
-../Root/ChargeTool.cxx"
+../Root/JetPullTool.cxx \
+../Root/JetChargeTool.cxx"

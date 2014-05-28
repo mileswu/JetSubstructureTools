@@ -1,17 +1,18 @@
-#include "JetSubStructureMomentTools/PullTool.h"
+// JetPullTool.cxx
+
+#include "JetSubStructureMomentTools/JetPullTool.h"
 #include "JetSubStructureUtils/Pull.h" 
 
 using namespace std;
 using fastjet::PseudoJet;
 
-PullTool::PullTool(std::string name) : 
-  JetSubStructureMomentToolsBase(name)
-{
+JetPullTool::JetPullTool(std::string name) : 
+JetSubStructureMomentToolsBase(name) {
   ATH_MSG_DEBUG("Initializing Pull tool.");
   declareProperty("UseEtaInsteadOfY", m_useEtaInsteadOfY = false);
 }
 
-int PullTool::modifyJet(xAOD::Jet &jet) const {
+int JetPullTool::modifyJet(xAOD::Jet &jet) const {
   JetSubStructureUtils::Pull pull(m_useEtaInsteadOfY);
   map<string, double> values = pull.result(jet);
   jet.setAttribute("PullMag", values["PullMag"]);
