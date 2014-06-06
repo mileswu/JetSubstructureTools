@@ -28,4 +28,5 @@ apply_pattern dual_use_library files="../Root/NSubjettinessTool.cxx ../Root/Vali
 ../Root/CenterOfMassShapesTool.cxx \
 ../Root/EnergyCorrelatorTool.cxx \
 ../Root/JetPullTool.cxx \
-../Root/JetChargeTool.cxx"
+../Root/JetChargeTool.cxx \
+../Root/VolatilityTool.cxx"

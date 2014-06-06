@@ -11,6 +11,7 @@
 #include "JetSubStructureMomentTools/EnergyCorrelatorTool.h"
 #include "JetSubStructureMomentTools/JetPullTool.h"
 #include "JetSubStructureMomentTools/JetChargeTool.h"
+#include "JetSubStructureMomentTools/VolatilityTool.h"
 #include "JetSubStructureMomentTools/Validator.h"
 #include "GaudiKernel/DeclareFactoryEntries.h"
 
@@ -26,6 +27,7 @@ DECLARE_TOOL_FACTORY(CenterOfMassShapesTool)
 DECLARE_TOOL_FACTORY(EnergyCorrelatorTool)
 DECLARE_TOOL_FACTORY(JetPullTool)
 DECLARE_TOOL_FACTORY(JetChargeTool)
+DECLARE_TOOL_FACTORY(VolatilityTool)
 DECLARE_TOOL_FACTORY(Validator)
 
 DECLARE_FACTORY_ENTRIES(JetSubStructureMomentTools) {
@@ -40,6 +42,7 @@ DECLARE_FACTORY_ENTRIES(JetSubStructureMomentTools) {
   DECLARE_TOOL(EnergyCorrelatorTool)
   DECLARE_TOOL(JetPullTool)
   DECLARE_TOOL(JetChargeTool)
+  DECLARE_TOOL(VolatilityTool)
   DECLARE_TOOL(Validator)
 }
 
