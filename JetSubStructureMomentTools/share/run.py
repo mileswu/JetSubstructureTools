@@ -187,6 +187,7 @@ if 1:
   from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import VolatilityTool
   ToolSvc += VolatilityTool("volatility")
   volatility = ToolSvc.volatility
+  volatility.TruncationFactor = 0.0
   jetrec2.JetModifiers += [volatility]
 
 # Dump copied jets.

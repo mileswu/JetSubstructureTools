@@ -15,7 +15,7 @@ class VolatilityTool :
 
     private:
       unsigned int m_num_iterations;
-      double m_zcut, m_dcut_fctr, m_exp_min, m_exp_max, m_rigidity;
+      double m_zcut, m_dcut_fctr, m_exp_min, m_exp_max, m_rigidity, m_truncation_fctr;
 };
 
 
