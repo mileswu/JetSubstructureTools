@@ -188,7 +188,7 @@ if 1:
   ToolSvc += VolatilityTool("volatility")
   volatility = ToolSvc.volatility
   volatility.TruncationFactor = 0.0
-  jetrec2.JetModifiers += [volatility]
+  #jetrec2.JetModifiers += [volatility]
 
 # Dump copied jets.
 if 1:
@@ -213,7 +213,7 @@ if 1:
   jdmp2.FloatMoments += ["ECF1", "ECF2", "ECF3"]
   jdmp2.FloatMoments += ["PullMag", "PullPhi", "Pull_C00", "Pull_C01", "Pull_C10", "Pull_C11"]
   jdmp2.FloatMoments += ["Charge"]
-  jdmp2.FloatMoments += ["Volatility"]
+  #jdmp2.FloatMoments += ["Volatility"]
  # jdmp2.FourVectorMoments = ["ActiveArea4vec"]
   jdmp2.OutputLevel = INFO
   jetalg.Tools += [jdmp2]

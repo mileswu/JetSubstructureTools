@@ -57,6 +57,6 @@ validator.FloatMoments += ["Angularity"]
 validator.FloatMoments += ["PlanarFlow"]
 validator.FloatMoments += ["pt"]
 validator.FloatMoments += ["PullMag", "PullPhi", "Pull_C00", "Pull_C01", "Pull_C10", "Pull_C11"]
-validator.FloatMoments += ["Volatility"]
+#validator.FloatMoments += ["Volatility"]
 jetalg.Tools += [validator]
 
