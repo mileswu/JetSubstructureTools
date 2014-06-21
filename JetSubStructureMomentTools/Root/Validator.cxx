@@ -36,6 +36,16 @@ int Validator::execute() const
 	if(jets->size() == 0) return 0;
 	const xAOD::Jet *jet = jets->at(0); // This assumes the container is sorted
 
+  /*std::vector<const xAOD::TrackParticle *> tracks;
+  bool retval = jet->getAssociatedObjects("GhostTrack", tracks);
+  if(retval == false) {
+    ATH_MSG_ERROR("Unable to retrieve associated tracks");
+  }
+  else {
+    cout << "n(TRK) = " << tracks.size() << endl;
+  }*/
+  
+
 	// Loop over float moments
 	for(unsigned int i=0; i<m_FloatMoments.size(); i++) {
 		TH1 *outputHist;
@@ -47,7 +57,7 @@ int Validator::execute() const
 			}
 		}
 		else {
-      unsigned int nbins = 100;
+      unsigned int nbins = 1000;
       float xlow = 0, xhigh = 1.0;
       if(m_FloatMoments[i].find("Split") != string::npos ||
          m_FloatMoments[i] == "pt") {

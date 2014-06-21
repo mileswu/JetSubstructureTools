@@ -188,7 +188,7 @@ if 1:
   ToolSvc += VolatilityTool("volatility")
   volatility = ToolSvc.volatility
   volatility.TruncationFactor = 0.0
-  #jetrec2.JetModifiers += [volatility]
+  jetrec2.JetModifiers += [volatility]
 
 # Dump copied jets.
 if 1:

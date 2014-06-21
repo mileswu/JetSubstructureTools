@@ -10,12 +10,12 @@ use  xAODCaloEvent              xAODCaloEvent-*                 Event/xAOD
 use  xAODJet                    xAODJet-*                       Event/xAOD
 use  JetInterface               JetInterface-*                  Reconstruction/Jet
 use  JetRec                     JetRec-*                        Reconstruction/Jet
+use  AtlasROOT                  AtlasROOT-*                     External
 
 private
 use  AthenaBaseComps            AthenaBaseComps-*               Control
 use  GaudiInterface             GaudiInterface-*                External
 use  AtlasFastJet               AtlasFastJet-*                  External
-use  AtlasROOT                  AtlasROOT-*                     External
 use  JetEDM                     JetEDM-*                        Reconstruction/Jet
 use  JetSubStructureUtils       JetSubStructureUtils-*          Reconstruction/Jet
 end_private
