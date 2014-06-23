@@ -6,13 +6,13 @@ use AtlasExternalArea AtlasExternalArea-00-* External
 use AtlasFastJet AtlasFastJet-* External
 
 macro AtlasFastJetContrib_home "$(ATLAS_EXTERNAL)/fastjet/contrib"
-macro AtlasFastJetContrib_native_version "1.010"
+macro AtlasFastJetContrib_native_version "1.012"
 
 macro AtlasFastJetContrib_system "$(LCG_ext_system)"
 macro AtlasFastJetContrib_dir "$(AtlasFastJetContrib_home)/$(AtlasFastJetContrib_native_version)/$(AtlasFastJetContrib_system)"
 macro AtlasFastJetContrib_lib "$(AtlasFastJetContrib_dir)/lib"
 
-macro AtlasFastJetContrib_linkopts "-L$(AtlasFastJetContrib_lib) -lEnergyCorrelator -lGenericSubtractor -lJetCleanser -lJetFFMoments -lJetsWithoutJets -lNsubjettiness -lScJet -lSubjetCounting -lVariableR"
+macro AtlasFastJetContrib_linkopts "-L$(AtlasFastJetContrib_lib) -lConstituentSubtractor -lEnergyCorrelator -lGenericSubtractor -lJetCleanser -lJetFFMoments -lJetsWithoutJets -lNsubjettiness -lScJet -lSubjetCounting -lVariableR"
 
 macro AtlasFastJetContrib_export_paths "$(AtlasFastJetContrib_dir)"
 macro AtlasFastJetContrib_include "$(AtlasFastJetContrib_dir)/include"
