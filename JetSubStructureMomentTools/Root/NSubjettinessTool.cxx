@@ -24,31 +24,31 @@ int NSubjettinessTool::modifyJet(xAOD::Jet &jet) const {
 
   fastjet::contrib::NormalizedMeasure normalized_measure(m_Alpha, jet.getSizeParameter());
 
-  normal.Start(kFALSE);
   fastjet::contrib::KT_Axes kt_axes;
   JetSubStructureUtils::Nsubjettiness tau1(1, kt_axes, normalized_measure);
   JetSubStructureUtils::Nsubjettiness tau2(2, kt_axes, normalized_measure);
   JetSubStructureUtils::Nsubjettiness tau3(3, kt_axes, normalized_measure);
+  normal.Start(kFALSE);
   jet.setAttribute("Tau1", tau1.result(jet));
   jet.setAttribute("Tau2", tau2.result(jet));
   jet.setAttribute("Tau3", tau3.result(jet));
   normal.Stop();
 
-  wta.Start(kFALSE);
   fastjet::contrib::WTA_KT_Axes wta_kt_axes;
   JetSubStructureUtils::Nsubjettiness tau1_wta(1, wta_kt_axes, normalized_measure);
   JetSubStructureUtils::Nsubjettiness tau2_wta(2, wta_kt_axes, normalized_measure);
   JetSubStructureUtils::Nsubjettiness tau3_wta(3, wta_kt_axes, normalized_measure);
+  wta.Start(kFALSE);
   jet.setAttribute("Tau1_wta", tau1_wta.result(jet));
   jet.setAttribute("Tau2_wta", tau2_wta.result(jet));
   jet.setAttribute("Tau3_wta", tau3_wta.result(jet));
   wta.Stop();
 
-  onepass.Start(kFALSE);
   fastjet::contrib::OnePass_KT_Axes onepass_kt_axes;
   JetSubStructureUtils::Nsubjettiness tau1_onepass(1, onepass_kt_axes, normalized_measure);
   JetSubStructureUtils::Nsubjettiness tau2_onepass(2, onepass_kt_axes, normalized_measure);
   JetSubStructureUtils::Nsubjettiness tau3_onepass(3, onepass_kt_axes, normalized_measure);
+  onepass.Start(kFALSE);
   jet.setAttribute("Tau1_onepass", tau1_onepass.result(jet));
   jet.setAttribute("Tau2_onepass", tau2_onepass.result(jet));
   jet.setAttribute("Tau3_onepass", tau3_onepass.result(jet));
