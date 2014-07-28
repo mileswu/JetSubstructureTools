@@ -2,7 +2,7 @@
 #define JETSUBSTRUCTURE_KTDELTARTOOL_H
 
 #include "JetRec/JetModifierBase.h"
-#include "GaudiKernel/ToolHandle.h"
+#include "AsgTools/ToolHandle.h"
 
 class KtDeltaRTool : public JetModifierBase {
   ASG_TOOL_CLASS(KtDeltaRTool, IJetModifier)

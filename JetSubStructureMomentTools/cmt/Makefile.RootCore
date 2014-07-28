@@ -5,14 +5,14 @@
 # for full documentation check:
 # https://twiki.cern.ch/twiki/bin/viewauth/Atlas/RootCore#Package_Makefile
 
-PACKAGE          = JetSubstructureVariables
+PACKAGE          = JetSubStructureMomentTools
 PACKAGE_PRELOAD  = 
-PACKAGE_CXXFLAGS = -DJETEDM_STANDALONE -DNOXAOD
+PACKAGE_CXXFLAGS =
 PACKAGE_OBJFLAGS = 
 PACKAGE_LDFLAGS  = 
 PACKAGE_BINFLAGS = 
 PACKAGE_LIBFLAGS = 
-PACKAGE_DEP      = AsgExTool AsgExToolInterface RootCoreFastJet
+PACKAGE_DEP      = JetInterface JetSubStructureUtils
 PACKAGE_TRYDEP   = 
 PACKAGE_CLEAN    = 
 PACKAGE_NOGRID   = 
