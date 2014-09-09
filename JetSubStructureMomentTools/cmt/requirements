@@ -5,7 +5,6 @@ author Miles Wu
 public
 use  AtlasPolicy                AtlasPolicy-*                   
 use  AsgTools                   AsgTools-*                      Control/AthToolSupport
-use  AthLinks                   AthLinks-*                      Control
 use  xAODCaloEvent              xAODCaloEvent-*                 Event/xAOD
 use  xAODJet                    xAODJet-*                       Event/xAOD
 use  JetInterface               JetInterface-*                  Reconstruction/Jet
@@ -13,7 +12,6 @@ use  JetRec                     JetRec-*                        Reconstruction/J
 use  AtlasROOT                  AtlasROOT-*                     External
 
 private
-use  AthenaBaseComps            AthenaBaseComps-*               Control
 use  GaudiInterface             GaudiInterface-*                External
 use  AtlasFastJet               AtlasFastJet-*                  External
 use  JetEDM                     JetEDM-*                        Reconstruction/Jet
