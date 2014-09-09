@@ -16,7 +16,7 @@ NSubjettinessTool::NSubjettinessTool(std::string name) :
 }
 
 int NSubjettinessTool::modifyJet(xAOD::Jet &jet) const {
-  fastjet::contrib::NormalizedMeasure normalized_measure(m_Alpha, jet.getSizeParameter());
+  fastjet::contrib::NormalizedCutoffMeasure normalized_measure(m_Alpha, jet.getSizeParameter(), 1000000);
 
   fastjet::contrib::KT_Axes kt_axes;
   JetSubStructureUtils::Nsubjettiness tau1(1, kt_axes, normalized_measure);
