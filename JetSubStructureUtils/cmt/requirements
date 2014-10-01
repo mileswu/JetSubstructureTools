@@ -8,6 +8,7 @@ use  xAODJet                    xAODJet-*                       Event/xAOD
 use  JetEDM                     JetEDM-*                        Reconstruction/Jet
 use  AtlasFastJet               AtlasFastJet-*                  External
 use  AtlasFastJetContrib        AtlasFastJetContrib-*           External
+use	 AtlasShowerDeconstruction	AtlasShowerDeconstruction-*			External
 
 private
 use  AtlasROOT                  AtlasROOT-*                     External
