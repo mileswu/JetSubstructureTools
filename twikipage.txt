@@ -5,67 +5,119 @@
 %STARTINCLUDE%
 ---+ Introduction
 
-JetSubstructureTools is a dual-use package that computes Jet Substructure moments. It will be used in reconstruction for Run 2 and will also be used by analyses in their own code.
+!JetSubStructureUtils ([[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils][svn]]) and !JetSubStructureMomentTools ([[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureMomentTools][svn]]) are two packages that compute various substructure moments for jets.
+Together these are used in Athena for reconstruction and the derivation framework, and can also be used in users' analyses (both in ROOT and Athena). 
 
-If you have any questions or need help, please email mileswu@uchicago.edu.
+These two packages are jointly maintained and supported by the Jet/Etmiss substructure and software/validation group. If you have any questions or need help using these packages, please contact the following maintainers:
+   * Miles Wu: mileswu@uchicago.edu
+   * ATLAS Jet/Etmiss software and validation: atlas-cp-jetetmiss-software-and-validation@cern.ch
+Any bugs can also be filed on the [[https://its.cern.ch/jira/browse/ATLJETMET][Jet/Etmiss JIRA bug tracker]] (please add the maintainers onto the bug's watcher list).
 
- 
----+ Variables currently supported
+As these two packages are used in reconstruction and the derivation framework, any substructure moment calculations that you do in an user analysis should produce identical results to the centrally-produced values.
+It is also easy to add additional moments to a derivation, as not all moments are added by default.
 
- 
-   * N-subjettiness (Tau1, Tau2, Tau3)
-   * kT splitting scale (Split12, Split23, Split34)
-   * zCut (ZCut12, ZCut23, ZCut34)
-   * Dipolarity (Dip12, Dip13, Dip23, !DipExcl12)
-   * Angularity (Angularity)
-   * kT Delta R (KtDR)
-   * kT Mass Drop (Mu12)
-   * Planar Flow (PlanarFlow)
-Descriptions of the variables are given on the JetSubstructureVariables page.
+---+ Available Substructure moments
 
- 
----+ Examples on how to use
----++ Athena/xAOD
+| *Moment* | *xAOD Jet attribute names* | *Utils constructor* | *Description* | *Code* |
+| N-subjettiness | =Tau1=, =Tau2=, =Tau3=, =Tau1_wta=, =Tau2_wta=, =Tau3_wta= | =Nsubjettiness(n, axes, measure)= |  | [[https://fastjet.hepforge.org/trac/browser/contrib/contribs/Nsubjettiness/tags/2.1.0/][src]] |
+| kT splitting scale | =Split12=, =Split23=, =Split34= | =KtSplittingScale(n)= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/KtSplittingScale.cxx][src]] |
+| zCut | =ZCut12=, =ZCut23=, =ZCut34= | =ZCut(n)= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/ZCut.cxx][src]] |
+| Dipolarity | =Dip12=, =Dip13=, =Dip23=, =DipExcl12= | =Dipolarity(n1, n2, isExclusive, radius_subjet)= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/Dipolarity.cxx][src]] |
+| Angularity | =Angularity= | =Nsubjettiness(n, axes, measure)= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/Angularity.cxx][src]] |
+| kT Delta R | =KtDR= | =KtDeltaR(radius)= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/KtDeltaR.cxx][src]] |
+| kT Mass drop | =Mu12= | =KtMassDrop()= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/KtMassDrop.cxx][src]] |
+| Planar flow | =PlanarFlow= | =PlanarFlow()= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/PlanarFlow.cxx][src]] |
+| Energy correlations | =ECF1=, =ECF2=, =ECF3= | =EnergyCorrelator(n, beta, !EnergyCorrelator::pt_R)= |  | [[https://fastjet.hepforge.org/trac/browser/contrib/contribs/EnergyCorrelator/tags/1.0.1][src]] |
+| Thrust | =ThrustMin=, =ThrustMaj= | =Thrust()= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/Thrust.cxx][src]] |
+| !FoxWolfram | =FoxWolfram0=, =FoxWolfram1=, =FoxWolfram2=, =FoxWolfram3=, =FoxWolfram4= | =FoxWolfram()= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/FoxWolfram.cxx][src]] |
+| Sphericity | =Sphericity=, =Aplanarity= | =SphericityTensor()= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/SphericityTensor.cxx][src]] |
+| Jet charge | =Charge= | =Charge(k)= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/Charge.cxx][src]] |
+| Pull | =PullMag=, =PullPhi=, =Pull_C00_=, =Pull_C01_=, =Pull_C10_=, =Pull_C10_= | =Pull(useEtaInsteadOfY)= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/Pull.cxx][src]] |
+| Shower deconstruction | =ShowerDeconstructionW=, =ShowerDeconstructionTop= | =ShowerDeconstruction(signal_model)= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/ShowerDeconstruction.cxx][src]] |
+| Q-jets volatility | =Volatility= | =Volatility(N_iter, zcut, dcut, exp_min, exp_max, rigidity, truncation)= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/Volatility.cxx][src]] |
 
-First of all, setup a nightly release of Athena. For example:
-<verbatim>export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
-source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh > /dev/null
-asetup dev,rel_3,gcc47,64,opt,here --nightliesarea=/cvmfs/atlas-nightlies.cern.ch/repo/sw/nightlies/x86_64-slc6-gcc47-opt</verbatim>
+If you are using an older version or are using xAOD's produced using an older version, not all of these may exist.
+Where you have control over the version (e.g. in user analysis), it is recommended to use the latest tagged version.
+Changes between versions are recorded in the packages' Changelog: [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/ChangeLog][JetSubStructureUtils ChangeLog]], [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureMomentTools/trunk/ChangeLog][JetSubStructureMomentTools ChangeLog]].
 
-Next, checkout and compile the dependencies:
-<verbatim> cmt co Control/AthToolSupport/AsgTools
- cmt co -r xAODCaloEventCnv-00-00-11 Event/xAOD/xAODCaloEventCnv
- cmt co Event/xAOD/xAODJet
- cmt co Event/xAOD/xAODJetAthenaPool
- cmt co Reconstruction/Jet/JetInterface
- cmt co Reconstruction/Jet/JetEDM
- cmt co Reconstruction/Jet/JetRec 
- 
- cd Event/xAOD/xAODCaloEventCnv/cmt; cmt config; make; cd $TestArea
- cd Control/AthToolSupport/AsgTools/cmt; cmt config; make; cd $TestArea
- cd Event/xAOD/xAODJet/cmt; cmt config; make; cd $TestArea
- cd Event/xAOD/xAODJetAthenaPool/cmt; cmt config; make; cd $TestArea 
- cd Reconstruction/Jet/JetInterface/cmt; cmt config; make; cd $TestArea 
- cd Reconstruction/Jet/JetEDM/cmt; cmt config; make; cd $TestArea
- cd Reconstruction/Jet/JetRec/cmt; cmt config; make; cd $TestArea</verbatim>
+---+ Usage for Analysis
 
-Finally checkout and compile JetSubstructureTools itself:
-<verbatim>cmt co Reconstruction/Jet/JetSubStructureMomentTools
-cd Reconstruction/Jet/JetSubStructureMomentTools/cmt; cmt config; make; cd $TestArea</verbatim>
+---++ xAOD analysis in ROOT using AnalysisBase (or similar derived release)
 
-To add substructure moments to a file with an existing xAOD jets collection, run:
-<verbatim>cd Reconstruction/Jet/JetSubStructureMomentTools/share
-<edit run.py to include path to xAOD file and jet collection name (infile and clname)>
-athena.py run.py</verbatim>
+Once you have set up AnalysisBase (version 2 or later), you need to checkout the required packages:
+<verbatim style="background: #e0ebf6;">
+rc checkout_pkg atlasoff/AsgExternal/Asg_FastJet/tags
+rc checkout_pkg atlasoff/Reconstruction/Jet/JetEDM/tags 
+rc checkout_pkg atlasoff/Reconstruction/Jet/JetSubStructureUtils/tags
+</verbatim>
+In your analysis package, let AtlasComputing.RootCore know that you are going to be using !JetSubStructureUtils by editing the =cmt/Makefile.RootCore= file and modifying the following line:
+<verbatim style="background: #e0ebf6;">
+PACKAGE_DEP      = (your other dependencies) JetSubStructureUtils
+</verbatim>
+Follow this up by letting AtlasComputing.RootCore know that the package dependencies have changed with:
+<verbatim style="background: #e0ebf6;">
+rc find_packages
+</verbatim>
 
-This should create a file named xAOD.root which now has substructure moments added to the jets.
+All the substructure moments that are calculable by using !JetSubStructureUtils follow a certain standard format.
+To use them to calculate a moment for an xAOD jet:
+   1. Include the header file (these are named after the class name)
+   2. Declare the substructure moment definition (the possible arguments are given in the table above) 
+   3. Call =definition.result(jet)= to get the result
 
- 
----++ ROOT/xAOD
----++ ROOT/ntuples
----+  
----+ Technical Details
----
+As an example, let us calculate Diplority-1,2 (=Dip12=) for a single xAOD jet, using a subjet radius of 0.3:
+<verbatim style="background: #e0ebf6;">
+#include "JetSubStructureUtils/Dipolarity.h"
+(...)
+JetSubStructureUtils::Dipolarity dip12(1, 2, false, 0.3);
+std::cout << "Dip12 = " << dip12.result(jet) << std::endl;
+</verbatim>
+
+Certain substructure moment definitions calculate multiple moments in a single calculation (this is for efficiency).
+These are returned as a =map<string, float>=.
+As an example, to get =ThrustMin=, you would do: =thrust.result(jet)["ThrustMin"]=.
+
+---++ Standalone ROOT analysis (e.g. N-tuples)
+
+This functionality has yet to be added, but once it is, you can use !JetSubStructureUtils with =vector<TLorentzVector>= instead of xAOD jets.
+
+---++ xAOD analysis in Athena
+
+All recent releases of Athena (e.g. from 19.0.1 onwards) have !JetSubStructureUtils already included as part of the release, so there is typically no need to checkout the code and compile it.
+However, if you need a newer version of !JetSubStructureUtils than is in the release (say to calculate a newly added moment) then you can fetch and compile it with:
+<verbatim style="background: #e0ebf6;">
+cmt co Reconstruction/Jet/JetSubStructureUtils
+cd Reconstruction/Jet/JetSubStructureUtils/cmt; cmt config; make; cd ../../../..
+</verbatim>
+
+For your analysis package, add the dependency on !JetSubStructureUtils by adding the following line to the private section of your =cmt/requirements= file:
+<verbatim style="background: #e0ebf6;">
+use  JetSubStructureUtils       JetSubStructureUtils-*          Reconstruction/Jet
+</verbatim>
+
+Now you can calculate substructure moments on xAOD jets in a similar fashion to it is done for ROOT (see the previous section).
+
+---+ Usage in derivation framework
+
+Documentation to be added later.
+
+---+ Developers
+
+If you are going to be working on these two packages, I would recommend working in the Athena environment as that allows you to test both !JetSubStructureUtils and !JetSubStructureMomentTools simultaneously.
+
+Checkout and compile the packages:
+<verbatim style="background: #e0ebf6;">
+cmt co Reconstruction/Jet/JetSubStructureUtils
+cd Reconstruction/Jet/JetSubStructureUtils/cmt; cmt config; make; cd ../../../..
+cmt co Reconstruction/Jet/JetSubStructureMomentTools
+cd Reconstruction/Jet/JetSubStructureMomentTools/cmt; cmt config; make; cd ../../../..
+</verbatim>
+
+There is a simplistic development job-options file at =JetSubStructureMomentTools/share/run.py= which takes an xAOD input file and adds to the jets a whole bunch of substructure moments and prints out the stored values.
+This is very useful for testing and debugging.
+It also outputs a file, named =xAOD.root=, that has the added moments.
+This can be used as the input for validation.
+Another job-options file at =JetSubStructureMomentTools/share/validate.py= makes histograms of jet moments from the leading jet in every event.
 
 <!-- For significant updates to the topic, consider adding your 'signature' (beneath this editing box) --> *Major updates*:%BR% -- Main.MilesWu - 29 Jan 2014
 
@@ -82,14 +134,15 @@ hidelink="Hide history"
 showimgleft="%ICONURLPATH{toggleopen-small}%"
 hideimgleft="%ICONURLPATH{toggleclose-small}%"
 }%
+   * r9 - Big update [29/10/14]
    * r8 - Add KtDR, Planar Flow and kT Mass drop [21/02/14]
    * r7 - Updated instructions for new location [19/02/14]
    * r6 - Added Dipolarity and Angularity [10/02/14]
    * r5 - Changed SPLIT to Split. Added Zcut [07/02/14]
    * r4 - Updated list of moments to include SPLITXY [05/02/14]
-   * <span style="background-color: transparent;">r3 - Added cmt checkout paths for package [04/02/14]</span>
-   * <span style="background-color: transparent;">r2 - Updated repo location [03/02/14]</span>
-   * <span style="background-color: transparent;">r1 - Initial version of page [29/01/14]</span>
+   * r3 - Added cmt checkout paths for package [04/02/14]
+   * r2 - Updated repo location [03/02/14]
+   * r1 - Initial version of page [29/01/14]
 %ENDTWISTY%
 
 %STOPINCLUDE%
