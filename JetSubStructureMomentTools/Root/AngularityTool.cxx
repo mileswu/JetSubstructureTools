@@ -11,7 +11,7 @@ AngularityTool::AngularityTool(std::string name) :
 }
 
 int AngularityTool::modifyJet(xAOD::Jet &jet) const {
-	if(checkForConstituents(jet) == false) return 1;
+  if(checkForConstituents(jet) == false) return 1;
 
   JetSubStructureUtils::Angularity angularity;
   double val = angularity.result(jet);

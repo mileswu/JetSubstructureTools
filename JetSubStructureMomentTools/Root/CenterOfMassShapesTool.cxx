@@ -13,7 +13,7 @@ CenterOfMassShapesTool::CenterOfMassShapesTool(std::string name) :
 }
 
 int CenterOfMassShapesTool::modifyJet(xAOD::Jet &jet) const {
-	if(checkForConstituents(jet) == false) return 1;
+  if(checkForConstituents(jet) == false) return 1;
 
   JetSubStructureUtils::Thrust t;
   JetSubStructureUtils::FoxWolfram foxwolfram;

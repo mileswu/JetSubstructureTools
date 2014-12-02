@@ -11,7 +11,7 @@ ShowerDeconstructionTool::ShowerDeconstructionTool(std::string name) :
 }
 
 int ShowerDeconstructionTool::modifyJet(xAOD::Jet &jet) const {
-	if(checkForConstituents(jet) == false) return 1;
+  if(checkForConstituents(jet) == false) return 1;
 
 	double val;
 

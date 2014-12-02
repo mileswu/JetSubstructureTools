@@ -11,7 +11,7 @@ DipolarityTool::DipolarityTool(std::string name) :
 
 int DipolarityTool::modifyJet(xAOD::Jet &jet) const
 {
-	if(checkForConstituents(jet) == false) return 1;
+  if(checkForConstituents(jet) == false) return 1;
 
   JetSubStructureUtils::Dipolarity dip12(1, 2, false, m_SubJetRadius);
   JetSubStructureUtils::Dipolarity dip13(1, 3, false, m_SubJetRadius);

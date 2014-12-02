@@ -12,7 +12,7 @@ KTSplittingScaleTool::KTSplittingScaleTool(std::string name) :
 
 int KTSplittingScaleTool::modifyJet(xAOD::Jet &jet) const
 {
-	if(checkForConstituents(jet) == false) return 1;
+  if(checkForConstituents(jet) == false) return 1;
 
   JetSubStructureUtils::KtSplittingScale split12(1);
   JetSubStructureUtils::KtSplittingScale split23(2);

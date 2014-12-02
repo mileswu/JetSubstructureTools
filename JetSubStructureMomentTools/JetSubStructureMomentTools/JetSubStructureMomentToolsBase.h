@@ -20,15 +20,15 @@ class JetSubStructureMomentToolsBase :
       // Constructor and destructor
       JetSubStructureMomentToolsBase(std::string name);
 
-		protected:
-			bool checkForConstituents(const xAOD::Jet &jet) const {
-				if(jet.numConstituents() == 0) {
-					ATH_MSG_WARNING("Attempting to use a substructure tool on a jet that has no constituent");
-					return false;
-				} else {
-					return true;
-				}
-			}
+    protected:
+      bool checkForConstituents(const xAOD::Jet &jet) const {
+        if(jet.numConstituents() == 0) {
+          ATH_MSG_WARNING("Attempting to use a substructure tool on a jet that has no constituent");
+          return false;
+        } else {
+          return true;
+        }
+      }
 };
 
 

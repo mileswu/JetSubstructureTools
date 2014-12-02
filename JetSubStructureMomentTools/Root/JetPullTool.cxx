@@ -13,7 +13,7 @@ JetSubStructureMomentToolsBase(name) {
 }
 
 int JetPullTool::modifyJet(xAOD::Jet &jet) const {
-	if(checkForConstituents(jet) == false) return 1;
+  if(checkForConstituents(jet) == false) return 1;
 
   JetSubStructureUtils::Pull pull(m_useEtaInsteadOfY);
   map<string, double> values = pull.result(jet);

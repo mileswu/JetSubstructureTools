@@ -18,7 +18,7 @@ VolatilityTool::VolatilityTool(std::string name) :
 }
 
 int VolatilityTool::modifyJet(xAOD::Jet &jet) const {
-	if(checkForConstituents(jet) == false) return 1;
+  if(checkForConstituents(jet) == false) return 1;
 
   JetSubStructureUtils::Volatility volatility(m_num_iterations, m_zcut, m_dcut_fctr,
       m_exp_min, m_exp_max, m_rigidity, m_truncation_fctr);

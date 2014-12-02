@@ -7,7 +7,7 @@ using namespace JetSubStructureUtils;
 
 double KtSplittingScale::result(const fastjet::PseudoJet &jet) const
 {
-	if(jet.constituents().size() == 0) return -1;
+  if(jet.constituents().size() == 0) return -1;
 
   fastjet::JetDefinition jet_def = fastjet::JetDefinition(fastjet::kt_algorithm, 1.5,
                                                           fastjet::E_scheme, fastjet::Best);
