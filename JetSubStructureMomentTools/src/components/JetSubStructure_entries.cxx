@@ -13,6 +13,7 @@
 #include "JetSubStructureMomentTools/JetChargeTool.h"
 #include "JetSubStructureMomentTools/VolatilityTool.h"
 #include "JetSubStructureMomentTools/ShowerDeconstructionTool.h"
+#include "JetSubStructureMomentTools/SubjetMakerTool.h"
 #include "JetSubStructureMomentTools/Validator.h"
 #include "GaudiKernel/DeclareFactoryEntries.h"
 
@@ -30,6 +31,7 @@ DECLARE_TOOL_FACTORY(JetPullTool)
 DECLARE_TOOL_FACTORY(JetChargeTool)
 DECLARE_TOOL_FACTORY(VolatilityTool)
 DECLARE_TOOL_FACTORY(ShowerDeconstructionTool)
+DECLARE_TOOL_FACTORY(SubjetMakerTool)
 DECLARE_TOOL_FACTORY(Validator)
 
 DECLARE_FACTORY_ENTRIES(JetSubStructureMomentTools) {
@@ -46,6 +48,7 @@ DECLARE_FACTORY_ENTRIES(JetSubStructureMomentTools) {
   DECLARE_TOOL(JetChargeTool)
   DECLARE_TOOL(VolatilityTool)
   DECLARE_TOOL(ShowerDeconstructionTool)
+  DECLARE_TOOL(SubjetMakerTool)
   DECLARE_TOOL(Validator)
 }
 
