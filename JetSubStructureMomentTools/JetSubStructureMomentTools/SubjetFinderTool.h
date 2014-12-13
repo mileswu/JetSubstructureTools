@@ -1,0 +1,25 @@
+#ifndef jetsubstructuremomenttools_subjetfindertool_header
+#define jetsubstructuremomenttools_subjetfindertool_header
+
+#include "JetSubStructureMomentTools/JetSubStructureMomentToolsBase.h"
+
+class SubjetFinderTool :
+  public JetSubStructureMomentToolsBase {
+    ASG_TOOL_CLASS(SubjetFinderTool, IJetModifier)
+
+    public:
+      // Constructor and destructor
+      SubjetFinderTool(std::string name);
+
+      int modifyJet(xAOD::Jet &jet) const;
+
+    private:
+      std::string m_jetalg;
+      float m_jetrad;
+      float m_ptmin;
+      std::string m_subjetlabel;
+      std::string m_subjetcontainername;
+};
+
+
+#endif

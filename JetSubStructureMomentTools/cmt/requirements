@@ -29,4 +29,5 @@ apply_pattern dual_use_library files="../Root/NSubjettinessTool.cxx ../src/Valid
 ../Root/JetChargeTool.cxx \
 ../Root/VolatilityTool.cxx \
 ../Root/ShowerDeconstructionTool.cxx \
-../Root/SubjetMakerTool.cxx"
+../Root/SubjetMakerTool.cxx \
+../Root/SubjetFinderTool.cxx"
