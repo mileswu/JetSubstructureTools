@@ -13,12 +13,12 @@ SubjetFinder::SubjetFinder(fastjet::JetAlgorithm fj_jetalg, float jet_radius, fl
 
 vector<fastjet::PseudoJet> SubjetFinder::result(const fastjet::PseudoJet &jet) const
 {
-	vector<fastjet::PseudoJet> constit_pseudojets = jet.constituents();
-	vector<fastjet::PseudoJet> subjets;
-	fastjet::JetDefinition jet_def = fastjet::JetDefinition(m_fj_jetalg, m_jetrad,
-			fastjet::E_scheme, fastjet::Best);
-	fastjet::ClusterSequence *clust_seq = new fastjet::ClusterSequence(constit_pseudojets, jet_def);
-	subjets = fastjet::sorted_by_pt(clust_seq->inclusive_jets(m_ptmin));
+  vector<fastjet::PseudoJet> constit_pseudojets = jet.constituents();
+  vector<fastjet::PseudoJet> subjets;
+  fastjet::JetDefinition jet_def = fastjet::JetDefinition(m_fj_jetalg, m_jetrad,
+      fastjet::E_scheme, fastjet::Best);
+  fastjet::ClusterSequence *clust_seq = new fastjet::ClusterSequence(constit_pseudojets, jet_def);
+  subjets = fastjet::sorted_by_pt(clust_seq->inclusive_jets(m_ptmin));
   clust_seq->delete_self_when_unused();
-	return subjets;
+  return subjets;
 }
