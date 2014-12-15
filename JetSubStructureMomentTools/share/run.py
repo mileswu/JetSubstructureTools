@@ -133,6 +133,11 @@ if 1:
   nsubjettiness = ToolSvc.nsubjettiness
   jetrec2.JetModifiers += [nsubjettiness]
 
+  from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import NSubjettinessRatiosTool
+  ToolSvc += NSubjettinessRatiosTool("nsubjettinessratios")
+  nsubjettinessratios = ToolSvc.nsubjettinessratios
+  jetrec2.JetModifiers += [nsubjettinessratios]
+
   from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import KTSplittingScaleTool
   ToolSvc += KTSplittingScaleTool("ktsplittingscale")
   ktsplittingscale = ToolSvc.ktsplittingscale
@@ -232,6 +237,8 @@ if 1:
   jdmp2.MaxObject = 20
   jdmp2.FloatMoments = ["Tau1", "Tau2", "Tau3"]
   jdmp2.FloatMoments += ["Tau1_wta", "Tau2_wta", "Tau3_wta"]
+  jdmp2.FloatMoments += ["Tau21", "Tau32"]
+  jdmp2.FloatMoments += ["Tau21_wta", "Tau32_wta"]
   jdmp2.FloatMoments += ["Split12", "Split23", "Split34"]
   jdmp2.FloatMoments += ["ZCut12", "ZCut23", "ZCut34"]
   jdmp2.FloatMoments += ["Dip12", "Dip13", "Dip23", "DipExcl12"]

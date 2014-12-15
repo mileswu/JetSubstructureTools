@@ -18,7 +18,9 @@ use  JetEDM                     JetEDM-*                        Reconstruction/J
 use  JetSubStructureUtils       JetSubStructureUtils-*          Reconstruction/Jet
 end_private
 
-apply_pattern dual_use_library files="../Root/NSubjettinessTool.cxx ../src/Validator.cxx \ 
+apply_pattern dual_use_library files="../Root/NSubjettinessTool.cxx \
+../Root/NSubjettinessRatiosTool.cxx \
+../src/Validator.cxx \ 
 ../Root/JetSubStructureMomentToolsBase.cxx ../Root/KTSplittingScaleTool.cxx ../Root/DipolarityTool.cxx \
 ../Root/AngularityTool.cxx ../Root/KtDeltaRTool.cxx \
 ../Root/KtMassDropTool.cxx \

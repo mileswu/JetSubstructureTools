@@ -2,6 +2,7 @@
 
 #include "JetSubStructureMomentTools/KtDeltaRTool.h"
 #include "JetSubStructureMomentTools/NSubjettinessTool.h"
+#include "JetSubStructureMomentTools/NSubjettinessRatiosTool.h"
 #include "JetSubStructureMomentTools/KTSplittingScaleTool.h"
 #include "JetSubStructureMomentTools/DipolarityTool.h"
 #include "JetSubStructureMomentTools/AngularityTool.h"
@@ -23,6 +24,7 @@
 
 DECLARE_TOOL_FACTORY(KtDeltaRTool)
 DECLARE_TOOL_FACTORY(NSubjettinessTool)
+DECLARE_TOOL_FACTORY(NSubjettinessRatiosTool)
 DECLARE_TOOL_FACTORY(KTSplittingScaleTool)
 DECLARE_TOOL_FACTORY(DipolarityTool)
 DECLARE_TOOL_FACTORY(AngularityTool)
@@ -43,6 +45,7 @@ DECLARE_TOOL_FACTORY(Validator)
 DECLARE_FACTORY_ENTRIES(JetSubStructureMomentTools) {
   DECLARE_TOOL(KtDeltaRTool)
   DECLARE_TOOL(NSubjettinessTool)
+  DECLARE_TOOL(NSubjettinessRatiosTool)
   DECLARE_TOOL(KTSplittingScaleTool)
   DECLARE_TOOL(DipolarityTool)
   DECLARE_TOOL(AngularityTool)
