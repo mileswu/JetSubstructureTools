@@ -174,6 +174,11 @@ if 1:
   #energycorrelator.Beta = 0.5
   jetrec2.JetModifiers += [energycorrelator]
 
+  from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import EnergyCorrelatorRatiosTool
+  ToolSvc += EnergyCorrelatorRatiosTool("energycorrelatorratios")
+  energycorrelatorratios = ToolSvc.energycorrelatorratios
+  jetrec2.JetModifiers += [energycorrelatorratios]
+
   from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import JetPullTool
   ToolSvc += JetPullTool("pull")
   pull = ToolSvc.pull
@@ -238,6 +243,7 @@ if 1:
   jdmp2.FloatMoments += ["FoxWolfram0", "FoxWolfram1", "FoxWolfram2", "FoxWolfram3", "FoxWolfram4"]
   jdmp2.FloatMoments += ["Sphericity", "Aplanarity"]
   jdmp2.FloatMoments += ["ECF1", "ECF2", "ECF3"]
+  jdmp2.FloatMoments += ["D2", "C1", "C2"]
   jdmp2.FloatMoments += ["PullMag", "PullPhi", "Pull_C00", "Pull_C01", "Pull_C10", "Pull_C11"]
   jdmp2.FloatMoments += ["Charge"]
   #jdmp2.FloatMoments += ["Volatility"]
