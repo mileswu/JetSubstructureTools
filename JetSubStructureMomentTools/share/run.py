@@ -206,10 +206,14 @@ if 1:
   from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import SubjetFinderTool
   ToolSvc += SubjetFinderTool("subjetfinder")
   subjetfinder = ToolSvc.subjetfinder
+  from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import SubjetRecorderTool
+  ToolSvc += SubjetRecorderTool("subjetrecorder")
+  subjetrecorder = ToolSvc.subjetrecorder
   subjetfinder.JetAlgorithm = "Kt"
   subjetfinder.JetRadius = 0.3
-  subjetfinder.SubjetLabel = "Kt3Subjets"
-  subjetfinder.SubjetContainerName = "MyCopiedJets_Kt3Subjets"
+  subjetrecorder.SubjetLabel = "Kt3Subjets"
+  subjetrecorder.SubjetContainerName = "MyCopiedJets_Kt3Subjets"
+  subjetfinder.SubjetRecorder = subjetrecorder
   jetrec2.JetModifiers += [subjetfinder]
 
 # Dump copied jets.

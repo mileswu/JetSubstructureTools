@@ -30,4 +30,5 @@ apply_pattern dual_use_library files="../Root/NSubjettinessTool.cxx ../src/Valid
 ../Root/VolatilityTool.cxx \
 ../Root/ShowerDeconstructionTool.cxx \
 ../Root/SubjetMakerTool.cxx \
-../Root/SubjetFinderTool.cxx"
+../Root/SubjetFinderTool.cxx \
+../Root/SubjetRecorderTool.cxx"

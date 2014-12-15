@@ -2,6 +2,8 @@
 #define jetsubstructuremomenttools_subjetfindertool_header
 
 #include "JetSubStructureMomentTools/JetSubStructureMomentToolsBase.h"
+#include "JetSubStructureMomentTools/ISubjetRecorderTool.h"
+#include "AsgTools/ToolHandle.h"
 
 class SubjetFinderTool :
   public JetSubStructureMomentToolsBase {
@@ -17,8 +19,7 @@ class SubjetFinderTool :
       std::string m_jetalg;
       float m_jetrad;
       float m_ptmin;
-      std::string m_subjetlabel;
-      std::string m_subjetcontainername;
+      ToolHandle<ISubjetRecorderTool> m_subjetrecorder;
 };
 
 
