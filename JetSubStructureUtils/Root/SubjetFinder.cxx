@@ -15,6 +15,11 @@ vector<fastjet::PseudoJet> SubjetFinder::result(const fastjet::PseudoJet &jet) c
 {
   vector<fastjet::PseudoJet> constit_pseudojets = jet.constituents();
   vector<fastjet::PseudoJet> subjets;
+  if(constit_pseudojets.size() == 0) { 
+    cout << "Warning in SubjetFinder: jet has no constituents" << endl;
+    return subjets;
+  }
+
   fastjet::JetDefinition jet_def = fastjet::JetDefinition(m_fj_jetalg, m_jetrad,
       fastjet::E_scheme, fastjet::Best);
   fastjet::ClusterSequence *clust_seq = new fastjet::ClusterSequence(constit_pseudojets, jet_def);

@@ -22,6 +22,8 @@ SubjetFinderTool::SubjetFinderTool(std::string name) :
 }
 
 int SubjetFinderTool::modifyJet(xAOD::Jet &jet) const {
+  if(checkForConstituents(jet) == false) return 1;
+
   // Set up jet algorithm
   xAOD::JetAlgorithmType::ID ialg = xAOD::JetAlgorithmType::algId(m_jetalg);
   fastjet::JetAlgorithm fjalg = xAOD::JetAlgorithmType::fastJetDef(ialg);
