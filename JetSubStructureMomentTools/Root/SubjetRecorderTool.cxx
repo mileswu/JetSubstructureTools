@@ -59,7 +59,7 @@ std::vector<xAOD::Jet *> SubjetRecorderTool::recordSubjets(std::vector<fastjet::
 
     // Set constituents
     jet::JetConstituentFiller confiller;
-    confiller.extractConstituents(*subj, 0, &(*it));
+    confiller.extractConstituents(*subj, &(*it));
 
     // Set association to parent
     const xAOD::JetContainer *parent_container = dynamic_cast<const xAOD::JetContainer*>(jet.container());
