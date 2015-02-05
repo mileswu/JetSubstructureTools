@@ -187,6 +187,7 @@ if 1:
   from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import JetPullTool
   ToolSvc += JetPullTool("pull")
   pull = ToolSvc.pull
+  #pull.IncludeTensorMoments = True
   jetrec2.JetModifiers += [pull]
 
   from JetSubStructureMomentTools.JetSubStructureMomentToolsConf import JetChargeTool
@@ -251,7 +252,7 @@ if 1:
   jdmp2.FloatMoments += ["Sphericity", "Aplanarity"]
   jdmp2.FloatMoments += ["ECF1", "ECF2", "ECF3"]
   jdmp2.FloatMoments += ["D2", "C1", "C2"]
-  jdmp2.FloatMoments += ["PullMag", "PullPhi", "Pull_C00", "Pull_C01", "Pull_C10", "Pull_C11"]
+  jdmp2.FloatMoments += ["PullMag", "PullPhi"]#, "Pull_C00", "Pull_C01", "Pull_C10", "Pull_C11"]
   jdmp2.FloatMoments += ["Charge"]
   #jdmp2.FloatMoments += ["Volatility"]
   jdmp2.FloatMoments += ["ShowerDeconstructionW", "ShowerDeconstructionTop"]

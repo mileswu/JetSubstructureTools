@@ -17,6 +17,7 @@ public:
 
 private:
     bool m_useEtaInsteadOfY;
+    bool m_includeTensorMoments;
 
 };
 
