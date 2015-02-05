@@ -15,6 +15,7 @@ class EnergyCorrelatorTool :
 
     private:
       float m_Beta;
+      bool m_includeBeta2;
 };
 
 
