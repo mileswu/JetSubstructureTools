@@ -27,7 +27,12 @@ std::vector<xAOD::Jet *> SubjetRecorderTool::recordSubjets(std::vector<fastjet::
     return vector<xAOD::Jet *>();
   }
   xAOD::JetContainer *subjet_container = 0;
+#ifdef ROOTCORE
+  subjet_container = evtStore()->retrieve<xAOD::JetContainer>(subjet_container_name);
+#else
+  // Need tryRetrieve to supress some Athena warning. Unfortuantely tryRetrieve isn't in RootCore
   subjet_container = evtStore()->tryRetrieve<xAOD::JetContainer>(subjet_container_name);
+#endif
   if(subjet_container == 0) {
     StatusCode sc;
     subjet_container = new xAOD::JetContainer;
