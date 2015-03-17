@@ -20,6 +20,7 @@ It is also easy to add additional moments to a derivation, as not all moments ar
 
 | *Moment* | *xAOD Jet attribute names* | *Utils constructor* | *Description* | *Code* |
 | N-subjettiness | =Tau1=, =Tau2=, =Tau3=, =Tau1_wta=, =Tau2_wta=, =Tau3_wta= | =Nsubjettiness(n, axes, measure)= |  | [[https://fastjet.hepforge.org/trac/browser/contrib/contribs/Nsubjettiness/tags/2.1.0/][src]] |
+| N-subjettiness ratios | =Tau21=, =Tau32=, =Tau21_wta=, =Tau32_wta= | | | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureMomentTools/trunk/Root/NSubjettinessRatiosTool.cxx][src]] |
 | kT splitting scale | =Split12=, =Split23=, =Split34= | =KtSplittingScale(n)= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/KtSplittingScale.cxx][src]] |
 | zCut | =ZCut12=, =ZCut23=, =ZCut34= | =ZCut(n)= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/ZCut.cxx][src]] |
 | Dipolarity | =Dip12=, =Dip13=, =Dip23=, =DipExcl12= | =Dipolarity(n1, n2, isExclusive, radius_subjet)= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/Dipolarity.cxx][src]] |
@@ -27,7 +28,8 @@ It is also easy to add additional moments to a derivation, as not all moments ar
 | kT Delta R | =KtDR= | =KtDeltaR(radius)= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/KtDeltaR.cxx][src]] |
 | kT Mass drop | =Mu12= | =KtMassDrop()= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/KtMassDrop.cxx][src]] |
 | Planar flow | =PlanarFlow= | =PlanarFlow()= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/PlanarFlow.cxx][src]] |
-| Energy correlations | =ECF1=, =ECF2=, =ECF3= | =EnergyCorrelator(n, beta, !EnergyCorrelator::pt_R)= |  | [[https://fastjet.hepforge.org/trac/browser/contrib/contribs/EnergyCorrelator/tags/1.0.1][src]] |
+| Energy correlations | =ECF1=, =ECF2=, =ECF3=, =ECF1_Beta2=, =ECF2_Beta2=, =ECF3_Beta2= | =EnergyCorrelator(n, beta, !EnergyCorrelator::pt_R)= |  | [[https://fastjet.hepforge.org/trac/browser/contrib/contribs/EnergyCorrelator/tags/1.0.1][src]] |
+| ECF ratios | =C1=, =C2=, =D2=, =C1_Beta2=, =C2_Beta2=, =D2_Beta2= | | | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureMomentTools/trunk/Root/EnergyCorrelatorRatiosTool.cxx][src]] |
 | Thrust | =ThrustMin=, =ThrustMaj= | =Thrust()= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/Thrust.cxx][src]] |
 | !FoxWolfram | =FoxWolfram0=, =FoxWolfram1=, =FoxWolfram2=, =FoxWolfram3=, =FoxWolfram4= | =FoxWolfram()= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/FoxWolfram.cxx][src]] |
 | Sphericity | =Sphericity=, =Aplanarity= | =SphericityTensor()= |  | [[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils/trunk/Root/SphericityTensor.cxx][src]] |
