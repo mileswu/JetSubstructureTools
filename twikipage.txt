@@ -136,6 +136,7 @@ hidelink="Hide history"
 showimgleft="%ICONURLPATH{toggleopen-small}%"
 hideimgleft="%ICONURLPATH{toggleclose-small}%"
 }%
+   * r10 - Add ratios and Beta2 [17/03/15]
    * r9 - Big update [29/10/14]
    * r8 - Add KtDR, Planar Flow and kT Mass drop [21/02/14]
    * r7 - Updated instructions for new location [19/02/14]
