@@ -3,7 +3,7 @@ package JetSubStructureMomentTools
 author Miles Wu
 
 public
-use  AtlasPolicy                AtlasPolicy-*                   
+use  AtlasPolicy                AtlasPolicy-*
 use  AsgTools                   AsgTools-*                      Control/AthToolSupport
 use  xAODCaloEvent              xAODCaloEvent-*                 Event/xAOD
 use  xAODJet                    xAODJet-*                       Event/xAOD
@@ -20,7 +20,7 @@ end_private
 
 apply_pattern dual_use_library files="../Root/NSubjettinessTool.cxx \
 ../Root/NSubjettinessRatiosTool.cxx \
-../src/Validator.cxx \ 
+../src/Validator.cxx \
 ../Root/JetSubStructureMomentToolsBase.cxx ../Root/KTSplittingScaleTool.cxx ../Root/DipolarityTool.cxx \
 ../Root/AngularityTool.cxx ../Root/KtDeltaRTool.cxx \
 ../Root/KtMassDropTool.cxx \
@@ -34,4 +34,5 @@ apply_pattern dual_use_library files="../Root/NSubjettinessTool.cxx \
 ../Root/ShowerDeconstructionTool.cxx \
 ../Root/SubjetMakerTool.cxx \
 ../Root/SubjetFinderTool.cxx \
-../Root/SubjetRecorderTool.cxx"
+../Root/SubjetRecorderTool.cxx \
+../Root/BosonTagTool.cxx"
