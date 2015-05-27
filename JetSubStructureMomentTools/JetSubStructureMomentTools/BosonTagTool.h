@@ -17,10 +17,9 @@ class BosonTagTool :
       std::string m_working_point,
                   m_tagger_alg,
                   m_recommendations_file;
-      bool m_compare_mass,
-           m_compare_variable,
-           m_simple_tagger,
-           m_debug;
+      bool m_mass_only,
+           m_debug,
+           m_verbose;
 };
 
 

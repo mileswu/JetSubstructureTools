@@ -15,6 +15,8 @@
 #include <sstream>
 #include <fstream>
 
+#define APP_NAME "BosonTag"
+
 using namespace JetSubStructureUtils;
 
 // make all static accessors static to this file, like extern but hip
@@ -29,58 +31,53 @@ SG::AuxElement::ConstAccessor<float>    BosonTag::ZCut ("ZCut");
 SG::AuxElement::ConstAccessor<char>     BosonTag::BDRS ("BDRS");
 SG::AuxElement::ConstAccessor<float>    BosonTag::YMin ("YMin");
 SG::AuxElement::ConstAccessor<float>    BosonTag::MuMax ("MuMax");
-SG::AuxElement::ConstAccessor<float>    BosonTag::Tau1 ("Tau1");
-SG::AuxElement::ConstAccessor<float>    BosonTag::Tau2 ("Tau2");
-SG::AuxElement::ConstAccessor<float>    BosonTag::C2 ("C2");
+SG::AuxElement::ConstAccessor<float>    BosonTag::YFilt ("YFilt");
 SG::AuxElement::ConstAccessor<float>    BosonTag::D2 ("D2");
 SG::AuxElement::ConstAccessor<float>    BosonTag::ECF1 ("ECF1");
 SG::AuxElement::ConstAccessor<float>    BosonTag::ECF2 ("ECF2");
 SG::AuxElement::ConstAccessor<float>    BosonTag::ECF3 ("ECF3");
 
-void BosonTag::CONFIG::openFile(){
-    if(!twovar_signalregion_file){
-      twovar_signalregion_file = TFile::Open(twovar_signalregion_filepath.c_str());
-    }
+
+BosonTag::CONFIG::CONFIG() :
+  m_mass_params(2, -99.9),
+  m_mass_window(0.01),
+  m_d2_params(5, -99.9),
+  m_d2_cut_direction(""),
+  m_isConfig(false)
+{}
+
+bool BosonTag::CONFIG::setConfigs(const std::vector<float> mass_params, float mass_window, const std::vector<float> d2_params, const std::string d2_cut_direction){
+  if(mass_params.size() != m_mass_params.size()){
+    printf("<%s>: mass_params.size() is incorrect.\r\n\tExpected: %zu\r\n\tGiven:    %zu\r\n", APP_NAME, m_mass_params.size(), mass_params.size());
+    return false;
   }
-
-void BosonTag::CONFIG::openHist(){
-  if(!twovar_signalregion_hist){
-    if(!twovar_signalregion_file) openFile();
-    twovar_signalregion_hist = (TH2*)twovar_signalregion_file->Get("SignalRegion");
+  if(d2_params.size() != m_d2_params.size()){
+    printf("<%s>: d2_params.size() is incorrect.\r\n\tExpected: %zu\r\n\tGiven:    %zu\r\n", APP_NAME, m_d2_params.size(), d2_params.size());
+    return false;
   }
-}
-
-double BosonTag::CONFIG::getTwoVar(double d2beta1, double tau21){
-  if(!twovar_signalregion_hist) openHist();
-  int binX = twovar_signalregion_hist->GetXaxis()->FindBin(d2beta1);
-  int binY = twovar_signalregion_hist->GetYaxis()->FindBin(tau21);
-  return static_cast<double>(twovar_signalregion_hist->GetBinContent(binX, binY) == 1);
-}
-
-bool BosonTag::CONFIG::compareVariable(double variableValue){
-  if(var_dir != "LEFT" && var_dir != "RIGHT") return false;
-  return !((variableValue < var_cut)^(var_dir == "LEFT"));
-}
-
-BosonTag::CONFIG::~CONFIG() {
-  if(twovar_signalregion_file) delete twovar_signalregion_file;
-  if(twovar_signalregion_hist) delete twovar_signalregion_hist;
+  if(d2_cut_direction != "LEFT" && d2_cut_direction != "RIGHT"){
+    printf("<%s>: d2_cut_direction is not valid.\r\n\tExpected: LEFT, RIGHT\r\n\tGiven:    %s\r\n", APP_NAME, d2_cut_direction.c_str());
+    return false;
+  }
+  m_mass_params = mass_params;
+  m_mass_window = mass_window;
+  m_d2_params = d2_params;
+  m_d2_cut_direction = d2_cut_direction;
+  return m_isConfig = true;
 }
 
 BosonTag::BosonTag( std::string working_point,
                     std::string tagger_alg,
                     std::string recommendations_file,
-                    bool compare_mass,
-                    bool compare_variable,
-                    bool simple_tagger,
-                    bool debug) :
+                    bool mass_only,
+                    bool debug,
+                    bool verbose) :
   m_working_point(working_point),
   m_tagger_alg(tagger_alg),
   m_recommendations_file(recommendations_file),
-  m_compare_mass(compare_mass),
-  m_compare_variable(compare_variable),
-  m_simple_tagger(simple_tagger),
+  m_mass_only(mass_only),
   m_debug(debug),
+  m_verbose(verbose),
   m_bad_configuration(false)
 {
 
@@ -88,6 +85,20 @@ BosonTag::BosonTag( std::string working_point,
         - flag it to true if something is badly configured
         - otherwise, it should be false if everything seems ok
   */
+
+  if(m_verbose)
+    printf("<%s>: Attempting to configure with\r\n\t"
+            "Working Point     %s\r\n\t"
+            "Tagger Algorithm  %s\r\n\t"
+            "Recommendations   %s\r\n\t"
+            "Mass Only?        %s\r\n\t"
+            "Debug Output?     %s\r\n\t"
+            "Verbose Output?   %s\r\n"
+            "=========================================\r\n",
+            APP_NAME, m_working_point.c_str(), m_tagger_alg.c_str(),
+            m_recommendations_file.c_str(),
+            m_mass_only?"Yes":"No", m_debug?"Yes":"No", m_verbose?"Yes":"No");
+
   std::set<std::string> validWorkingPoints;
   validWorkingPoints.insert("tight");
   validWorkingPoints.insert("medium");
@@ -95,113 +106,139 @@ BosonTag::BosonTag( std::string working_point,
   validWorkingPoints.insert("veryloose");
 
   if( validWorkingPoints.find(m_working_point) == validWorkingPoints.end()){
-    printf("Unknown working point requested %s!\r\n", m_working_point.c_str());
+    printf("<%s>: Unknown working point requested.\r\n\tExpected: veryloose, loose, medium, tight\r\n\tGiven:    %s\r\n", APP_NAME, m_working_point.c_str());
     m_bad_configuration |= true;
+  } else {
+    if(m_verbose) printf("<%s>: Valid working point requested.\r\n", APP_NAME);
   }
 
   std::set<std::string> validTaggers;
-  validTaggers.insert("tau21");
-  validTaggers.insert("c2beta1");
-  validTaggers.insert("d2beta1");
-  validTaggers.insert("twovar");
+  validTaggers.insert("smooth");
+  validTaggers.insert("run1");
 
   if( validTaggers.find(m_tagger_alg) == validTaggers.end()){
-    printf("Unknown taggger requested %s!\r\n", m_tagger_alg.c_str());
-    m_bad_configuration |= true;
-  }
-
-  // at least one must be set to true
-  if( !(m_compare_mass|m_compare_variable) ){
-    printf("Both MassCompare and VarCompare cannot be false!\r\n");
-    m_bad_configuration |= true;
-  }
-
-  if( m_recommendations_file.empty() ){
-    std::cout << "No configuration file specified!" << std::endl;
+    printf("<%s>: Unknown taggger requested.\r\n\tExpected: smooth, run1\r\n\tGiven:    %s\r\n", APP_NAME, m_tagger_alg.c_str());
     m_bad_configuration |= true;
   } else {
-#ifdef ROOTCORE
-    m_recommendations_file = gSystem->ExpandPathName(m_recommendations_file.c_str());
-#else
-    m_recommendations_file = PathResolverFindXMLFile(m_recommendations_file);
-#endif
-    /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
-    FileStat_t fStats;
-    int fSuccess = gSystem->GetPathInfo(m_recommendations_file.c_str(), fStats);
-    if(fSuccess != 0){
-      printf("Recommendations file could not be found: %s!\r\n", m_recommendations_file.c_str());
-      m_bad_configuration |= true;
-    } else {
-      // if we made it here, everything appears ok with our file, attempt to read it
-      std::ifstream f_in;
-      f_in.open(m_recommendations_file, std::ios::in);
-      if( f_in.fail() ){
-        std::cout << "Something is wrong with the recommendations file. Could not open for reading." << std::endl;
-        m_bad_configuration |= true;
-      }
-
-      std::string line;
-      while( std::getline(f_in, line) ){
-        /* token contains the current splitted text */
-        std::string token;
-
-        if(m_debug) printf("Reading in line: %s\r\n", line.c_str());
-
-        /* notes, one should add a check on all values to make sure they are valid! */
-
-        // split by space
-        std::istringstream ss(line);
-        /* lineDetails is an array of the splits */
-        std::vector<std::string> lineDetails{std::istream_iterator<std::string>{ss}, std::istream_iterator<std::string>{}};
-
-        std::string l_working_point     = lineDetails[0];
-        std::string l_tagger            = lineDetails[3];
-        std::string l_algorithm         = lineDetails[1];
-        // might need to do std::stoi(lineDetails[2].substr(2,5).c_str())
-        double l_ptbin                  = std::stoi(lineDetails[2].substr(2,5).c_str());
-
-        BosonTag::CONFIG new_config = {};
-        new_config.cut_low   = std::stod(lineDetails[4]);
-        new_config.cut_high  = std::stod(lineDetails[5]);
-        new_config.var_dir   = lineDetails[6];
-        new_config.var_cut   = std::stod(lineDetails[7]);
-        if(lineDetails.size() == 9) new_config.twovar_signalregion_filepath = lineDetails[8];
-
-        m_configurations[l_working_point][l_tagger][l_algorithm][l_ptbin] = new_config;
-
-        if(m_debug) printf("Parsed line as: %s | %s | %0.2f | %s | %0.2f | %0.2f | %s | %0.2f | %s\r\n",
-                            l_working_point.c_str(), l_algorithm.c_str(), l_ptbin, l_tagger.c_str(), new_config.cut_low, new_config.cut_high,
-                            new_config.var_dir.c_str(), new_config.var_cut, new_config.twovar_signalregion_filepath.c_str());
-      }
-
-      if( !m_configurations.count(m_working_point) ){
-        printf("Could not find working point %s in recommendations file!\r\n", m_working_point.c_str());
-        m_bad_configuration |= true;
-      } else if( !m_configurations.at(m_working_point).count(m_tagger_alg) ){
-        printf("Could not find tagger %s in recommendations file!\r\n", m_tagger_alg.c_str());
-        m_bad_configuration |= true;
-      }
-
-    }
+    if(m_verbose) printf("<%s>: Valid tagger algorithm requested.\r\n", APP_NAME);
   }
 
+  // only care about recommendations file if we use smooth algorithm
+  // no need to parse a file if we use the Run-1 tagger for example
+  if( m_tagger_alg == "smooth" ){
+    if( m_recommendations_file.empty() ){
+      printf("<%s>: You choose the 'smooth' tagger but did not provide a recommendations file.\r\n", APP_NAME);
+      m_bad_configuration |= true;
+    } else {
+      if(m_verbose) printf("<%s>: Looking for the recommendations file provided.\r\n", APP_NAME);
+
+#ifdef ROOTCORE
+      m_recommendations_file = gSystem->ExpandPathName(m_recommendations_file.c_str());
+#else
+      m_recommendations_file = PathResolverFindXMLFile(m_recommendations_file);
+#endif
+      /* https://root.cern.ch/root/roottalk/roottalk02/5332.html */
+      FileStat_t fStats;
+      int fSuccess = gSystem->GetPathInfo(m_recommendations_file.c_str(), fStats);
+      if(fSuccess != 0){
+        printf("<%s>: Recommendations file could not be found.\r\n\tGiven:   %s\r\n", APP_NAME, m_recommendations_file.c_str());
+        m_bad_configuration |= true;
+      } else {
+        if(m_verbose) printf("<%s>: Recommendations file was found.\r\n", APP_NAME);
+
+        // if we made it here, everything appears ok with our file, attempt to read it
+        std::ifstream f_in;
+        f_in.open(m_recommendations_file, std::ios::in);
+        if( f_in.fail() ){
+          printf("<%s>: Something is wrong with the recommendations file. Could not open for reading.\r\n", APP_NAME);
+          m_bad_configuration |= true;
+        } else {
+          if(m_verbose) printf("<%s>: Recommendations file opened for reading.\r\n", APP_NAME);
+        }
+
+        std::string line;
+        while( std::getline(f_in, line) ){
+          /* token contains the current splitted text */
+          std::string token;
+
+          if(m_verbose) printf("<%s>: Reading in line\r\n\t'%s'\r\n", APP_NAME, line.c_str());
+
+          /* notes, one should add a check on all values to make sure they are valid! */
+
+          // split by space
+          std::istringstream ss(line);
+          /* lineDetails is an array of the splits */
+          std::vector<std::string> lineDetails{std::istream_iterator<std::string>{ss}, std::istream_iterator<std::string>{}};
+
+          std::string l_working_point = lineDetails[0];
+          std::string l_algorithm     = lineDetails[1];
+
+          std::vector<float> l_mass_params(2, 0.0);
+          for(int i=0; i < 2; i++)
+            l_mass_params[i] = std::stof(lineDetails[i+2]);
+
+          float l_mass_window = std::stof(lineDetails[4]);
+
+          std::vector<float> l_d2_params(5, 0.0);
+          for(int i=0; i<5; i++)
+            l_d2_params[i] = std::stof(lineDetails[i+5]);
+
+          std::string l_d2_cut_direction = lineDetails[10];
+
+          // build up a new config for the line
+          BosonTag::CONFIG new_config = {};
+          bool res = new_config.setConfigs(l_mass_params, l_mass_window, l_d2_params, l_d2_cut_direction);
+          if(!res){
+            printf("<%s>: Could not create a configuration object for the line in the recommendations file.\r\n\tLine: %s\r\n", APP_NAME, line.c_str());
+            m_bad_configuration |= true;
+            break;
+          }
+
+          // add it to all configurations we have
+          m_configurations[l_working_point][l_algorithm] = new_config;
+
+          if(m_verbose) printf("<%s>: Parsed line as\r\n\t0: %s\r\n\t1: %s\r\n\t2: %0.10f\r\n\t3: %0.10f\r\n\t4: %0.10f\r\n\t5: %0.10f\r\n\t6: %0.10f\r\n\t7: %0.10f\r\n\t8: %0.10f\r\n\t9: %0.10f\r\n\t10: %s\r\n", APP_NAME,
+                              l_working_point.c_str(), l_algorithm.c_str(), l_mass_params[0], l_mass_params[1], l_mass_window,
+                              l_d2_params[0], l_d2_params[1], l_d2_params[2], l_d2_params[3], l_d2_params[4], l_d2_cut_direction.c_str());
+        }
+
+        if( !m_configurations.count(m_working_point) ){
+          printf("<%s>: Could not find working point `%s` in recommendations file!\r\n", APP_NAME, m_working_point.c_str());
+          m_bad_configuration |= true;
+        } else {
+          if(m_verbose) printf("<%s>: Found a configuration for the given working point in the recommendations file.\r\n", APP_NAME);
+        }
+
+      }
+    }
+  }
 
   if(m_bad_configuration){
     std::cout << "|=====================================================|" << std::endl;
     std::cout << "|        WARNING        WARNING        WARNING        |" << std::endl;
+    std::cout << "|        WARNING        WARNING        WARNING        |" << std::endl;
+    std::cout << "|        WARNING        WARNING        WARNING        |" << std::endl;
+    std::cout << "|        WARNING        WARNING        WARNING        |" << std::endl;
     std::cout << "|-----------------------------------------------------|" << std::endl;
+    std::cout << "|                                                     |" << std::endl;
+    std::cout << "|                                                     |" << std::endl;
+    std::cout << "|                                                     |" << std::endl;
     std::cout << "|            BosonTagger is misconfigured!            |" << std::endl;
+    std::cout << "|                                                     |" << std::endl;
+    std::cout << "|                                                     |" << std::endl;
+    std::cout << "|                                                     |" << std::endl;
     std::cout << "|=====================================================|" << std::endl;
+  } else {
+    if(m_verbose) printf("<%s>: BosonTagger is configured successfuly! Congratulations on such an achievement.\r\n", APP_NAME);
   }
 
 }
 
-std::pair<bool, BosonTag::CONFIG> BosonTag::get_configuration(const xAOD::Jet& jet,
-                             const xAOD::JetAlgorithmType::ID jet_algorithm,
-                             const float size_parameter,
-                             const xAOD::JetInput::Type jet_input,
-                             const xAOD::JetTransform::Type jet_transform) const {
-
+std::pair<bool, std::string> BosonTag::get_algorithm_name(const xAOD::Jet& jet,
+                                         const xAOD::JetAlgorithmType::ID jet_algorithm,
+                                         const float size_parameter,
+                                         const xAOD::JetInput::Type jet_input,
+                                         const xAOD::JetTransform::Type jet_transform) const {
   bool error_flag(false);
 
   /* http://acode-browser.usatlas.bnl.gov/lxr/source/atlas/Event/xAOD/xAODJet/xAODJet/JetContainerInfo.h */
@@ -235,100 +272,129 @@ std::pair<bool, BosonTag::CONFIG> BosonTag::get_configuration(const xAOD::Jet& j
   // ending of algorithm_name
   switch(jet_transform){
     case xAOD::JetTransform::Trim:
-      if( !PtFrac.isAvailable(jet) ){ std::cout << "PtFrac is not defined for the input jet." << std::endl; error_flag |= true; }
-      if( !RClus.isAvailable(jet) ){ std::cout << "RClus is not defined for the input jet." << std::endl; error_flag |= true; }
-      if(m_debug) printf("PtFrac: %0.2f\tRClus: %0.2f\r\n", PtFrac(jet), RClus(jet));
+      if( !PtFrac.isAvailable(jet) ){
+        if(m_debug) printf("<%s>: PtFrac is not defined for the input jet.\r\n", APP_NAME);
+        error_flag |= true;
+      }
+      if( !RClus.isAvailable(jet) ){
+        if(m_debug) printf("<%s>: RClus is not defined for the input jet.\r\n" , APP_NAME);
+        error_flag |= true;
+      }
+
+      if(m_verbose) printf("<%s>: PtFrac: %0.2f\tRClus: %0.2f\r\n", APP_NAME, PtFrac(jet), RClus(jet));
       algorithm_name += "F" + std::to_string(static_cast<int>(PtFrac(jet)*100))
                        + "R" + std::to_string(static_cast<int>(RClus(jet)*100));
     break;
     case xAOD::JetTransform::Prune:
-      if( !RCut.isAvailable(jet) ){ std::cout << "RCut is not defined for the input jet." << std::endl; error_flag |= true; }
-      if( !ZCut.isAvailable(jet) ){ std::cout << "ZCut is not defined for the input jet." << std::endl; error_flag |= true; }
-      if(m_debug) printf("RCut: %0.2f\tZCut: %0.2f\r\n", RCut(jet), ZCut(jet));
+      if( !RCut.isAvailable(jet) ){
+        if(m_debug) printf("<%s>: RCut is not defined for the input jet.\r\n", APP_NAME);
+        error_flag |= true;
+      }
+      if( !ZCut.isAvailable(jet) ){
+        if(m_debug) printf("<%s>: ZCut is not defined for the input jet.\r\n", APP_NAME);
+        error_flag |= true;
+      }
+
+      if(m_verbose) printf("<%s>: RCut: %0.2f\tZCut: %0.2f\r\n", APP_NAME, RCut(jet), ZCut(jet));
       algorithm_name += "R" + std::to_string(static_cast<int>(RCut(jet)*100))
                        + "Z" + std::to_string(static_cast<int>(ZCut(jet)*100));
     break;
     case xAOD::JetTransform::MassDrop:
-      if( !MuMax.isAvailable(jet) ){ std::cout << "MuMax is not defined for the input jet." << std::endl; error_flag |= true; }
-      if( !RClus.isAvailable(jet) ){ std::cout << "RClus is not defined for the input jet." << std::endl; error_flag |= true; }
-      if( !YMin.isAvailable(jet) ){  std::cout << "YMin is not defined for the input jet." << std::endl; error_flag |= true; }
-      if( !BDRS.isAvailable(jet) ){  std::cout << "BDRS is not defined for the input jet." << std::endl; error_flag |= true; }
-      if(m_debug) printf("MuMax: %0.2f\tRClus: %0.2f\tYMin: %0.2f\r\n", MuMax(jet), RClus(jet), YMin(jet));
+      if( !MuMax.isAvailable(jet) ){
+        if(m_debug) printf("<%s>: MuMax is not defined for the input jet.\r\n", APP_NAME);
+        error_flag |= true;
+      }
+      if( !RClus.isAvailable(jet) ){
+        if(m_debug) printf("<%s>: RClus is not defined for the input jet.\r\n", APP_NAME);
+        error_flag |= true;
+      }
+      if( !YMin.isAvailable(jet) ){
+        if(m_debug) printf("<%s>: YMin is not defined for the input jet.\r\n" , APP_NAME);
+        error_flag |= true;
+      }
+      if( !BDRS.isAvailable(jet) ){
+        if(m_debug) printf("<%s>: BDRS is not defined for the input jet.\r\n" , APP_NAME);
+        error_flag |= true;
+      }
+
+      if(m_verbose) printf("<%s>: MuMax: %0.2f\tRClus: %0.2f\tYMin: %0.2f\r\n", APP_NAME, MuMax(jet), RClus(jet), YMin(jet));
       algorithm_name += "M" + std::to_string(static_cast<int>(MuMax(jet)*100))
                        + "R" + std::to_string(static_cast<int>(RClus(jet)*100))
                        + "Y" + std::to_string(static_cast<int>(YMin(jet)*100));
     break;
     default:
-      std::cout << "Current value of xAOD::JetTransform::Type is not supported!" << std::endl;
+      if(m_debug) printf("<%s>: Current value of xAOD::JetTransform::Type is not supported!\r\n", APP_NAME);
       error_flag |= true;
     break;
   }
 
-  // next, get the ptbin
-  double ptbin(0.0);
-  double jetPt(jet.pt()/1000.);
-  // set ptbin to 200 if using the "simple" tagger option
-  if(m_simple_tagger) ptbin = 200.0;
-  else {
-    if      (jetPt > 200.0  && jetPt < 350.0 ) ptbin =  200.0;
-    else if (jetPt > 350.0  && jetPt < 500.0 ) ptbin =  350.0;
-    else if (jetPt > 500.0  && jetPt < 1000.0) ptbin =  500.0;
-    else if (jetPt > 1000.0 && jetPt < 1500.0) ptbin = 1000.0;
-    else if (jetPt > 1500.0 && jetPt < 2000.0) ptbin = 1500.0;
-    //else if (jetPt > 2000.0 && jetPt < 3000.0) ptbin = 2000.0;
-    else ptbin = 200.0;
-  }
-
-  if(m_debug) printf("PtBin: %0.2f\r\n", ptbin);
-
-  // grab the correct configuration
-  if( !m_configurations.at(m_working_point).at(m_tagger_alg).count(algorithm_name) ){
-    printf("Could not find algorithm %s in recommendations file!\r\n", algorithm_name.c_str());
-    error_flag |= true;
-  } else if( !m_configurations.at(m_working_point).at(m_tagger_alg).at(algorithm_name).count(ptbin) ){
-    printf("Could not find ptbin %0.2f in recommendations file!\r\n", ptbin);
-    error_flag |= true;
-  }
-
-  /* error flag tells us if a valid configuration exists or not */
-  if(error_flag){
-    //static BosonTag::CONFIG null_config = {};
-    return std::pair<bool, BosonTag::CONFIG>(false, {});
-  }
-
-  if(m_debug) std::cout << "Found the correct configuration parameters for the jet." << std::endl;
-  return std::pair<bool, BosonTag::CONFIG>(true, m_configurations.at(m_working_point).at(m_tagger_alg).at(algorithm_name).at(ptbin));
+  return std::pair<bool, std::string>(!error_flag, algorithm_name);
 }
 
-bool BosonTag::check_jet(const xAOD::Jet& jet) const
-{
-  // check that what we are looking for is actually available
-  if(!Tau1.isAvailable(jet) || !Tau2.isAvailable(jet)){
-    if(m_tagger_alg == "tau21" || m_tagger_alg == "twovar"){
-      std::cout << "Tau1 or Tau2 are not available!" << std::endl;
-      return false;
-    }
+
+std::pair<bool, BosonTag::CONFIG> BosonTag::get_configuration(const xAOD::Jet& jet,
+                             const xAOD::JetAlgorithmType::ID jet_algorithm,
+                             const float size_parameter,
+                             const xAOD::JetInput::Type jet_input,
+                             const xAOD::JetTransform::Type jet_transform) const {
+
+  std::string algorithm_name("");
+
+  // get the algorithm name and check result
+  std::pair<bool, std::string> res = get_algorithm_name(jet, jet_algorithm, size_parameter, jet_input, jet_transform);
+
+  // is it a valid result?
+  if(!res.first){
+    if(m_debug) printf("<%s>: Could not determine what jet you are using.\r\n", APP_NAME);
+    return std::pair<bool, BosonTag::CONFIG>(false, {});
+  } else {
+    if(m_verbose) printf("<%s>: Jet introspection successful.\r\n", APP_NAME);
   }
 
-  if(!ECF1.isAvailable(jet) || !ECF2.isAvailable(jet) || !ECF3.isAvailable(jet)){
-    if(m_tagger_alg != "tau21") {
-      std::cout << "ECF# variables are not available." << std::endl;
-      return false;
-    }
+  // grab the correct configuration corresponding to the type of jet
+  algorithm_name = res.second;
+  if( !m_configurations.at(m_working_point).count(algorithm_name) ){
+    if(m_debug) printf("<%s>: Could not find jet algorithm name `%s` in recommendations file!\r\n", APP_NAME, algorithm_name.c_str());
+    return std::pair<bool, BosonTag::CONFIG>(false, {});
+  } else {
+   if(m_verbose) printf("<%s>: Introspected the jet to be of type `%s`.\r\n", APP_NAME, algorithm_name.c_str());
   }
 
-  return true;
+  return std::pair<bool, BosonTag::CONFIG>(true, m_configurations.at(m_working_point).at(algorithm_name));
 }
 
 bool BosonTag::result(const xAOD::Jet& jet) const
 {
-  if(m_bad_configuration) return false;
+  // bad configuration
+  if(m_bad_configuration){
+    if(m_debug) printf("<%s>: BosonTag has a bad configuration!", APP_NAME);
+    return false;
+  }
 
   // if we call via this method, we need these 4 things defined
-  if( !AlgorithmType.isAvailable(jet) ){ std::cout << "AlgorithmType is not defined for the jet."   << std::endl; return false;}
-  if( !SizeParameter.isAvailable(jet) ){ std::cout << "SizeParameter is not defined for the jet."   << std::endl; return false;}
-  if( !InputType.isAvailable(jet) )    { std::cout << "InputType is not defined for the jet."       << std::endl; return false;}
-  if( !TransformType.isAvailable(jet) ){ std::cout << "TransformType is not defined for the jet."   << std::endl; return false;}
+  if( !AlgorithmType.isAvailable(jet) ){
+    if(m_debug) printf("<%s>: AlgorithmType is not defined for the jet.\r\n", APP_NAME);
+    return false;
+  }
+  if( !SizeParameter.isAvailable(jet) ){
+    if(m_debug) printf("<%s>: SizeParameter is not defined for the jet.\r\n", APP_NAME);
+    return false;
+  }
+  if( !InputType.isAvailable(jet) )    {
+    if(m_debug) printf("<%s>: InputType is not defined for the jet.\r\n"    , APP_NAME);
+    return false;
+  }
+  if( !TransformType.isAvailable(jet) ){
+    if(m_debug) printf("<%s>: TransformType is not defined for the jet.\r\n", APP_NAME);
+    return false;
+  }
+
+  if(m_verbose) printf("<%s>: Jet has the 4 main properties set.\r\n\t"
+      "AlgorithmType:  %d\r\n\t"
+      "Size Parameter: %0.2f\r\n\t"
+      "Input Type:     %d\r\n\t"
+      "Transform Type: %d\r\n",
+      APP_NAME, AlgorithmType(jet), SizeParameter(jet), InputType(jet), TransformType(jet));
 
   return result(jet,
                 static_cast<xAOD::JetAlgorithmType::ID>(AlgorithmType(jet)),
@@ -344,52 +410,113 @@ bool BosonTag::result(const xAOD::Jet& jet,
                       const xAOD::JetTransform::Type jet_transform) const
 {
   // bad configuration
-  if(m_bad_configuration){ std::cout << "BosonTag has a bad configuration!" << std::endl; return false; }
-  // jet is missing tau1, tau2, or ecf variables
-  if(!check_jet(jet)){ std::cout << "The given jet is missing tau1, tau2, or ecf variables." << std::endl; return false; }
+  if(m_bad_configuration){
+    if(m_debug) printf("<%s>: BosonTag has a bad configuration!\r\n", APP_NAME);
+    return false;
+  }
 
-  // could not find a configuration for the particular jet
-  std::pair<bool, BosonTag::CONFIG> config_parameters = get_configuration(jet, jet_algorithm, size_parameter, jet_input, jet_transform);
-  if(!config_parameters.first){ std::cout << "The given jet does not have a configuration parameter." << std::endl; return false; }
+  // buffer holder to make it easier to print messages for verbosity
+  std::string buffer;
 
-  // attempt to compute the variable value we cut against
-  double variable_value(-999.0);
+  if(m_tagger_alg == "smooth"){
+    // could not find a configuration for the particular jet
+    std::pair<bool, BosonTag::CONFIG> c = get_configuration(jet, jet_algorithm, size_parameter, jet_input, jet_transform);
+    if(!c.first){
+      if(m_debug) printf("<%s>: (smooth) The given jet does not have a configuration parameter.\r\n", APP_NAME);
+      return false;
+    }
 
-  // Dear Giordon: don't change this back to switch() again, you're an idiot.
-  if(m_tagger_alg == "tau21"){
-      variable_value = Tau2(jet)/Tau1(jet);
-  } else if(m_tagger_alg == "twovar"){
-      double d2(0.0), tau21(0.0);
-      tau21 = Tau2(jet)/Tau1(jet);
+    // start with the mass window
+    float mean_mass_val = c.second.m_mass_params[0] + c.second.m_mass_params[1] * jet.pt()/1.e3;
+    float window_bottom = mean_mass_val - c.second.m_mass_window;
+    float window_top = mean_mass_val + c.second.m_mass_window;
+    buffer = "<%s>: (smooth) Jet %s the mass window cut.\r\n\tMass: %0.6f GeV\r\n\tMass Window: [ %0.6f, %0.6f ] GeV\r\n";
+    if(! ((window_bottom < jet.m()/1.e3)&&(jet.m()/1.e3 < window_top)) ){
+      if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", jet.m()/1.e3, window_bottom, window_top);
+      return false;
+    }
+    if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", jet.m()/1.e3, window_bottom, window_top);
+
+    if(!m_mass_only){
+      // then calculate d2 and check that
+      float cut_on_d2_val = c.second.m_d2_params[0] + c.second.m_d2_params[1] * jet.pt()/1.e3 + c.second.m_d2_params[2] * pow(jet.pt()/1.e3, 2) + c.second.m_d2_params[3] * pow(jet.pt()/1.e3, 3) + c.second.m_d2_params[4] * pow(jet.pt()/1.e3, 4);
+      float d2(0.0);
       if(D2.isAvailable(jet)){
         d2 = D2(jet);
       } else {
+        if((!ECF1.isAvailable(jet) || !ECF2.isAvailable(jet) || !ECF3.isAvailable(jet))){
+          if(m_debug) printf("<%s>: (smooth) D2 wasn't calculated. ECF# variables are not available.\r\n", APP_NAME);
+          return false;
+        }
         d2 = ECF3(jet) * pow(ECF1(jet), 3.0) / pow(ECF2(jet), 3.0);
       }
-      variable_value = config_parameters.second.getTwoVar(d2, tau21);
-  } else if(m_tagger_alg == "c2beta1"){
-      if(C2.isAvailable(jet)){
-        variable_value = C2(jet);
-      } else {
-        variable_value = ECF3(jet) * ECF1(jet) / pow(ECF2(jet), 2.0);
-    }
-  } else if(m_tagger_alg == "d2beta1"){
-      if(D2.isAvailable(jet)){
-        variable_value = D2(jet);
-      } else {
-        variable_value = ECF3(jet) * pow(ECF1(jet), 3.0) / pow(ECF2(jet), 3.0);
+
+      // figure out if we tag or not
+      //      RIGHT: pass if a < cut
+      //      LEFT: pass if cut < a
+      buffer = "<%s>: (smooth) Jet %s the D2 cut from %s\r\n\tD2: %0.6f\r\n\tCut: %0.6f\r\n";
+      if(!(
+            ((d2 < cut_on_d2_val)&&(c.second.m_d2_cut_direction == "RIGHT")) ||
+            ((cut_on_d2_val < d2)&&(c.second.m_d2_cut_direction == "LEFT"))
+          )
+        ){
+        if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", c.second.m_d2_cut_direction.c_str(), d2, cut_on_d2_val);
+        return false;
       }
+      if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", c.second.m_d2_cut_direction.c_str(), d2, cut_on_d2_val);
+    }
+
+    if(m_verbose) printf("<%s>: (smooth) Jet is tagged using %s!\r\n",
+        APP_NAME, m_mass_only?"only a mass cut":"both cuts");
+    return true;
+
+  } else if(m_tagger_alg == "run1"){
+    std::string algorithm_name("");
+
+    // get the algorithm name and check result
+    std::pair<bool, std::string> res = get_algorithm_name(jet, jet_algorithm, size_parameter, jet_input, jet_transform);
+    if(!res.first){
+      if(m_debug) printf("<%s>: (Run-1) Could not determine what jet you are using.\r\n", APP_NAME);
+      return false;
+    }
+
+    // only use CAMKT12BDRSMU100SMALLR30YCUT4
+    algorithm_name = res.second;
+    if(algorithm_name != "CA12BDRSM100R30Y4"){
+      if(m_debug) printf("<%s>: (Run-1) You can only use Run-1 Tagger on CA12 BDRS M100 R30 Y4 jets.\r\n", APP_NAME);
+      return false;
+    }
+
+    // at this point, we know the jet is correct, so apply a mass window cut
+    buffer = "<%s>: (Run-1) Jet %s the mass window cut.\r\n\tMass: %0.6f GeV\r\n\tMass Window: [ 69.00, 107.00 ] GeV\r\n";
+    if(! (69. < jet.m()/1.e3 && jet.m()/1.e3 < 107.) ){
+      if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", jet.m()/1.e3);
+      return false;
+    }
+    if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", jet.m()/1.e3);
+
+    if(!m_mass_only){
+      //  and a \sqrt{y_S} cut (on subjets moment balance)
+      float ys(0.0);
+      if(!YFilt.isAvailable(jet)){
+        if(m_debug) printf("<%s>: (Run-1) Could not find YFilt on jet (subjets moment balance, y_S)\r\n", APP_NAME);
+        return false;
+      }
+      ys = YFilt(jet);
+      buffer = "<%s>: (Run-1) Jet %s the sqrt{y_S} cut.\r\n\tsqrt{y_S}: %0.2f\r\n\tCut: 0.45\r\n";
+      if(! (sqrt(ys) > 0.45) ){
+        if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", sqrt(ys));
+        return false;
+      }
+      if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", sqrt(ys));
+    }
+
+    if(m_verbose) printf("<%s>: (smooth) Jet is tagged using %s!\r\n",
+        APP_NAME, m_mass_only?"only a mass cut":"both cuts");
+    return true;
+  } else {
+    printf("<%s>: Err... how the hell did you get here?\r\n", APP_NAME);
+    return false;
   }
 
-  // figure out if we tag or not
-  bool b_mass_compare = (jet.m()/1000. > config_parameters.second.cut_low && jet.m()/1000. < config_parameters.second.cut_high);
-  bool b_variable_compare = config_parameters.second.compareVariable(variable_value);
-  if( m_compare_mass & ~m_compare_variable) return b_mass_compare;
-  if(~m_compare_mass &  m_compare_variable) return b_variable_compare;
-  if( m_compare_mass &  m_compare_variable) return b_mass_compare&b_variable_compare;
-
-  // always return false by default
-  // a false negative is better than a false positive
-  std::cout << "Something bad happened. Please report to somebody important." << std::endl;
-  return false;
 }
