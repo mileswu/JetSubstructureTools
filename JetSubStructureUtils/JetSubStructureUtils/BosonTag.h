@@ -1,6 +1,9 @@
 #ifndef jetsubstructureutils_bosontag_header
 #define jetsubstructureutils_bosontag_header
 
+// @Author: Giordon Stark
+// @Email: gstark@cern.ch
+
 // c++ includes
 #include <set>
 #include <string>
@@ -15,18 +18,26 @@ class TH2;
 namespace JetSubStructureUtils {
   class BosonTag {
     public:
-      /* struct holding the configuration details read in from the file */
+      // struct holding the configuration details read in from the recommendations file
       struct CONFIG {
+        // vector of coefficients for calculating the mean mass value
         std::vector<float> m_mass_params;
+        // variation to apply to mean mass value to calculate mass window
         float m_mass_window;
+        // vector of coefficients for calculating the D2 cut value
         std::vector<float> m_d2_params;
+        // direction of how to apply D2 cut value (LEFT: cut < val; RIGHT: val < cut)
         std::string m_d2_cut_direction;
+        // internal use mostly to signify that the object was successfully configured
         bool m_isConfig;
 
+        // initialize to default values
         CONFIG();
+        // load in all values from the file and store in object
         bool setConfigs(const std::vector<float> mass_params, float mass_window, const std::vector<float> d2_params, const std::string d2_cut_direction);
       };
 
+      // standard tool constructor, will read in recommendations file if tagger_alg = "smooth"
       BosonTag( std::string working_point           = "medium",
                 std::string tagger_alg              = "smooth",
 #ifdef ROOTCORE
