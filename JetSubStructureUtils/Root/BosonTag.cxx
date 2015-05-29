@@ -430,12 +430,12 @@ bool BosonTag::result(const xAOD::Jet& jet,
     float mean_mass_val = c.second.m_mass_params[0] + c.second.m_mass_params[1] * jet.pt()/1.e3;
     float window_bottom = mean_mass_val - c.second.m_mass_window;
     float window_top = mean_mass_val + c.second.m_mass_window;
-    buffer = "<%s>: (smooth) Jet %s the mass window cut.\r\n\tMass: %0.6f GeV\r\n\tMass Window: [ %0.6f, %0.6f ] GeV\r\n";
+    buffer = "<%s>: (smooth) Jet %s the mass window cut.\r\n\tMass: %0.6f GeV\r\n\tMean Mass Value: %0.6f GeV\r\n\tMass Window: [ %0.6f, %0.6f ] GeV (note: +/- %0.2f GeV)\r\n";
     if(! ((window_bottom < jet.m()/1.e3)&&(jet.m()/1.e3 < window_top)) ){
-      if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", jet.m()/1.e3, window_bottom, window_top);
+      if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", jet.m()/1.e3, mean_mass_val, window_bottom, window_top, c.second.m_mass_window);
       return false;
     }
-    if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", jet.m()/1.e3, window_bottom, window_top);
+    if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", jet.m()/1.e3, mean_mass_val, window_bottom, window_top, c.second.m_mass_window);
 
     if(!m_mass_only){
       // then calculate d2 and check that
