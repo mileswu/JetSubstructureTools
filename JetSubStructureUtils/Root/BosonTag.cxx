@@ -69,13 +69,11 @@ bool BosonTag::CONFIG::setConfigs(const std::vector<float> mass_params, float ma
 BosonTag::BosonTag( std::string working_point,
                     std::string tagger_alg,
                     std::string recommendations_file,
-                    bool mass_only,
                     bool debug,
                     bool verbose) :
   m_working_point(working_point),
   m_tagger_alg(tagger_alg),
   m_recommendations_file(recommendations_file),
-  m_mass_only(mass_only),
   m_debug(debug),
   m_verbose(verbose),
   m_bad_configuration(false)
@@ -91,13 +89,12 @@ BosonTag::BosonTag( std::string working_point,
             "Working Point     %s\r\n\t"
             "Tagger Algorithm  %s\r\n\t"
             "Recommendations   %s\r\n\t"
-            "Mass Only?        %s\r\n\t"
             "Debug Output?     %s\r\n\t"
             "Verbose Output?   %s\r\n"
             "=========================================\r\n",
             APP_NAME, m_working_point.c_str(), m_tagger_alg.c_str(),
             m_recommendations_file.c_str(),
-            m_mass_only?"Yes":"No", m_debug?"Yes":"No", m_verbose?"Yes":"No");
+            m_debug?"Yes":"No", m_verbose?"Yes":"No");
 
   std::set<std::string> validWorkingPoints;
   validWorkingPoints.insert("tight");
@@ -363,30 +360,30 @@ std::pair<bool, BosonTag::CONFIG> BosonTag::get_configuration(const xAOD::Jet& j
   return std::pair<bool, BosonTag::CONFIG>(true, m_configurations.at(m_working_point).at(algorithm_name));
 }
 
-bool BosonTag::result(const xAOD::Jet& jet) const
+int BosonTag::result(const xAOD::Jet& jet) const
 {
   // bad configuration
   if(m_bad_configuration){
     if(m_debug) printf("<%s>: BosonTag has a bad configuration!", APP_NAME);
-    return false;
+    return 0;
   }
 
   // if we call via this method, we need these 4 things defined
   if( !AlgorithmType.isAvailable(jet) ){
     if(m_debug) printf("<%s>: AlgorithmType is not defined for the jet.\r\n", APP_NAME);
-    return false;
+    return 0;
   }
   if( !SizeParameter.isAvailable(jet) ){
     if(m_debug) printf("<%s>: SizeParameter is not defined for the jet.\r\n", APP_NAME);
-    return false;
+    return 0;
   }
   if( !InputType.isAvailable(jet) )    {
     if(m_debug) printf("<%s>: InputType is not defined for the jet.\r\n"    , APP_NAME);
-    return false;
+    return 0;
   }
   if( !TransformType.isAvailable(jet) ){
     if(m_debug) printf("<%s>: TransformType is not defined for the jet.\r\n", APP_NAME);
-    return false;
+    return 0;
   }
 
   if(m_verbose) printf("<%s>: Jet has the 4 main properties set.\r\n\t"
@@ -403,7 +400,7 @@ bool BosonTag::result(const xAOD::Jet& jet) const
                 static_cast<xAOD::JetTransform::Type>(TransformType(jet)));
 }
 
-bool BosonTag::result(const xAOD::Jet& jet,
+int BosonTag::result(const xAOD::Jet& jet,
                       const xAOD::JetAlgorithmType::ID jet_algorithm,
                       const float size_parameter,
                       const xAOD::JetInput::Type jet_input,
@@ -412,8 +409,12 @@ bool BosonTag::result(const xAOD::Jet& jet,
   // bad configuration
   if(m_bad_configuration){
     if(m_debug) printf("<%s>: BosonTag has a bad configuration!\r\n", APP_NAME);
-    return false;
+    return 0;
   }
+
+  // overall result
+  int passMass(0);
+  int passSub(0);
 
   // buffer holder to make it easier to print messages for verbosity
   std::string buffer;
@@ -423,7 +424,7 @@ bool BosonTag::result(const xAOD::Jet& jet,
     std::pair<bool, BosonTag::CONFIG> c = get_configuration(jet, jet_algorithm, size_parameter, jet_input, jet_transform);
     if(!c.first){
       if(m_debug) printf("<%s>: (smooth) The given jet does not have a configuration parameter.\r\n", APP_NAME);
-      return false;
+      return 0;
     }
 
     // start with the mass window
@@ -434,42 +435,40 @@ bool BosonTag::result(const xAOD::Jet& jet,
     buffer = "<%s>: (smooth) Jet %s the mass window cut.\r\n\tMass: %0.6f GeV\r\n\tMean Mass Value: %0.6f GeV\r\n\tMass Window: [ %0.6f, %0.6f ] GeV (note: +/- %0.2f GeV)\r\n";
     if(! ((window_bottom < jet.m()/1.e3)&&(jet.m()/1.e3 < window_top)) ){
       if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", jet.m()/1.e3, mean_mass_val, window_bottom, window_top, c.second.m_mass_window);
-      return false;
+      passMass = 0;
+    } else {
+      if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", jet.m()/1.e3, mean_mass_val, window_bottom, window_top, c.second.m_mass_window);
+      passMass = 1;
     }
-    if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", jet.m()/1.e3, mean_mass_val, window_bottom, window_top, c.second.m_mass_window);
 
-    if(!m_mass_only){
-      // then calculate d2 and check that
-      float cut_on_d2_val = c.second.m_d2_params[0] + c.second.m_d2_params[1] * jet.pt()/1.e3 + c.second.m_d2_params[2] * pow(jet.pt()/1.e3, 2) + c.second.m_d2_params[3] * pow(jet.pt()/1.e3, 3) + c.second.m_d2_params[4] * pow(jet.pt()/1.e3, 4);
-      float d2(0.0);
-      if(D2.isAvailable(jet)){
-        d2 = D2(jet);
-      } else {
-        if((!ECF1.isAvailable(jet) || !ECF2.isAvailable(jet) || !ECF3.isAvailable(jet))){
-          if(m_debug) printf("<%s>: (smooth) D2 wasn't calculated. ECF# variables are not available.\r\n", APP_NAME);
-          return false;
-        }
-        d2 = ECF3(jet) * pow(ECF1(jet), 3.0) / pow(ECF2(jet), 3.0);
+    // then calculate d2 and check that
+    float cut_on_d2_val = c.second.m_d2_params[0] + c.second.m_d2_params[1] * jet.pt()/1.e3 + c.second.m_d2_params[2] * pow(jet.pt()/1.e3, 2) + c.second.m_d2_params[3] * pow(jet.pt()/1.e3, 3) + c.second.m_d2_params[4] * pow(jet.pt()/1.e3, 4);
+    float d2(0.0);
+    if(D2.isAvailable(jet)){
+      d2 = D2(jet);
+    } else {
+      if((!ECF1.isAvailable(jet) || !ECF2.isAvailable(jet) || !ECF3.isAvailable(jet))){
+        if(m_debug) printf("<%s>: (smooth) D2 wasn't calculated. ECF# variables are not available.\r\n", APP_NAME);
+        return 0;
       }
+      d2 = ECF3(jet) * pow(ECF1(jet), 3.0) / pow(ECF2(jet), 3.0);
+    }
 
-      // figure out if we tag or not
-      //      RIGHT: pass if a < cut
-      //      LEFT: pass if cut < a
-      buffer = "<%s>: (smooth) Jet %s the D2 cut from %s\r\n\tD2: %0.6f\r\n\tCut: %0.6f\r\n";
-      if(!(
-            ((d2 < cut_on_d2_val)&&(c.second.m_d2_cut_direction == "RIGHT")) ||
-            ((cut_on_d2_val < d2)&&(c.second.m_d2_cut_direction == "LEFT"))
-          )
-        ){
-        if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", c.second.m_d2_cut_direction.c_str(), d2, cut_on_d2_val);
-        return false;
-      }
+    // figure out if we tag or not
+    //      RIGHT: pass if a < cut
+    //      LEFT: pass if cut < a
+    buffer = "<%s>: (smooth) Jet %s the D2 cut from %s\r\n\tD2: %0.6f\r\n\tCut: %0.6f\r\n";
+    if(!(
+          ((d2 < cut_on_d2_val)&&(c.second.m_d2_cut_direction == "RIGHT")) ||
+          ((cut_on_d2_val < d2)&&(c.second.m_d2_cut_direction == "LEFT"))
+        )
+      ){
+      if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", c.second.m_d2_cut_direction.c_str(), d2, cut_on_d2_val);
+      passSub = 0;
+    } else {
       if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", c.second.m_d2_cut_direction.c_str(), d2, cut_on_d2_val);
+      passSub = 1;
     }
-
-    if(m_verbose) printf("<%s>: (smooth) Jet is tagged using %s!\r\n",
-        APP_NAME, m_mass_only?"only a mass cut":"both cuts");
-    return true;
 
   } else if(m_tagger_alg == "run1"){
     std::string algorithm_name("");
@@ -478,46 +477,50 @@ bool BosonTag::result(const xAOD::Jet& jet,
     std::pair<bool, std::string> res = get_algorithm_name(jet, jet_algorithm, size_parameter, jet_input, jet_transform);
     if(!res.first){
       if(m_debug) printf("<%s>: (Run-1) Could not determine what jet you are using.\r\n", APP_NAME);
-      return false;
+      return 0;
     }
 
     // only use CAMKT12BDRSMU100SMALLR30YCUT4
     algorithm_name = res.second;
     if(algorithm_name != "CA12BDRSM100R30Y4"){
       if(m_debug) printf("<%s>: (Run-1) You can only use Run-1 Tagger on CA12 BDRS M100 R30 Y4 jets.\r\n", APP_NAME);
-      return false;
+      return 0;
     }
 
     // at this point, we know the jet is correct, so apply a mass window cut
     buffer = "<%s>: (Run-1) Jet %s the mass window cut.\r\n\tMass: %0.6f GeV\r\n\tMass Window: [ 69.00, 107.00 ] GeV\r\n";
     if(! (69. < jet.m()/1.e3 && jet.m()/1.e3 < 107.) ){
       if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", jet.m()/1.e3);
-      return false;
+      passMass = 0;
+    } else {
+      if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", jet.m()/1.e3);
+      passMass = 1;
     }
-    if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", jet.m()/1.e3);
 
-    if(!m_mass_only){
-      //  and a \sqrt{y_S} cut (on subjets moment balance)
-      float ys(0.0);
-      if(!YFilt.isAvailable(jet)){
-        if(m_debug) printf("<%s>: (Run-1) Could not find YFilt on jet (subjets moment balance, y_S)\r\n", APP_NAME);
-        return false;
-      }
-      ys = YFilt(jet);
-      buffer = "<%s>: (Run-1) Jet %s the sqrt{y_S} cut.\r\n\tsqrt{y_S}: %0.2f\r\n\tCut: 0.45\r\n";
-      if(! (sqrt(ys) > 0.45) ){
-        if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", sqrt(ys));
-        return false;
-      }
+    //  and a \sqrt{y_S} cut (on subjets moment balance)
+    float ys(0.0);
+    if(!YFilt.isAvailable(jet)){
+      if(m_debug) printf("<%s>: (Run-1) Could not find YFilt on jet (subjets moment balance, y_S)\r\n", APP_NAME);
+      return 0;
+    }
+    ys = YFilt(jet);
+    buffer = "<%s>: (Run-1) Jet %s the sqrt{y_S} cut.\r\n\tsqrt{y_S}: %0.2f\r\n\tCut: 0.45\r\n";
+    if(! (sqrt(ys) > 0.45) ){
+      if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", sqrt(ys));
+      passSub = 0;
+    } else {
+      passSub = 1;
       if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", sqrt(ys));
     }
 
-    if(m_verbose) printf("<%s>: (smooth) Jet is tagged using %s!\r\n",
-        APP_NAME, m_mass_only?"only a mass cut":"both cuts");
-    return true;
   } else {
     printf("<%s>: Err... how the hell did you get here?\r\n", APP_NAME);
-    return false;
+    return 0;
   }
+
+    if(m_verbose) printf("<%s>: Jet has passed %s!\r\n",
+        APP_NAME, (passMass == 1)?((passSub == 1)?"a mass cut":"both cuts"):((passSub==1)?"a substructure cut":"neither cuts"));
+
+    return (passMass << 1)|(passSub << 0);
 
 }

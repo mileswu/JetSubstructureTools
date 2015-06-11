@@ -45,15 +45,14 @@ namespace JetSubStructureUtils {
 #else
                 std::string recommendations_file    = "JetSubStructureUtils/data/config_13TeV_20150528_Wtagging.dat",
 #endif
-                bool mass_only                      = false,
                 bool debug                          = false,
                 bool verbose                        = false);
 
       // this is recommended usage, pass in jet, get true/false
-      bool result(const xAOD::Jet& jet) const;
+      int result(const xAOD::Jet& jet) const;
       // sometimes you don't have certain properties set so pass them in
       //    to select the appropriate tagging recommendation
-      bool result(const xAOD::Jet& jet,
+      int result(const xAOD::Jet& jet,
                   const xAOD::JetAlgorithmType::ID jet_algorithm,
                   const float size_parameter,
                   const xAOD::JetInput::Type jet_input,
@@ -78,8 +77,7 @@ namespace JetSubStructureUtils {
       std::string m_working_point,
                   m_tagger_alg,
                   m_recommendations_file;
-      bool m_mass_only,
-           m_debug,
+      bool m_debug,
            m_verbose;
 
       // this is so we don't error out in general, esp. for athena jobs

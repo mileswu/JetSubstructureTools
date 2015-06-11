@@ -13,14 +13,13 @@ BosonTagTool::BosonTagTool(std::string name) :
 #else
   declareProperty("RecommendationsFile", m_recommendations_file =  "JetSubStructureUtils/data/config_13TeV_20150528_Wtagging.dat");
 #endif
-  declareProperty("MassOnly", m_mass_only                       = false);
   declareProperty("Debug", m_debug                              = false);
   declareProperty("Verbose", m_verbose                          = false);
 }
 
 int BosonTagTool::modifyJet(xAOD::Jet &jet) const
 {
-  JetSubStructureUtils::BosonTag tagger(m_working_point, m_tagger_alg, m_recommendations_file, m_mass_only, m_debug, m_verbose);
+  JetSubStructureUtils::BosonTag tagger(m_working_point, m_tagger_alg, m_recommendations_file, m_debug, m_verbose);
   jet.setAttribute("BosonTag", static_cast<int>(tagger.result(jet)));
 
   return 0;
