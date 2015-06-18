@@ -52,18 +52,10 @@ namespace JetSubStructureUtils {
       int result(const xAOD::Jet& jet) const;
       // sometimes you don't have certain properties set so pass them in
       //    to select the appropriate tagging recommendation
-      int result(const xAOD::Jet& jet,
-                  const xAOD::JetAlgorithmType::ID jet_algorithm,
-                  const float size_parameter,
-                  const xAOD::JetInput::Type jet_input,
-                  const xAOD::JetTransform::Type jet_transform) const;
+      int result(const xAOD::Jet& jet, std::string algorithm_name) const;
 
       // given the jet and configurations, return the corresponding CONFIG object
-      std::pair<bool, CONFIG> get_configuration(const xAOD::Jet& jet,
-                                                const xAOD::JetAlgorithmType::ID jet_algorithm,
-                                                const float size_parameter,
-                                                const xAOD::JetInput::Type jet_input,
-                                                const xAOD::JetTransform::Type jet_transform) const;
+      std::pair<bool, CONFIG> get_configuration(std::string algorithm_name) const;
 
       // given the jet and configurations, return the string representation of the jet
       //        eg: AK10LCTRIMF5R20, CA10LCPRUNR50Z15, CA12LCBDRSM100R30Y15

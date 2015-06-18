@@ -329,27 +329,7 @@ std::pair<bool, std::string> BosonTag::get_algorithm_name(const xAOD::Jet& jet,
 }
 
 
-std::pair<bool, BosonTag::CONFIG> BosonTag::get_configuration(const xAOD::Jet& jet,
-                             const xAOD::JetAlgorithmType::ID jet_algorithm,
-                             const float size_parameter,
-                             const xAOD::JetInput::Type jet_input,
-                             const xAOD::JetTransform::Type jet_transform) const {
-
-  std::string algorithm_name("");
-
-  // get the algorithm name and check result
-  std::pair<bool, std::string> res = get_algorithm_name(jet, jet_algorithm, size_parameter, jet_input, jet_transform);
-
-  // is it a valid result?
-  if(!res.first){
-    if(m_debug) printf("<%s>: Could not determine what jet you are using.\r\n", APP_NAME);
-    return std::pair<bool, BosonTag::CONFIG>(false, {});
-  } else {
-    if(m_verbose) printf("<%s>: Jet introspection successful.\r\n", APP_NAME);
-  }
-
-  // grab the correct configuration corresponding to the type of jet
-  algorithm_name = res.second;
+std::pair<bool, BosonTag::CONFIG> BosonTag::get_configuration(std::string algorithm_name) const {
   if( !m_configurations.at(m_working_point).count(algorithm_name) ){
     if(m_debug) printf("<%s>: Could not find jet algorithm name `%s` in recommendations file!\r\n", APP_NAME, algorithm_name.c_str());
     return std::pair<bool, BosonTag::CONFIG>(false, {});
@@ -393,19 +373,25 @@ int BosonTag::result(const xAOD::Jet& jet) const
       "Transform Type: %d\r\n",
       APP_NAME, AlgorithmType(jet), SizeParameter(jet), InputType(jet), TransformType(jet));
 
-  return result(jet,
-                static_cast<xAOD::JetAlgorithmType::ID>(AlgorithmType(jet)),
-                SizeParameter(jet),
-                static_cast<xAOD::JetInput::Type>(InputType(jet)),
-                static_cast<xAOD::JetTransform::Type>(TransformType(jet)));
+  // get the algorithm name and check result
+  std::pair<bool, std::string> res = get_algorithm_name(jet,
+                                                        static_cast<xAOD::JetAlgorithmType::ID>(AlgorithmType(jet)),
+                                                        SizeParameter(jet),
+                                                        static_cast<xAOD::JetInput::Type>(InputType(jet)),
+                                                        static_cast<xAOD::JetTransform::Type>(TransformType(jet)));
+
+  // is it a valid result?
+  if(!res.first){
+    if(m_debug) printf("<%s>: Could not determine what jet you are using.\r\n", APP_NAME);
+    return false;
+  } else {
+    if(m_verbose) printf("<%s>: Jet introspection successful.\r\n", APP_NAME);
+  }
+
+  return result(jet, res.second);
 }
 
-int BosonTag::result(const xAOD::Jet& jet,
-                      const xAOD::JetAlgorithmType::ID jet_algorithm,
-                      const float size_parameter,
-                      const xAOD::JetInput::Type jet_input,
-                      const xAOD::JetTransform::Type jet_transform) const
-{
+int BosonTag::result(const xAOD::Jet& jet, std::string algorithm_name) const {
   // bad configuration
   if(m_bad_configuration){
     if(m_debug) printf("<%s>: BosonTag has a bad configuration!\r\n", APP_NAME);
@@ -421,7 +407,7 @@ int BosonTag::result(const xAOD::Jet& jet,
 
   if(m_tagger_alg == "smooth"){
     // could not find a configuration for the particular jet
-    std::pair<bool, BosonTag::CONFIG> c = get_configuration(jet, jet_algorithm, size_parameter, jet_input, jet_transform);
+    std::pair<bool, BosonTag::CONFIG> c = get_configuration(algorithm_name);
     if(!c.first){
       if(m_debug) printf("<%s>: (smooth) The given jet does not have a configuration parameter.\r\n", APP_NAME);
       return 0;
@@ -471,17 +457,7 @@ int BosonTag::result(const xAOD::Jet& jet,
     }
 
   } else if(m_tagger_alg == "run1"){
-    std::string algorithm_name("");
-
-    // get the algorithm name and check result
-    std::pair<bool, std::string> res = get_algorithm_name(jet, jet_algorithm, size_parameter, jet_input, jet_transform);
-    if(!res.first){
-      if(m_debug) printf("<%s>: (Run-1) Could not determine what jet you are using.\r\n", APP_NAME);
-      return 0;
-    }
-
     // only use CAMKT12BDRSMU100SMALLR30YCUT4
-    algorithm_name = res.second;
     if(algorithm_name != "CA12BDRSM100R30Y4"){
       if(m_debug) printf("<%s>: (Run-1) You can only use Run-1 Tagger on CA12 BDRS M100 R30 Y4 jets.\r\n", APP_NAME);
       return 0;
