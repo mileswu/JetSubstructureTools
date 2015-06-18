@@ -35,4 +35,5 @@ apply_pattern dual_use_library files="../Root/NSubjettinessTool.cxx \
 ../Root/SubjetMakerTool.cxx \
 ../Root/SubjetFinderTool.cxx \
 ../Root/SubjetRecorderTool.cxx \
-../Root/BosonTagTool.cxx"
+../Root/BosonTagTool.cxx \ 
+../Root/QwTool.cxx"
