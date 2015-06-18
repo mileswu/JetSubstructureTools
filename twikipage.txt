@@ -1,12 +1,12 @@
 %CERTIFY%
 ---+!! <nop>%TOPIC%
 
-%TOC% <!-- this line is optional --> 
+%TOC% <!-- this line is optional -->
 %STARTINCLUDE%
 ---+ Introduction
 
 !JetSubStructureUtils ([[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureUtils][svn]]) and !JetSubStructureMomentTools ([[https://svnweb.cern.ch/trac/atlasoff/browser/Reconstruction/Jet/JetSubStructureMomentTools][svn]]) are two packages that compute various substructure moments for jets.
-Together these are used in Athena for reconstruction and the derivation framework, and can also be used in users' analyses (both in ROOT and Athena). 
+Together these are used in Athena for reconstruction and the derivation framework, and can also be used in users' analyses (both in ROOT and Athena).
 
 These two packages are jointly maintained and supported by the Jet/Etmiss substructure and software/validation group. If you have any questions or need help using these packages, please contact the following maintainers:
    * Miles Wu: mileswu@uchicago.edu
@@ -49,7 +49,7 @@ Changes between versions are recorded in the packages' Changelog: [[https://svnw
 Once you have set up AnalysisBase (version 2 or later), you need to checkout the required packages:
 <verbatim style="background: #e0ebf6;">
 rc checkout_pkg atlasoff/AsgExternal/Asg_FastJet/tags
-rc checkout_pkg atlasoff/Reconstruction/Jet/JetEDM/tags 
+rc checkout_pkg atlasoff/Reconstruction/Jet/JetEDM/tags
 rc checkout_pkg atlasoff/Reconstruction/Jet/JetSubStructureUtils/tags
 </verbatim>
 In your analysis package, let AtlasComputing.RootCore know that you are going to be using !JetSubStructureUtils by editing the =cmt/Makefile.RootCore= file and modifying the following line:
@@ -64,7 +64,7 @@ rc find_packages
 All the substructure moments that are calculable by using !JetSubStructureUtils follow a certain standard format.
 To use them to calculate a moment for an xAOD jet:
    1. Include the header file (these are named after the class name)
-   2. Declare the substructure moment definition (the possible arguments are given in the table above) 
+   2. Declare the substructure moment definition (the possible arguments are given in the table above)
    3. Call =definition.result(jet)= to get the result
 
 As an example, let us calculate Diplority-1,2 (=Dip12=) for a single xAOD jet, using a subjet radius of 0.3:
@@ -103,6 +103,10 @@ Now you can calculate substructure moments on xAOD jets in a similar fashion to 
 
 Documentation to be added later.
 
+---+ Using the Boosted Boson Tagger
+
+[[https://github.com/mileswu/JetSubstructureTools/wiki/BosonTag][See the documentation here.]]
+
 ---+ Developers
 
 If you are going to be working on these two packages, I would recommend working in the Athena environment as that allows you to test both !JetSubStructureUtils and !JetSubStructureMomentTools simultaneously.
@@ -123,10 +127,10 @@ Another job-options file at =JetSubStructureMomentTools/share/validate.py= makes
 
 <!-- For significant updates to the topic, consider adding your 'signature' (beneath this editing box) --> *Major updates*:%BR% -- Main.MilesWu - 29 Jan 2014
 
-<!-- Person responsible for the page: 
-Either leave as is - the creator's name will be inserted; 
-Or replace the complete REVINFO tag (including percentages symbols) with a name in the form Main.TwikiUsersName --> 
-%RESPONSIBLE% %REVINFO{"$wikiusername" rev="1.1"}% %BR% <!-- Once this page has been reviewed, please add the name and the date e.g. Main.StephenHaywood - 31 Oct 2006 --> 
+<!-- Person responsible for the page:
+Either leave as is - the creator's name will be inserted;
+Or replace the complete REVINFO tag (including percentages symbols) with a name in the form Main.TwikiUsersName -->
+%RESPONSIBLE% %REVINFO{"$wikiusername" rev="1.1"}% %BR% <!-- Once this page has been reviewed, please add the name and the date e.g. Main.StephenHaywood - 31 Oct 2006 -->
 %REVIEW% *Never reviewed*
 
 %TWISTY{
