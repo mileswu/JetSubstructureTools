@@ -3,9 +3,11 @@
 #include <float.h>
 #include "JetSubStructureMomentTools/SubjetRecorderTool.h"
 #include "fastjet/PseudoJet.hh"
+#include "fastjet/ClusterSequence.hh"
 #include "xAODJet/JetContainer.h"
 #include "xAODJet/JetAuxContainer.h"
 #include "JetEDM/JetConstituentFiller.h"
+#include "JetEDM/FastJetUtils.h"
 
 using namespace std;
 using fastjet::PseudoJet;
@@ -65,6 +67,12 @@ std::vector<xAOD::Jet *> SubjetRecorderTool::recordSubjets(std::vector<fastjet::
     // Set constituents
     jet::JetConstituentFiller confiller;
     confiller.extractConstituents(*subj, &(*it));
+
+    // Set author/radius
+    double radius = it->associated_cluster_sequence()->jet_def().R();
+		subj->setSizeParameter(radius);
+		xAOD::JetAlgorithmType::ID alg = xAOD::JetAlgorithmType::algId(it->associated_cluster_sequence()->jet_def().jet_algorithm());
+		subj->setAlgorithmType(alg);
 
     // Set association to parent
     const xAOD::JetContainer *parent_container = dynamic_cast<const xAOD::JetContainer*>(jet.container());
