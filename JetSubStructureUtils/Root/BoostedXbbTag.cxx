@@ -264,16 +264,13 @@ int BoostedXbbTag::result(const xAOD::Jet& jet) const
       6. Cut on the D2 of the fat-jet (D2 from calorimeter constituents only)
   */
 
-  // default to 1.0 if not found
-  float jetRadius(SizeParameter(jet));
-
   // Step 1
   std::vector<const xAOD::Jet*> associated_trackJets;
-  if(!jet->getAssociatedObjects<xAOD::Jet>("GhostAntiKt2TrackJet", associated_trackJets)){
+  if(!jet.getAssociatedObjects<xAOD::Jet>("GhostAntiKt2TrackJet", associated_trackJets)){
     if(m_verbose) printf("<%s>: No associated track jets found.\r\n", APP_NAME);
     return -1;
   }
-  if(associated_trackJets->size() < 2){
+  if(associated_trackJets.size() < 2){
     if(m_verbose) printf("<%s>: We need at least two associated track jets.\r\n", APP_NAME);
     return -1;
   }
