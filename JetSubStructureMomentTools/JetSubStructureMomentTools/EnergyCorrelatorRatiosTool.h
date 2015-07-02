@@ -15,6 +15,7 @@ class EnergyCorrelatorRatiosTool :
 
     private:
       bool m_includeBeta2;
+      bool m_includeECF4;
 };
 
 #endif
