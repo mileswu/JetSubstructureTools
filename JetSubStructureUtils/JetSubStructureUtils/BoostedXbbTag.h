@@ -24,11 +24,12 @@ namespace JetSubStructureUtils {
                      float bTagCut                       = 0.8,
                      float massCut                       = 125.0,
                      float D2Cut                         = 1.0,
+                     const xAOD::MuonContainer* muons    = nullptr,
                      bool debug                          = false,
                      bool verbose                        = false);
 
-      // this is recommended usage, pass in jet, muon collection, track collection, get true/false
-      int result(const xAOD::Jet& jet, const xAOD::JetContainer* trackJets, const xAOD::MuonContainer* muons) const;
+      // this is recommended usage, pass in jet, get true/false
+      int result(const xAOD::Jet& jet) const;
 
       // given the jet and configurations, return the string representation of the jet
       //        eg: AK10LCTRIMF5R20, CA10LCPRUNR50Z15, CA12LCBDRSM100R30Y15
@@ -43,6 +44,7 @@ namespace JetSubStructureUtils {
       float m_bTagCut,
             m_massCut,
             m_D2Cut;
+      const xAOD::MuonContainer* m_muons;
       bool m_debug,
            m_verbose;
 

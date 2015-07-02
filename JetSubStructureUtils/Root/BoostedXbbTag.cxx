@@ -16,6 +16,8 @@
 
 // rootcore includes
 #include "AthContainers/ConstDataVector.h"
+#include "AthLinks/ElementLink.h"
+#include "xAODBase/IParticleContainer.h"
 
 #define APP_NAME "BoostedXbbTag"
 
@@ -43,12 +45,14 @@ BoostedXbbTag::BoostedXbbTag( std::string working_point,
                               float bTagCut,
                               float massCut,
                               float D2Cut,
+                              const xAOD::MuonContainer* muons,
                               bool debug,
                               bool verbose) :
   m_working_point(working_point),
   m_bTagCut(bTagCut),
   m_massCut(massCut),
   m_D2Cut(D2Cut),
+  m_muons(muons),
   m_debug(debug),
   m_verbose(verbose),
   m_bad_configuration(false)
@@ -202,7 +206,7 @@ std::pair<bool, std::string> BoostedXbbTag::get_algorithm_name(const xAOD::Jet& 
 }
 
 
-int BoostedXbbTag::result(const xAOD::Jet& jet, const xAOD::JetContainer* trackJets, const xAOD::MuonContainer* muons) const
+int BoostedXbbTag::result(const xAOD::Jet& jet) const
 {
   // bad configuration
   if(m_bad_configuration){
@@ -264,34 +268,33 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, const xAOD::JetContainer* trackJ
   float jetRadius(SizeParameter(jet));
 
   // Step 1
-  ConstDataVector<xAOD::JetContainer> matched_trackJets(SG::VIEW_ELEMENTS);
-  for(const auto trackJet: *trackJets){
-    // match using DR
-    if(trackJet->p4().DeltaR(jet.p4()) > jetRadius) continue;
-    matched_trackJets.push_back(trackJet);
+  std::vector<const xAOD::Jet*> associated_trackJets;
+  if(!jet->getAssociatedObjects<xAOD::Jet>("GhostAntiKt2TrackJet", associated_trackJets)){
+    if(m_verbose) printf("<%s>: No associated track jets found.\r\n", APP_NAME);
+    return -1;
   }
-  if(trackJets->size() < 2){
-    if(m_verbose) printf("<%s>: We need at least two DR-matched track jets.\r\n", APP_NAME);
+  if(associated_trackJets->size() < 2){
+    if(m_verbose) printf("<%s>: We need at least two associated track jets.\r\n", APP_NAME);
     return -1;
   }
 
   // Step 2
-  std::sort(matched_trackJets.begin(), matched_trackJets.end(), [](const xAOD::IParticle* lhs, const xAOD::IParticle* rhs) -> bool { return (lhs->pt() > rhs->pt()); });
+  std::sort(associated_trackJets.begin(), associated_trackJets.end(), [](const xAOD::IParticle* lhs, const xAOD::IParticle* rhs) -> bool { return (lhs->pt() > rhs->pt()); });
   static SG::AuxElement::Decorator<int> isB("isB");
   for(int i=0; i<2; i++)
-    isB(*(matched_trackJets.at(i))) = static_cast<int>(matched_trackJets.at(i)->btagging()->MV1_discriminant() > m_bTagCut);
+    isB(*(associated_trackJets.at(i))) = static_cast<int>(associated_trackJets.at(i)->btagging()->MV1_discriminant() > m_bTagCut);
 
   // Step 3
-  if( ! (matched_trackJets.at(0)->getAttribute<int>("isB") && matched_trackJets.at(1)->getAttribute<int>("isB")) ){
+  if( ! (associated_trackJets.at(0)->getAttribute<int>("isB") && associated_trackJets.at(1)->getAttribute<int>("isB")) ){
     if(m_verbose) printf("<%s>: Both track jets are not b-tagged.\r\n", APP_NAME);
     return -1;
   }
   const xAOD::Muon* matched_muon(nullptr);
   for(int i=0; i<2; i++){
     float maxDR(0.2);
-    matched_trackJets.at(i)->getAttribute("SizeParameter", maxDR);
-    for(const auto muon: *muons){
-      float DR( matched_trackJets.at(i)->p4().DeltaR(muon->p4()) );
+    associated_trackJets.at(i)->getAttribute("SizeParameter", maxDR);
+    for(const auto muon: *m_muons){
+      float DR( associated_trackJets.at(i)->p4().DeltaR(muon->p4()) );
       if(DR > maxDR) continue;
       maxDR = DR;
       matched_muon = muon;
@@ -301,6 +304,11 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, const xAOD::JetContainer* trackJ
     if(m_verbose) printf("<%s>: There is no matched muon.\r\n", APP_NAME);
     return -1;
   }
+  // super optimized version, need to know name of Muons collection
+  // ElementLink< xAOD::IParticleContainer > el_muon( "Muons", matched_muon->index() );
+  static SG::AuxElement::Decorator<ElementLink<xAOD::IParticleContainer> > matchedMuonLink("MatchedMuonLink");
+  ElementLink<xAOD::IParticleContainer> el_muon( *m_muons, matched_muon->index() );
+  matchedMuonLink(jet) = el_muon;
 
   // Step 4
   auto corrected_jet = jet.p4() + matched_muon->p4();
@@ -324,8 +332,7 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, const xAOD::JetContainer* trackJ
     }
     d2 = ECF3(jet) * pow(ECF1(jet), 3.0) / pow(ECF2(jet), 3.0);
   }
-
-  if(d2 < m_D2Cut){
+  if(d2 > m_D2Cut){
     if(m_verbose) printf("<%s>: Jet did not pass the D2 cut.\r\n", APP_NAME);
     return 0;
   } else {
