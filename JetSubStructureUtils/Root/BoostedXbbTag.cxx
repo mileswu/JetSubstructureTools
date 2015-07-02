@@ -1,5 +1,4 @@
 #include "JetSubStructureUtils/BoostedXbbTag.h"
-#include <iostream>
 
 #ifndef ROOTCORE
 #include "PathResolver/PathResolver.h"
@@ -14,6 +13,9 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+
+// rootcore includes
+#include "AthContainers/ConstDataVector.h"
 
 #define APP_NAME "BoostedXbbTag"
 
@@ -31,11 +33,22 @@ SG::AuxElement::ConstAccessor<float>    BoostedXbbTag::ZCut ("ZCut");
 SG::AuxElement::ConstAccessor<char>     BoostedXbbTag::BDRS ("BDRS");
 SG::AuxElement::ConstAccessor<float>    BoostedXbbTag::YMin ("YMin");
 SG::AuxElement::ConstAccessor<float>    BoostedXbbTag::MuMax ("MuMax");
+SG::AuxElement::ConstAccessor<float>    BoostedXbbTag::D2 ("D2");
+SG::AuxElement::ConstAccessor<float>    BoostedXbbTag::ECF1 ("ECF1");
+SG::AuxElement::ConstAccessor<float>    BoostedXbbTag::ECF2 ("ECF2");
+SG::AuxElement::ConstAccessor<float>    BoostedXbbTag::ECF3 ("ECF3");
+
 
 BoostedXbbTag::BoostedXbbTag( std::string working_point,
+                              float bTagCut,
+                              float massCut,
+                              float D2Cut,
                               bool debug,
                               bool verbose) :
   m_working_point(working_point),
+  m_bTagCut(bTagCut),
+  m_massCut(massCut),
+  m_D2Cut(D2Cut),
   m_debug(debug),
   m_verbose(verbose),
   m_bad_configuration(false)
@@ -49,10 +62,12 @@ BoostedXbbTag::BoostedXbbTag( std::string working_point,
   if(m_verbose)
     printf("<%s>: Attempting to configure with\r\n\t"
             "Working Point     %s\r\n\t"
+            "Mass Cut          %0.2f\r\n\t"
+            "D2 Cut            %0.2f\r\n\t"
             "Debug Output?     %s\r\n\t"
             "Verbose Output?   %s\r\n"
             "=========================================\r\n",
-            APP_NAME, m_working_point.c_str(),
+            APP_NAME, m_working_point.c_str(), m_massCut, m_D2Cut,
             m_debug?"Yes":"No", m_verbose?"Yes":"No");
 
   std::set<std::string> validWorkingPoints;
@@ -187,30 +202,30 @@ std::pair<bool, std::string> BoostedXbbTag::get_algorithm_name(const xAOD::Jet& 
 }
 
 
-int BoostedXbbTag::result(const xAOD::Jet& jet, const xAOD::MuonContainer* muons) const
+int BoostedXbbTag::result(const xAOD::Jet& jet, const xAOD::JetContainer* trackJets, const xAOD::MuonContainer* muons) const
 {
   // bad configuration
   if(m_bad_configuration){
     if(m_debug) printf("<%s>: BoostedXbbTag has a bad configuration!", APP_NAME);
-    return 0;
+    return -1;
   }
 
   // if we call via this method, we need these 4 things defined
   if( !AlgorithmType.isAvailable(jet) ){
     if(m_debug) printf("<%s>: AlgorithmType is not defined for the jet.\r\n", APP_NAME);
-    return 0;
+    return -1;
   }
   if( !SizeParameter.isAvailable(jet) ){
     if(m_debug) printf("<%s>: SizeParameter is not defined for the jet.\r\n", APP_NAME);
-    return 0;
+    return -1;
   }
   if( !InputType.isAvailable(jet) )    {
     if(m_debug) printf("<%s>: InputType is not defined for the jet.\r\n"    , APP_NAME);
-    return 0;
+    return -1;
   }
   if( !TransformType.isAvailable(jet) ){
     if(m_debug) printf("<%s>: TransformType is not defined for the jet.\r\n", APP_NAME);
-    return 0;
+    return -1;
   }
 
   if(m_verbose) printf("<%s>: Jet has the 4 main properties set.\r\n\t"
@@ -230,19 +245,91 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, const xAOD::MuonContainer* muons
   // is it a valid result?
   if(!res.first){
     if(m_debug) printf("<%s>: Could not determine what jet you are using.\r\n", APP_NAME);
-    return false;
+    return -1;
   } else {
     if(m_verbose) printf("<%s>: Jet introspection successful.\r\n", APP_NAME);
   }
 
-  return result(jet, res.second, muons);
-}
+  /* Steps:
+      1. Get all AntiKt2TrackJets asssociated with the jet
+      2. B-tag the two leading track-jets
+      3. If both track-jets are b-tagged, match the muon (if any) to these b-tagged track-jets
+        - if more than 1 muon matches a track jet (within the radius of the track jet), only use the muon closest in DR
+      4. Correct the fat-jet mass by putting the matched muon back
+      5. Set a cut on the corrected fat jet mass
+      6. Cut on the D2 of the fat-jet (D2 from calorimeter constituents only)
+  */
 
-int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, const xAOD::MuonContainer* muons) const {
-  // bad configuration
-  if(m_bad_configuration){
-    if(m_debug) printf("<%s>: BoostedXbbTag has a bad configuration!\r\n", APP_NAME);
+  // default to 1.0 if not found
+  float jetRadius(SizeParameter(jet));
+
+  // Step 1
+  ConstDataVector<xAOD::JetContainer> matched_trackJets(SG::VIEW_ELEMENTS);
+  for(const auto trackJet: *trackJets){
+    // match using DR
+    if(trackJet->p4().DeltaR(jet.p4()) > jetRadius) continue;
+    matched_trackJets.push_back(trackJet);
+  }
+  if(trackJets->size() < 2){
+    if(m_verbose) printf("<%s>: We need at least two DR-matched track jets.\r\n", APP_NAME);
+    return -1;
+  }
+
+  // Step 2
+  std::sort(matched_trackJets.begin(), matched_trackJets.end(), [](const xAOD::IParticle* lhs, const xAOD::IParticle* rhs) -> bool { return (lhs->pt() > rhs->pt()); });
+  static SG::AuxElement::Decorator<int> isB("isB");
+  for(int i=0; i<2; i++)
+    isB(*(matched_trackJets.at(i))) = static_cast<int>(matched_trackJets.at(i)->btagging()->MV1_discriminant() > m_bTagCut);
+
+  // Step 3
+  if( ! (matched_trackJets.at(0)->getAttribute<int>("isB") && matched_trackJets.at(1)->getAttribute<int>("isB")) ){
+    if(m_verbose) printf("<%s>: Both track jets are not b-tagged.\r\n", APP_NAME);
+    return -1;
+  }
+  const xAOD::Muon* matched_muon(nullptr);
+  for(int i=0; i<2; i++){
+    float maxDR(0.2);
+    matched_trackJets.at(i)->getAttribute("SizeParameter", maxDR);
+    for(const auto muon: *muons){
+      float DR( matched_trackJets.at(i)->p4().DeltaR(muon->p4()) );
+      if(DR > maxDR) continue;
+      maxDR = DR;
+      matched_muon = muon;
+    }
+  }
+  if(!matched_muon){
+    if(m_verbose) printf("<%s>: There is no matched muon.\r\n", APP_NAME);
+    return -1;
+  }
+
+  // Step 4
+  auto corrected_jet = jet.p4() + matched_muon->p4();
+
+  // Step 5
+  if(corrected_jet.M() < m_massCut){
+    if(m_verbose) printf("<%s>: Corrected fat jet did not pass mass cut.\r\n", APP_NAME);
     return 0;
+  } else {
+    if(m_verbose) printf("<%s>: Corrected fat jet did pass mass cut.\r\n", APP_NAME);
+  }
+
+  // Step 6
+  float d2(0.0);
+  if(D2.isAvailable(jet)){
+    d2 = D2(jet);
+  } else {
+    if((!ECF1.isAvailable(jet) || !ECF2.isAvailable(jet) || !ECF3.isAvailable(jet))){
+      if(m_debug) printf("<%s>: D2 wasn't calculated. ECF# variables are not available.\r\n", APP_NAME);
+      return -1;
+    }
+    d2 = ECF3(jet) * pow(ECF1(jet), 3.0) / pow(ECF2(jet), 3.0);
+  }
+
+  if(d2 < m_D2Cut){
+    if(m_verbose) printf("<%s>: Jet did not pass the D2 cut.\r\n", APP_NAME);
+    return 0;
+  } else {
+    if(m_verbose) printf("<%s>: Jet did pass the D2 cut.\r\n", APP_NAME);
   }
 
   return 1;

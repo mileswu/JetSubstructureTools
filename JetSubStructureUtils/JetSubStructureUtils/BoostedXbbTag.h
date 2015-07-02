@@ -9,7 +9,7 @@
 #include <string>
 
 // EDM includes
-#include <xAODJet/Jet.h>
+#include <xAODJet/JetContainer.h>
 #include <xAODMuon/MuonContainer.h>
 
 // forward-declare the ROOT includes
@@ -21,14 +21,14 @@ namespace JetSubStructureUtils {
     public:
       // standard tool constructor
       BoostedXbbTag( std::string working_point           = "medium",
+                     float bTagCut                       = 0.8,
+                     float massCut                       = 125.0,
+                     float D2Cut                         = 1.0,
                      bool debug                          = false,
                      bool verbose                        = false);
 
       // this is recommended usage, pass in jet, muon collection, track collection, get true/false
-      int result(const xAOD::Jet& jet, const xAOD::MuonContainer* muons) const;
-      // sometimes you don't have certain properties set so pass them in
-      //    to select the appropriate tagging recommendation
-      int result(const xAOD::Jet& jet, std::string algorithm_name, const xAOD::MuonContainer* muons) const;
+      int result(const xAOD::Jet& jet, const xAOD::JetContainer* trackJets, const xAOD::MuonContainer* muons) const;
 
       // given the jet and configurations, return the string representation of the jet
       //        eg: AK10LCTRIMF5R20, CA10LCPRUNR50Z15, CA12LCBDRSM100R30Y15
@@ -40,6 +40,9 @@ namespace JetSubStructureUtils {
 
     private:
       std::string m_working_point;
+      float m_bTagCut,
+            m_massCut,
+            m_D2Cut;
       bool m_debug,
            m_verbose;
 
@@ -68,6 +71,11 @@ namespace JetSubStructureUtils {
       static SG::AuxElement::ConstAccessor<float> YMin;
       static SG::AuxElement::ConstAccessor<float> MuMax;
 
+      // for D2
+      static SG::AuxElement::ConstAccessor<float> D2;
+      static SG::AuxElement::ConstAccessor<float> ECF1;
+      static SG::AuxElement::ConstAccessor<float> ECF2;
+      static SG::AuxElement::ConstAccessor<float> ECF3;
   };
 }
 
