@@ -22,7 +22,8 @@ namespace JetSubStructureUtils {
       // standard tool constructor
       BoostedXbbTag( std::string working_point           = "medium",
                      float bTagCut                       = 0.8,
-                     float massCut                       = 125.0,
+                     float massDown                      = 100.0,
+                     float massUp                        = 150.0,
                      float D2Cut                         = 1.0,
                      const xAOD::MuonContainer* muons    = nullptr,
                      bool debug                          = false,
@@ -42,7 +43,8 @@ namespace JetSubStructureUtils {
     private:
       std::string m_working_point;
       float m_bTagCut,
-            m_massCut,
+            m_massDown,
+            m_massUp,
             m_D2Cut;
       const xAOD::MuonContainer* m_muons;
       bool m_debug,

@@ -43,14 +43,16 @@ SG::AuxElement::ConstAccessor<float>    BoostedXbbTag::ECF3 ("ECF3");
 
 BoostedXbbTag::BoostedXbbTag( std::string working_point,
                               float bTagCut,
-                              float massCut,
+                              float massDown,
+                              float massUp,
                               float D2Cut,
                               const xAOD::MuonContainer* muons,
                               bool debug,
                               bool verbose) :
   m_working_point(working_point),
   m_bTagCut(bTagCut),
-  m_massCut(massCut),
+  m_massDown(massDown),
+  m_massUp(massUp),
   m_D2Cut(D2Cut),
   m_muons(muons),
   m_debug(debug),
@@ -66,12 +68,12 @@ BoostedXbbTag::BoostedXbbTag( std::string working_point,
   if(m_verbose)
     printf("<%s>: Attempting to configure with\r\n\t"
             "Working Point     %s\r\n\t"
-            "Mass Cut          %0.2f\r\n\t"
+            "Mass Window       [%0.6f, %0.6f]\r\n\t"
             "D2 Cut            %0.2f\r\n\t"
             "Debug Output?     %s\r\n\t"
             "Verbose Output?   %s\r\n"
             "=========================================\r\n",
-            APP_NAME, m_working_point.c_str(), m_massCut, m_D2Cut,
+            APP_NAME, m_working_point.c_str(), m_massDown, m_massUp, m_D2Cut,
             m_debug?"Yes":"No", m_verbose?"Yes":"No");
 
   std::set<std::string> validWorkingPoints;
@@ -308,14 +310,25 @@ int BoostedXbbTag::result(const xAOD::Jet& jet) const
   matchedMuonLink(jet) = el_muon;
 
   // Step 4
-  auto corrected_jet = jet.p4() + matched_muon->p4();
+  float eLoss(0.0);
+  matched_muon->parameter(eLoss,xAOD::Muon::EnergyLoss);
+  if(m_debug) printf("<%s>: getELossTLV xAOD::Muon eLoss= %0.2f", APP_NAME, eLoss);
+  auto mTLV = matched_muon->p4();
+  double eLossX = eLoss*sin(mTLV.Theta())*cos(mTLV.Phi());
+  double eLossY = eLoss*sin(mTLV.Theta())*sin(mTLV.Phi());
+  double eLossZ = eLoss*cos(mTLV.Theta());
+  auto mLoss = TLorentzVector(eLossX,eLossY,eLossZ,eLoss);
+  auto corrected_jet = jet.p4() + mTLV - mLoss;
+
+  std::string buffer;
 
   // Step 5
-  if(corrected_jet.M() < m_massCut){
-    if(m_verbose) printf("<%s>: Corrected fat jet did not pass mass cut.\r\n", APP_NAME);
+  buffer = "<%s>: Jet %s the mass window cut.\r\n\tMass: %0.6f GeV\r\n\tMass Window: [ %0.6f, %0.6f ]\r\n";
+  if(corrected_jet.M()/1.e3 < m_massDown || corrected_jet.M()/1.e3 > m_massUp){
+    if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", corrected_jet.M()/1.e3, m_massDown, m_massUp);
     return 0;
   } else {
-    if(m_verbose) printf("<%s>: Corrected fat jet did pass mass cut.\r\n", APP_NAME);
+    if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", corrected_jet.M()/1.e3, m_massDown, m_massUp);
   }
 
   // Step 6
@@ -329,13 +342,15 @@ int BoostedXbbTag::result(const xAOD::Jet& jet) const
     }
     d2 = ECF3(jet) * pow(ECF1(jet), 3.0) / pow(ECF2(jet), 3.0);
   }
+  buffer = "<%s>: Jet %s the D2 cut from above\r\n\tD2: %0.6f\r\n\tCut: %0.6f\r\n";
   if(d2 > m_D2Cut){
-    if(m_verbose) printf("<%s>: Jet did not pass the D2 cut.\r\n", APP_NAME);
+    if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", d2, m_D2Cut);
     return 0;
   } else {
-    if(m_verbose) printf("<%s>: Jet did pass the D2 cut.\r\n", APP_NAME);
+    if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", d2, m_D2Cut);
   }
 
+  if(m_verbose) printf("<%s>: Jet passed both cuts.", APP_NAME);
   return 1;
 
 }
