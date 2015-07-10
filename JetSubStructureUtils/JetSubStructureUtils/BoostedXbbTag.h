@@ -7,10 +7,13 @@
 // c++ includes
 #include <set>
 #include <string>
+#include<memory>
 
 // EDM includes
 #include <xAODJet/JetContainer.h>
 #include <xAODMuon/MuonContainer.h>
+
+#include "MuonSelectorTools/MuonSelectionTool.h"
 
 // forward-declare the ROOT includes
 class TFile;
@@ -20,17 +23,23 @@ namespace JetSubStructureUtils {
   class BoostedXbbTag {
     public:
       // standard tool constructor
-      BoostedXbbTag( std::string working_point           = "medium",
-                     float bTagCut                       = 0.8,
-                     float massDown                      = 100.0,
-                     float massUp                        = 150.0,
-                     float D2Cut                         = 1.0,
-                     const xAOD::MuonContainer* muons    = nullptr,
-                     bool debug                          = false,
-                     bool verbose                        = false);
+      BoostedXbbTag(std::string working_point           = "medium",
+#ifdef ROOTCORE
+                    std::string recommendations_file    = "$ROOTCOREBIN/data/JetSubStructureUtils/config_13TeV_20150710_Htagging.dat",
+#else
+                    std::string recommendations_file    = "JetSubStructureUtils/data/config_13TeV_20150710_Htagging.dat",
+#endif
+                    std::string boson_type              = "Higgs",
+                    std::string algorithm_name          = "AK10LCTRIMF5R20",
+                    int num_bTags                       = 2,
+                    bool debug                          = false,
+                    bool verbose                        = false);
 
-      // this is recommended usage, pass in jet, get true/false
-      int result(const xAOD::Jet& jet) const;
+      // this is recommended usage, pass in jet, muons, get true/false
+      int result(const xAOD::Jet& jet, const xAOD::MuonContainer* muons) const;
+      // sometimes you don't have certain properties set so pass them in
+      //    to select the appropriate tagging recommendation
+      int result(const xAOD::Jet& jet, std::string algorithm_name, const xAOD::MuonContainer* muons) const;
 
       // given the jet and configurations, return the string representation of the jet
       //        eg: AK10LCTRIMF5R20, CA10LCPRUNR50Z15, CA12LCBDRSM100R30Y15
@@ -42,13 +51,19 @@ namespace JetSubStructureUtils {
 
     private:
       std::string m_working_point;
-      float m_bTagCut,
-            m_massDown,
-            m_massUp,
-            m_D2Cut;
-      const xAOD::MuonContainer* m_muons;
+      std::string m_recommendations_file;
+      std::string m_boson_type;
+      std::string m_algorithm_name;
+      int m_num_bTags;
       bool m_debug,
            m_verbose;
+
+      float m_bTagCut,
+            m_massMin,
+            m_massMax;
+      std::vector<float> m_D2_params;
+      std::string m_D2_cut_direction;
+      std::unique_ptr<CP::MuonSelectionTool> m_muonSelectionTool;
 
       // this is so we don't error out in general, esp. for athena jobs
       bool m_bad_configuration;
