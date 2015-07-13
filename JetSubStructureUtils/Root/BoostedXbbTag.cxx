@@ -368,7 +368,7 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
       2. B-tag the two leading track-jets
       3. If both track-jets are b-tagged, match the muon (if any) to these b-tagged track-jets
         - if more than 1 muon matches a track jet (within the radius of the track jet), only use the muon closest in DR
-      4. Correct the fat-jet mass by putting the matched muon back
+      4. Correct the fat-jet mass by putting the matched muon back (if there is a matched muon)
       5. Set a cut on the corrected fat jet mass
       6. Cut on the D2 of the fat-jet (D2 from calorimeter constituents only)
   */
@@ -412,45 +412,50 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
   }
 
   // Step 3
+  const xAOD::Muon* matched_muon(nullptr);
   // first select the muons: Combined, Medium, pT > 10 GeV
   std::vector<const xAOD::Muon*> preselected_muons(muons->size(), nullptr);
   auto it = std::copy_if(muons->begin(), muons->end(), preselected_muons.begin(), [this](const xAOD::Muon* muon) -> bool { return (muon->pt()/1.e3 > 10.0 && m_muonSelectionTool->getQuality(*muon) <= xAOD::Muon::Medium); });
   preselected_muons.resize(std::distance(preselected_muons.begin(), it)); // shrink container to new size
   if(preselected_muons.size() == 0){
     if(m_verbose) printf("<%s>: There are no muons that passed the kinematic preselection.\r\n", APP_NAME);
-    return -3;
-  }
-  const xAOD::Muon* matched_muon(nullptr);
-  for(int i=0; i<2; i++){
-    float maxDR(0.2);
-    associated_trackJets.at(i)->getAttribute("SizeParameter", maxDR);
-    for(const auto muon: preselected_muons){
-      float DR( associated_trackJets.at(i)->p4().DeltaR(muon->p4()) );
-      if(DR > maxDR) continue;
-      maxDR = DR;
-      matched_muon = muon;
+    //return -3;
+  } else {
+    for(int i=0; i<2; i++){
+      float maxDR(0.2);
+      associated_trackJets.at(i)->getAttribute("SizeParameter", maxDR);
+      for(const auto muon: preselected_muons){
+        float DR( associated_trackJets.at(i)->p4().DeltaR(muon->p4()) );
+        if(DR > maxDR) continue;
+        maxDR = DR;
+        matched_muon = muon;
+      }
     }
   }
-  if(!matched_muon){
-    if(m_verbose) printf("<%s>: There is no matched muon.\r\n", APP_NAME);
-    return -3;
-  }
-  // super optimized version, need to know name of Muons collection
-  // ElementLink< xAOD::IParticleContainer > el_muon( "Muons", matched_muon->index() );
-  static SG::AuxElement::Decorator<ElementLink<xAOD::IParticleContainer> > matchedMuonLink("MatchedMuonLink");
-  ElementLink<xAOD::IParticleContainer> el_muon( *muons, matched_muon->index() );
-  matchedMuonLink(jet) = el_muon;
 
   // Step 4
-  float eLoss(0.0);
-  matched_muon->parameter(eLoss,xAOD::Muon::EnergyLoss);
-  if(m_debug) printf("<%s>: getELossTLV xAOD::Muon eLoss= %0.2f\r\n", APP_NAME, eLoss);
-  auto mTLV = matched_muon->p4();
-  double eLossX = eLoss*sin(mTLV.Theta())*cos(mTLV.Phi());
-  double eLossY = eLoss*sin(mTLV.Theta())*sin(mTLV.Phi());
-  double eLossZ = eLoss*cos(mTLV.Theta());
-  auto mLoss = TLorentzVector(eLossX,eLossY,eLossZ,eLoss);
-  auto corrected_jet = jet.p4() + mTLV - mLoss;
+  TLorentzVector corrected_jet;
+  if(!matched_muon){
+    if(m_verbose) printf("<%s>: There is no matched muon.\r\n", APP_NAME);
+    //return -3;
+    corrected_jet = jet.p4();
+  } else {
+    // super optimized version, need to know name of Muons collection
+    // ElementLink< xAOD::IParticleContainer > el_muon( "Muons", matched_muon->index() );
+    static SG::AuxElement::Decorator<ElementLink<xAOD::IParticleContainer> > matchedMuonLink("MatchedMuonLink");
+    ElementLink<xAOD::IParticleContainer> el_muon( *muons, matched_muon->index() );
+    matchedMuonLink(jet) = el_muon;
+
+    float eLoss(0.0);
+    matched_muon->parameter(eLoss,xAOD::Muon::EnergyLoss);
+    if(m_debug) printf("<%s>: getELossTLV xAOD::Muon eLoss= %0.2f\r\n", APP_NAME, eLoss);
+    auto mTLV = matched_muon->p4();
+    double eLossX = eLoss*sin(mTLV.Theta())*cos(mTLV.Phi());
+    double eLossY = eLoss*sin(mTLV.Theta())*sin(mTLV.Phi());
+    double eLossZ = eLoss*cos(mTLV.Theta());
+    auto mLoss = TLorentzVector(eLossX,eLossY,eLossZ,eLoss);
+    auto corrected_jet = jet.p4() + mTLV - mLoss;
+  }
 
   std::string buffer;
 
