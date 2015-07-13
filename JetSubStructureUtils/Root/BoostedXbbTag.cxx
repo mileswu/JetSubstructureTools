@@ -130,32 +130,21 @@ BoostedXbbTag::BoostedXbbTag( std::string working_point,
       if(m_verbose) printf("<%s>: Recommendations file opened for reading.\r\n", APP_NAME);
 
       std::string line;
+      int numLines(0);
       while( std::getline(f_in, line) ){
-        if(line[0] == '#' || line.empty()) continue; // skip commented lines and empty lines
+        if(line.empty()) continue; // skip empty lines
+        if(line[0] == '#') continue; // skip commented lines
 
         /* token contains the current splitted text */
         std::string token;
-        if(m_verbose) printf("<%s>: Reading in line\r\n\t'%s'\r\n", APP_NAME, line.c_str());
 
         // split by space
         std::istringstream ss(line);
         /* lineDetails is an array of the splits */
         std::vector<std::string> lineDetails{std::istream_iterator<std::string>{ss}, std::istream_iterator<std::string>{}};
+        if(lineDetails.size() != 13) continue;
 
-        /*
-        #Three tagger working points supported (so far)
-        #1. Loose:  90% mass window, double b-tagging (MV2c20 70% track jets R=0.2)
-        #2. Medium:     68% mass window, double b-tagging (MV2c20 70% track jets R=0.2)
-        #3. Tight:  68% mass window, double b-tagging (MV2c20 70% track jets R=0.2), D2 pT dependent cut (4th degree polynomial fit)
-        #Developers working points will be added in a next version of the config file
-        #
-        #BOSON  WP  JET ALGORITHM       B-TAG   #bjets  M_min   M_max   D2_a0       D2_a1       D2_a2       D2_a3       D2_a4       Sense of the cut
-
-        Higgs   loose    AK10LCTRIMF5R20    -0.3098 double  71.0    150.0   0       0       0       0       0       NONE
-        Higgs   medium   AK10LCTRIMF5R20    -0.3098 double  92.0    137.0   0       0       0       0       0       NONE
-        Higgs   tight    AK10LCTRIMF5R20    -0.3098 double  92.0    137.0   3.81476157118   -0.027354099393 0.0001009797058 -1.62600182e-07 1.048954039e-10 RIGHT
-        */
-
+        if(m_verbose) printf("<%s>: Reading in line\r\n\t'%s'\r\n", APP_NAME, line.c_str());
         if(lineDetails[0] != m_boson_type) continue;
         if(lineDetails[1] != m_working_point) continue;
         if(lineDetails[2] != m_algorithm_name) continue;
@@ -168,6 +157,7 @@ BoostedXbbTag::BoostedXbbTag( std::string working_point,
           m_D2_params[i]      = std::stof(lineDetails[i+7]);
         m_D2_cut_direction    = lineDetails[12];
 
+        if(m_verbose) printf("<%s>: Found the configuration! We're done reading the file.\r\n", APP_NAME);
         found_configuration = true;
         break;
       }
