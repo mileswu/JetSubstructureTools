@@ -399,8 +399,8 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
     if(m_verbose) printf("<%s>: Got track jets from parent jet.\r\n", APP_NAME);
   }
 
-  // filter out the track jets we do not want (pT > 10 GeV and |eta| < 2.5)
-  std::remove_if(associated_trackJets.begin(), associated_trackJets.end(),  [](const xAOD::Jet* jet) -> bool { return (jet->pt()/1.e3 < 10.0 || abs(jet->eta()) > 2.5); });
+  // filter out the track jets we do not want (pT > 10 GeV and |eta| < 2.5 and at least 2 constituents)
+  std::remove_if(associated_trackJets.begin(), associated_trackJets.end(),  [](const xAOD::Jet* jet) -> bool { return (jet->pt()/1.e3 < 10.0 || abs(jet->eta()) > 2.5 || jet->numConstituents() < 2); });
   if(associated_trackJets.size() < 2){
     if(m_verbose) printf("<%s>: We need at least two associated track jets.\r\n", APP_NAME);
     return -2;
@@ -427,9 +427,9 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
 
   // Step 3
   const xAOD::Muon* matched_muon(nullptr);
-  // first select the muons: Combined, Medium, pT > 10 GeV
+  // first select the muons: Combined, Medium, pT > 10 GeV, |eta| < 2.5
   std::vector<const xAOD::Muon*> preselected_muons(muons->size(), nullptr);
-  auto it = std::copy_if(muons->begin(), muons->end(), preselected_muons.begin(), [this](const xAOD::Muon* muon) -> bool { return (muon->pt()/1.e3 > 10.0 && m_muonSelectionTool->getQuality(*muon) <= xAOD::Muon::Medium); });
+  auto it = std::copy_if(muons->begin(), muons->end(), preselected_muons.begin(), [this](const xAOD::Muon* muon) -> bool { return (muon->pt()/1.e3 > 10.0 && m_muonSelectionTool->getQuality(*muon) <= xAOD::Muon::Medium && fabs(muon->eta()) < 2.5); });
   preselected_muons.resize(std::distance(preselected_muons.begin(), it)); // shrink container to new size
   if(preselected_muons.size() == 0){
     if(m_verbose) printf("<%s>: There are no muons that passed the kinematic preselection.\r\n", APP_NAME);
