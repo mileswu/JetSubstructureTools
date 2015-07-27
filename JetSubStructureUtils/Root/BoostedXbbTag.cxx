@@ -130,7 +130,6 @@ BoostedXbbTag::BoostedXbbTag( std::string working_point,
       if(m_verbose) printf("<%s>: Recommendations file opened for reading.\r\n", APP_NAME);
 
       std::string line;
-      int numLines(0);
       while( std::getline(f_in, line) ){
         if(line.empty()) continue; // skip empty lines
         if(line[0] == '#') continue; // skip commented lines
@@ -354,7 +353,7 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
 
   /* Steps:
       0. Fat Jet Selection
-      1. Get all AntiKt2TrackJets asssociated with the jet
+      1. Get all AntiKt2TrackJets asssociated with the ungroomed jet
       2. B-tag the two leading track-jets
       3. If both track-jets are b-tagged, match the muon (if any) to these b-tagged track-jets
         - if more than 1 muon matches a track jet (within the radius of the track jet), only use the muon closest in DR
@@ -371,10 +370,35 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
 
   // Step 1
   std::vector<const xAOD::Jet*> associated_trackJets;
-  if(!jet.getAssociatedObjects<xAOD::Jet>("GhostAntiKt2TrackJet", associated_trackJets)){
-    if(m_verbose) printf("<%s>: No associated track jets found.\r\n", APP_NAME);
-    return -2;
+  static SG::AuxElement::ConstAccessor<ElementLink<xAOD::JetContainer>> parent("Parent");
+  // get the track jets from the parent
+  bool problemWithParent = false;
+  ElementLink<xAOD::JetContainer> parentEL;
+  if(!parent.isAvailable(jet)) problemWithParent = true;
+  else parentEL = parent(jet);
+  if(problemWithParent || !parentEL.isValid()){
+    if(m_debug) printf("<%s>: ", APP_NAME);
+    if(problemWithParent && m_debug) printf("Parent decoration does not exist. ");
+    if(!parentEL.isValid() && m_debug) printf("Parent link is not valid. ");
+    if(m_debug) printf("\r\n");
+    return -2; // do not fallback
+    /*
+    if(m_debug) printf("Get track jets from groomed jet.\r\n");
+    if(!jet.getAssociatedObjects<xAOD::Jet>("GhostAntiKt2TrackJet", associated_trackJets)){
+      if(m_verbose) printf("<%s>: No associated track jets found on jet.\r\n", APP_NAME);
+      return -2;
+    }
+    if(m_verbose) printf("<%s>: Got track jets from groomed jet.\r\n", APP_NAME);
+    */
+  } else {
+    const xAOD::Jet* parentJet = *parentEL;
+    if(!parentJet->getAssociatedObjects<xAOD::Jet>("GhostAntiKt2TrackJet", associated_trackJets)){
+      if(m_verbose) printf("<%s>: No associated track jets found on parent jet.\r\n", APP_NAME);
+      return -2;
+    }
+    if(m_verbose) printf("<%s>: Got track jets from parent jet.\r\n", APP_NAME);
   }
+
   // filter out the track jets we do not want (pT > 10 GeV and |eta| < 2.5)
   std::remove_if(associated_trackJets.begin(), associated_trackJets.end(),  [](const xAOD::Jet* jet) -> bool { return (jet->pt()/1.e3 < 10.0 || abs(jet->eta()) > 2.5); });
   if(associated_trackJets.size() < 2){
@@ -397,7 +421,7 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
     num_bTags += isBTagged;
   }
   if( num_bTags < m_num_bTags ){
-    if(m_verbose) printf("<%s>: We require at least %d track jet%s b-tagged. %d %s b-tagged.\r\n", APP_NAME, m_num_bTags, (m_num_bTags == 1)?"":"s", num_bTags, (num_bTags == 1)?"was":"were");
+    if(m_verbose) printf("<%s>: We require the %d leading track jet%s b-tagged. %d %s b-tagged.\r\n", APP_NAME, m_num_bTags, (m_num_bTags == 1)?"":"s", num_bTags, (num_bTags == 1)?"was":"were");
     return -2;
   }
 
