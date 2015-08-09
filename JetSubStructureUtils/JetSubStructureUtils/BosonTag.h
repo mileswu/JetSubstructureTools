@@ -41,9 +41,9 @@ namespace JetSubStructureUtils {
       BosonTag( std::string working_point           = "medium",
                 std::string tagger_alg              = "smooth",
 #ifdef ROOTCORE
-                std::string recommendations_file    = "$ROOTCOREBIN/data/JetSubStructureUtils/config_13TeV_20150528_Wtagging.dat",
+                std::string recommendations_file    = "$ROOTCOREBIN/data/JetSubStructureUtils/config_13TeV_Wtagging_MC15_Prerecommendations_090815.dat",
 #else
-                std::string recommendations_file    = "JetSubStructureUtils/data/config_13TeV_20150528_Wtagging.dat",
+                std::string recommendations_file    = "JetSubStructureUtils/data/config_13TeV_Wtagging_MC15_Prerecommendations_090815.dat",
 #endif
                 bool debug                          = false,
                 bool verbose                        = false);
