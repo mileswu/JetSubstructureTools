@@ -345,25 +345,25 @@ int BosonTag::result(const xAOD::Jet& jet) const
   // bad configuration
   if(m_bad_configuration){
     if(m_debug) printf("<%s>: BosonTag has a bad configuration!", APP_NAME);
-    return 0;
+    return -9;
   }
 
   // if we call via this method, we need these 4 things defined
   if( !AlgorithmType.isAvailable(jet) ){
     if(m_debug) printf("<%s>: AlgorithmType is not defined for the jet.\r\n", APP_NAME);
-    return 0;
+    return -9;
   }
   if( !SizeParameter.isAvailable(jet) ){
     if(m_debug) printf("<%s>: SizeParameter is not defined for the jet.\r\n", APP_NAME);
-    return 0;
+    return -9;
   }
   if( !InputType.isAvailable(jet) )    {
     if(m_debug) printf("<%s>: InputType is not defined for the jet.\r\n"    , APP_NAME);
-    return 0;
+    return -9;
   }
   if( !TransformType.isAvailable(jet) ){
     if(m_debug) printf("<%s>: TransformType is not defined for the jet.\r\n", APP_NAME);
-    return 0;
+    return -9;
   }
 
   if(m_verbose) printf("<%s>: Jet has the 4 main properties set.\r\n\t"
@@ -395,7 +395,7 @@ int BosonTag::result(const xAOD::Jet& jet, std::string algorithm_name) const {
   // bad configuration
   if(m_bad_configuration){
     if(m_debug) printf("<%s>: BosonTag has a bad configuration!\r\n", APP_NAME);
-    return 0;
+    return -9;
   }
 
   // overall result
@@ -410,7 +410,7 @@ int BosonTag::result(const xAOD::Jet& jet, std::string algorithm_name) const {
     std::pair<bool, BosonTag::CONFIG> c = get_configuration(algorithm_name);
     if(!c.first){
       if(m_debug) printf("<%s>: (smooth) The given jet does not have a configuration parameter.\r\n", APP_NAME);
-      return 0;
+      return -9;
     }
 
     // start with the mass window
@@ -435,7 +435,7 @@ int BosonTag::result(const xAOD::Jet& jet, std::string algorithm_name) const {
     } else {
       if((!ECF1.isAvailable(jet) || !ECF2.isAvailable(jet) || !ECF3.isAvailable(jet))){
         if(m_debug) printf("<%s>: (smooth) D2 wasn't calculated. ECF# variables are not available.\r\n", APP_NAME);
-        return 0;
+        return -9;
       }
       d2 = ECF3(jet) * pow(ECF1(jet), 3.0) / pow(ECF2(jet), 3.0);
     }
@@ -460,7 +460,7 @@ int BosonTag::result(const xAOD::Jet& jet, std::string algorithm_name) const {
     // only use CAMKT12BDRSMU100SMALLR30YCUT4
     if(algorithm_name != "CA12BDRSM100R30Y4"){
       if(m_debug) printf("<%s>: (Run-1) You can only use Run-1 Tagger on CA12 BDRS M100 R30 Y4 jets.\r\n", APP_NAME);
-      return 0;
+      return -9;
     }
 
     // at this point, we know the jet is correct, so apply a mass window cut
@@ -477,7 +477,7 @@ int BosonTag::result(const xAOD::Jet& jet, std::string algorithm_name) const {
     float ys(0.0);
     if(!YFilt.isAvailable(jet)){
       if(m_debug) printf("<%s>: (Run-1) Could not find YFilt on jet (subjets moment balance, y_S)\r\n", APP_NAME);
-      return 0;
+      return -9;
     }
     ys = YFilt(jet);
     buffer = "<%s>: (Run-1) Jet %s the sqrt{y_S} cut.\r\n\tsqrt{y_S}: %0.2f\r\n\tCut: 0.45\r\n";
@@ -491,7 +491,7 @@ int BosonTag::result(const xAOD::Jet& jet, std::string algorithm_name) const {
 
   } else {
     printf("<%s>: Err... how the hell did you get here?\r\n", APP_NAME);
-    return 0;
+    return -9;
   }
 
     if(m_verbose) printf("<%s>: Jet has passed %s!\r\n",

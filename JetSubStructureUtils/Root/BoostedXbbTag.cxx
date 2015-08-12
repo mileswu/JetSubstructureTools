@@ -337,7 +337,7 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
   // bad configuration
   if(m_bad_configuration){
     if(m_debug) printf("<%s>: BoostedXbbTag has a bad configuration!\r\n", APP_NAME);
-    return 0;
+    return -9;
   }
 
   // make sure we are using the right kind of jet
