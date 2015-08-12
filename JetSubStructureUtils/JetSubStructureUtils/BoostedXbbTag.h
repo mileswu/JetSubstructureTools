@@ -13,11 +13,11 @@
 #include <xAODJet/JetContainer.h>
 #include <xAODMuon/MuonContainer.h>
 
-#include "MuonSelectorTools/MuonSelectionTool.h"
-
 // forward-declare the ROOT includes
 class TFile;
 class TH2;
+
+namespace CP { class MuonSelectionTool; }
 
 namespace JetSubStructureUtils {
   class BoostedXbbTag {
