@@ -16,6 +16,7 @@ use  GaudiInterface             GaudiInterface-*                External
 use  AtlasFastJet               AtlasFastJet-*                  External
 use  JetEDM                     JetEDM-*                        Reconstruction/Jet
 use  JetSubStructureUtils       JetSubStructureUtils-*          Reconstruction/Jet
+use  xAODMuon                   xAODMuon-*                      Event/xAOD
 end_private
 
 apply_pattern dual_use_library files="../Root/NSubjettinessTool.cxx \
@@ -36,4 +37,5 @@ apply_pattern dual_use_library files="../Root/NSubjettinessTool.cxx \
 ../Root/SubjetFinderTool.cxx \
 ../Root/SubjetRecorderTool.cxx \
 ../Root/BosonTagTool.cxx \ 
-../Root/QwTool.cxx"
+../Root/QwTool.cxx \
+../Root/BoostedXbbTagTool.cxx"
