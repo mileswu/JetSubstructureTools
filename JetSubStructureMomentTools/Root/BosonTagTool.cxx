@@ -9,9 +9,9 @@ BosonTagTool::BosonTagTool(std::string name) :
   declareProperty("WorkingPoint", m_working_point               = "medium");
   declareProperty("TaggerAlgorithm", m_tagger_alg               = "smooth");
 #ifdef ROOTCORE
-  declareProperty("RecommendationsFile", m_recommendations_file = "$ROOTCOREBIN/data/JetSubStructureUtils/config_13TeV_Wtagging_MC15_Prerecommendations_090815.dat");
+  declareProperty("RecommendationsFile", m_recommendations_file = "$ROOTCOREBIN/data/JetSubStructureUtils/config_13TeV_Wtagging_MC15_Prerecommendations_20150809.dat");
 #else
-  declareProperty("RecommendationsFile", m_recommendations_file =  "JetSubStructureUtils/data/config_13TeV_Wtagging_MC15_Prerecommendations_090815.dat");
+  declareProperty("RecommendationsFile", m_recommendations_file =  "JetSubStructureUtils/data/config_13TeV_Wtagging_MC15_Prerecommendations_20150809.dat");
 #endif
   declareProperty("Debug", m_debug                              = false);
   declareProperty("Verbose", m_verbose                          = false);
