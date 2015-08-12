@@ -19,7 +19,7 @@ BosonTagTool::BosonTagTool(std::string name) :
 
 int BosonTagTool::modifyJet(xAOD::Jet &jet) const
 {
-  JetSubStructureUtils::BosonTag tagger(m_working_point, m_tagger_alg, m_recommendations_file, m_debug, m_verbose);
+  static JetSubStructureUtils::BosonTag tagger(m_working_point, m_tagger_alg, m_recommendations_file, m_debug, m_verbose);
   jet.setAttribute("BosonTag", static_cast<int>(tagger.result(jet)));
 
   return 0;
