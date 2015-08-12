@@ -14,9 +14,6 @@
 #include <sstream>
 #include <fstream>
 
-// rootcore includes
-#include "MuonSelectorTools/MuonSelectionTool.h"
-
 #define APP_NAME "BoostedXbbTag"
 
 using namespace JetSubStructureUtils;
