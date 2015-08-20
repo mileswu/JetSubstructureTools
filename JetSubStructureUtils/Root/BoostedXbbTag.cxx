@@ -443,15 +443,16 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
   }
 
   // Step 4
+  static SG::AuxElement::Decorator<ElementLink<xAOD::IParticleContainer> > matchedMuonLink("MatchedMuonLink");
   TLorentzVector corrected_jet;
   if(!matched_muon){
     if(m_verbose) printf("<%s>: There is no matched muon.\r\n", APP_NAME);
     //return -3;
     corrected_jet = jet.p4();
+    matchedMuonLink(jet) = ElementLink<xAOD::IParticleContainer>(); // null constructor
   } else {
     // super optimized version, need to know name of Muons collection
     // ElementLink< xAOD::IParticleContainer > el_muon( "Muons", matched_muon->index() );
-    static SG::AuxElement::Decorator<ElementLink<xAOD::IParticleContainer> > matchedMuonLink("MatchedMuonLink");
     ElementLink<xAOD::IParticleContainer> el_muon( *muons, matched_muon->index() );
     matchedMuonLink(jet) = el_muon;
 
