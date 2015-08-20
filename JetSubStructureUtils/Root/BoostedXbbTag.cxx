@@ -464,8 +464,11 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
     double eLossY = eLoss*sin(mTLV.Theta())*sin(mTLV.Phi());
     double eLossZ = eLoss*cos(mTLV.Theta());
     auto mLoss = TLorentzVector(eLossX,eLossY,eLossZ,eLoss);
-    auto corrected_jet = jet.p4() + mTLV - mLoss;
+    corrected_jet = jet.p4() + mTLV - mLoss;
   }
+  // may not always be the corrected jet, but always contains what is used to cut against
+  static SG::AuxElement::Decorator<TLorentzVector> correctedJetDecor("CorrectedJetP4");
+  correctedJetDecor(jet) = corrected_jet;
 
   std::string buffer;
 
