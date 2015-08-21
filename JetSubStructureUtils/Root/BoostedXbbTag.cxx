@@ -359,7 +359,6 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
   }
 
   /* Steps:
-      0. Fat Jet Selection
       1. Get all AntiKt2TrackJets asssociated with the ungroomed jet
       2. B-tag the two leading track-jets
       3. If both track-jets are b-tagged, match the muon (if any) to these b-tagged track-jets
@@ -368,12 +367,6 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
       5. Set a cut on the corrected fat jet mass
       6. Cut on the D2 of the fat-jet (D2 from calorimeter constituents only)
   */
-
-  // Step 0
-  if(jet.pt()/1.e3 < 250.0 || abs(jet.eta()) > 2.0){
-    if(m_verbose) printf("<%s>: Jet does not pass preselection: pT > 250 GeV and |eta| < 2.0.\r\n\t pT: %0.2f GeV\r\n\teta: %0.2f\r\n", APP_NAME, jet.pt()/1.e3, jet.eta());
-    return -1;
-  }
 
   // Step 1
   std::vector<const xAOD::Jet*> associated_trackJets;
