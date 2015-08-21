@@ -40,6 +40,7 @@ BoostedXbbTag::BoostedXbbTag( std::string working_point,
                               std::string boson_type,
                               std::string algorithm_name,
                               int num_bTags,
+                              std::string decor_prefix,
                               bool debug,
                               bool verbose) :
   m_working_point(working_point),
@@ -47,6 +48,7 @@ BoostedXbbTag::BoostedXbbTag( std::string working_point,
   m_boson_type(boson_type),
   m_algorithm_name(algorithm_name),
   m_num_bTags(num_bTags),
+  m_decor_prefix(decor_prefix),
   m_debug(debug),
   m_verbose(verbose),
   m_bTagCut(FLT_MIN),
@@ -403,7 +405,7 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
 
   // Step 2
   std::sort(associated_trackJets.begin(), associated_trackJets.end(), [](const xAOD::IParticle* lhs, const xAOD::IParticle* rhs) -> bool { return (lhs->pt() > rhs->pt()); });
-  static SG::AuxElement::Decorator<int> isB("isB");
+  static SG::AuxElement::Decorator<int> isB(m_decor_prefix+"isB");
   int num_bTags(0);
   for(int i=0; i<2; i++){
     double mv2c20(FLT_MIN);
@@ -443,7 +445,7 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
   }
 
   // Step 4
-  static SG::AuxElement::Decorator<ElementLink<xAOD::IParticleContainer> > matchedMuonLink("MatchedMuonLink");
+  static SG::AuxElement::Decorator<ElementLink<xAOD::IParticleContainer> > matchedMuonLink(m_decor_prefix+"MatchedMuonLink");
   TLorentzVector corrected_jet;
   if(!matched_muon){
     if(m_verbose) printf("<%s>: There is no matched muon.\r\n", APP_NAME);
@@ -467,7 +469,7 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
     corrected_jet = jet.p4() + mTLV - mLoss;
   }
   // may not always be the corrected jet, but always contains what is used to cut against
-  static SG::AuxElement::Decorator<TLorentzVector> correctedJetDecor("CorrectedJetP4");
+  static SG::AuxElement::Decorator<TLorentzVector> correctedJetDecor(m_decor_prefix+"CorrectedJetP4");
   correctedJetDecor(jet) = corrected_jet;
 
   std::string buffer;

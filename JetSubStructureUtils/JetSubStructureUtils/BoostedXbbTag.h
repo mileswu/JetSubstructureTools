@@ -31,6 +31,7 @@ namespace JetSubStructureUtils {
                     std::string boson_type              = "Higgs",
                     std::string algorithm_name          = "AK10LCTRIMF5R20",
                     int num_bTags                       = 2,
+                    std::string decor_prefix            = "",
                     bool debug                          = false,
                     bool verbose                        = false);
 
@@ -54,6 +55,7 @@ namespace JetSubStructureUtils {
       std::string m_boson_type;
       std::string m_algorithm_name;
       int m_num_bTags;
+      std::string m_decor_prefix;
       bool m_debug,
            m_verbose;
 
