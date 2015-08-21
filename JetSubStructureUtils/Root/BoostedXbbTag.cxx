@@ -342,6 +342,16 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
     return -9;
   }
 
+  // check basic kinematic selection
+  if(jet.pt()/1.e3 < 250.0 || std::fabs(jet.eta()) > 2.0){
+    if(m_verbose) printf("<%s>: Jet does not pass basic kinematic selection. pT > 250 GeV, |eta| < 2.0\r\n\tJet Pt: %0.6f GeV\r\n\tJet |eta|: %0.6f\r\n", APP_NAME, jet.pt()/1.e3, std::fabs(jet.eta()));
+    return -5;
+  }
+  if(jet.pt()/1.e3 > 2000.0){
+    printf("<%s>: Warning, jet has pT > 2 TeV!\r\nJet Pt: %0.6f GeV", APP_NAME, jet.pt()/1.e3);
+    return -5;
+  }
+
   // make sure we are using the right kind of jet
   if(algorithm_name != m_algorithm_name){
     if(m_debug) printf("<%s>: You configured for %s but you passed in a jet of type %s.\r\n", APP_NAME, m_algorithm_name.c_str(), algorithm_name.c_str());
