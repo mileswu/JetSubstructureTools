@@ -49,6 +49,9 @@ namespace JetSubStructureUtils {
                                      const xAOD::JetInput::Type jet_input,
                                      const xAOD::JetTransform::Type jet_transform) const;
 
+      // return a vector of track jets which are btagged by the tool
+      std::vector<const xAOD::Jet*> get_bTagged_trackJets(const xAOD::Jet& jet) const;
+
     private:
       std::string m_working_point;
       std::string m_recommendations_file;
@@ -96,6 +99,16 @@ namespace JetSubStructureUtils {
       static SG::AuxElement::ConstAccessor<float> ECF1;
       static SG::AuxElement::ConstAccessor<float> ECF2;
       static SG::AuxElement::ConstAccessor<float> ECF3;
+
+      // generic accessors used
+      static SG::AuxElement::ConstAccessor<ElementLink<xAOD::JetContainer>> parent;
+
+      // generic decorations used
+      const SG::AuxElement::Decorator<int> isB;
+      const SG::AuxElement::Decorator<ElementLink<xAOD::IParticleContainer> > matchedMuonLink;
+      const SG::AuxElement::Decorator<TLorentzVector> correctedJetDecor;
+      const SG::AuxElement::Decorator<std::pair<float, float>> massWindow;
+      const SG::AuxElement::Decorator<std::pair<float, std::string>> D2Pivot;
   };
 }
 
