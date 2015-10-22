@@ -410,14 +410,20 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
   std::sort(associated_trackJets.begin(), associated_trackJets.end(), [](const xAOD::IParticle* lhs, const xAOD::IParticle* rhs) -> bool { return (lhs->pt() > rhs->pt()); });
   static SG::AuxElement::Decorator<int> isB(m_decor_prefix+"isB");
   int num_bTags(0);
-  for(int i=0; i<2; i++){
+  int num_trackJets_toCheck(2);
+  int i(0);
+  for(const auto& trackJet: associated_trackJets){
+    // decorate all trackjets by default
+    isB(*trackJet) = 0;
+    // only analyze the two leading trackjets
+    if(i >= num_trackJets_toCheck) continue;
     double mv2c20(FLT_MIN);
-    if(!associated_trackJets.at(i)->btagging()->MVx_discriminant("MV2c20", mv2c20)){
+    if(!trackJet->btagging()->MVx_discriminant("MV2c20", mv2c20)){
       if(m_verbose) printf("<%s>: Could not retrieve the MV2c20 discriminant.\r\n", APP_NAME);
       return -9;
     }
     int isBTagged = static_cast<int>(mv2c20 > m_bTagCut);
-    isB(*(associated_trackJets.at(i))) = isBTagged;
+    isB(*trackJet) = isBTagged;
     num_bTags += isBTagged;
   }
   if( num_bTags < m_num_bTags ){
