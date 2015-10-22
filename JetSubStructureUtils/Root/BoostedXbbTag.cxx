@@ -368,6 +368,11 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
       6. Cut on the D2 of the fat-jet (D2 from calorimeter constituents only)
   */
 
+  // global pass variables, set to false by default
+  bool pass_mass = false,
+       pass_d2   = false,
+       pass_btag = false;
+
   // Step 1
   std::vector<const xAOD::Jet*> associated_trackJets;
   static SG::AuxElement::ConstAccessor<ElementLink<xAOD::JetContainer>> parent("Parent");
@@ -428,7 +433,9 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
   }
   if( num_bTags < m_num_bTags ){
     if(m_verbose) printf("<%s>: We require the %d leading track jet%s b-tagged. %d %s b-tagged.\r\n", APP_NAME, m_num_bTags, (m_num_bTags == 1)?"":"s", num_bTags, (num_bTags == 1)?"was":"were");
-    return -2;
+    //return -2;
+  } else {
+    pass_btag = true;
   }
 
   // Step 3
@@ -484,16 +491,20 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
   std::string buffer;
 
   // Step 5
+  static SG::AuxElement::Decorator<std::pair<float, float>> massWindow(m_decor_prefix+"MassWindow");
+  massWindow(jet) = std::pair<float, float>(m_massMin, m_massMax);
   buffer = "<%s>: Jet %s the mass window cut.\r\n\tMass: %0.6f GeV\r\n\tMass Window: [ %0.6f, %0.6f ]\r\n";
   if(corrected_jet.M()/1.e3 < m_massMin || corrected_jet.M()/1.e3 > m_massMax){
     if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", corrected_jet.M()/1.e3, m_massMin, m_massMax);
-    return 0;
+    //return 0;
   } else {
     if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", corrected_jet.M()/1.e3, m_massMin, m_massMax);
+    pass_mass = true;
   }
 
   // Step 6
   if(m_D2_cut_direction == "LEFT" || m_D2_cut_direction == "RIGHT"){
+    static SG::AuxElement::Decorator<std::pair<float, std::string>> D2Pivot(m_decor_prefix+"D2Pivot");
     float d2(0.0);
     if(D2.isAvailable(jet)){
       d2 = D2(jet);
@@ -507,17 +518,20 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
     buffer = "<%s>: Jet %s the D2 cut from %s\r\n\tD2: %0.6f\r\n\tCut: %0.6f\r\n";
     // then calculate d2 and check that
     float D2Cut = m_D2_params[0] + m_D2_params[1] * jet.pt()/1.e3 + m_D2_params[2] * pow(jet.pt()/1.e3, 2) + m_D2_params[3] * pow(jet.pt()/1.e3, 3) + m_D2_params[4] * pow(jet.pt()/1.e3, 4);
+    D2Pivot(jet) = std::pair<float, std::string>(D2Cut, m_D2_cut_direction);
     if((d2 > D2Cut && m_D2_cut_direction == "RIGHT") || (d2 < D2Cut && m_D2_cut_direction == "LEFT")){
       if(m_verbose) printf(buffer.c_str(), APP_NAME, "failed", (m_D2_cut_direction == "RIGHT")?"above":"below", d2, D2Cut);
-      return 0;
+      //return 0;
     } else {
       if(m_verbose) printf(buffer.c_str(), APP_NAME, "passed", (m_D2_cut_direction == "RIGHT")?"above":"below", d2, D2Cut);
+      pass_d2 = true;
     }
   } else {
     if(m_verbose) printf("<%s>: No D2 cut has been requested here. The cut direction specified was %s which is not 'LEFT' or 'RIGHT'.\r\n", APP_NAME, m_D2_cut_direction.c_str());
   }
 
   if(m_verbose) printf("<%s>: Jet is tagged as %s.\r\n", APP_NAME, m_boson_type.c_str());
-  return 1;
+  //return 1;
+  return static_cast<int>((pass_mass << 2)|(pass_d2 << 1)|(pass_btag << 0));
 
 }
