@@ -544,3 +544,22 @@ std::vector<const xAOD::Jet*> BoostedXbbTag::get_bTagged_trackJets(const xAOD::J
 
 }
 
+const xAOD::Muon* BoostedXbbTag::get_matched_muon(const xAOD::Jet& jet) const {
+  auto muonLink = matchedMuonLink(jet);
+  if(!muonLink.isValid())
+    return nullptr;
+  return static_cast<const xAOD::Muon*>(*muonLink);
+}
+
+
+TLorentzVector BoostedXbbTag::get_correctedJet_TLV(const xAOD::Jet& jet) const {
+  return correctedJetDecor(jet);
+}
+
+std::pair<float, float> BoostedXbbTag::get_mass_window(const xAOD::Jet& jet) const {
+  return massWindow(jet);
+}
+
+std::pair<float, std::string> BoostedXbbTag::get_D2_pivot(const xAOD::Jet& jet) const {
+  return D2Pivot(jet);
+}

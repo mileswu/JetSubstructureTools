@@ -51,6 +51,11 @@ namespace JetSubStructureUtils {
 
       // return a vector of track jets which are btagged by the tool
       std::vector<const xAOD::Jet*> get_bTagged_trackJets(const xAOD::Jet& jet) const;
+      // return the matched muon object (nullptr if there is not one)
+      const xAOD::Muon* get_matched_muon(const xAOD::Jet& jet) const;
+      TLorentzVector get_correctedJet_TLV(const xAOD::Jet& jet) const;
+      std::pair<float, float> get_mass_window(const xAOD::Jet& jet) const;
+      std::pair<float, std::string> get_D2_pivot(const xAOD::Jet& jet) const;
 
     private:
       std::string m_working_point;
