@@ -452,10 +452,14 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
     //return -3;
   } else {
     for(int i=0; i<2; i++){
+      auto& trackJet = associated_trackJets.at(i);
+      // only match muon to b-tagged track jets
+      if(isB(*trackJet) == 0) continue;
+      // it's b-tagged, try to match it
       float maxDR(0.2);
-      associated_trackJets.at(i)->getAttribute("SizeParameter", maxDR);
+      trackJet->getAttribute("SizeParameter", maxDR);
       for(const auto muon: preselected_muons){
-        float DR( associated_trackJets.at(i)->p4().DeltaR(muon->p4()) );
+        float DR( trackJet->p4().DeltaR(muon->p4()) );
         if(DR > maxDR) continue;
         maxDR = DR;
         matched_muon = muon;
