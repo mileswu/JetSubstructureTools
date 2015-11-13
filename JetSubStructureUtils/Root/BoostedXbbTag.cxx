@@ -543,7 +543,8 @@ std::vector<const xAOD::Jet*> BoostedXbbTag::get_bTagged_trackJets(const xAOD::J
   std::vector<const xAOD::Jet*> associated_trackJets;
   // get the track jets from the parent
   (*parent(jet))->getAssociatedObjects<xAOD::Jet>("GhostAntiKt2TrackJet", associated_trackJets);
-  std::remove_if(associated_trackJets.begin(), associated_trackJets.end(),  [this](const xAOD::Jet* jet) -> bool { return isB(*jet) == 0; });
+  auto new_end = std::remove_if(associated_trackJets.begin(), associated_trackJets.end(),  [this](const xAOD::Jet* jet) -> bool { return isB(*jet) == 0; });
+  associated_trackJets.erase(new_end, associated_trackJets.end());
   return associated_trackJets;
 
 }
