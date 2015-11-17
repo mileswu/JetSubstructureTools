@@ -414,7 +414,9 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
     isB(*trackJet) = 0;
 
   // filter out the track jets we do not want (pT > 10 GeV and |eta| < 2.5 and at least 2 constituents)
-  std::remove_if(associated_trackJets.begin(), associated_trackJets.end(),  [this](const xAOD::Jet* jet) -> bool { return (jet->pt()/1.e3 < 10.0 || fabs(jet->eta()) > 2.5 || jet->numConstituents() < 2); });
+  associated_trackJets.erase(
+    std::remove_if(associated_trackJets.begin(), associated_trackJets.end(),  [this](const xAOD::Jet* jet) -> bool { return (jet->pt()/1.e3 < 10.0 || fabs(jet->eta()) > 2.5 || jet->numConstituents() < 2); }),
+    associated_trackJets.end());
   if(associated_trackJets.size() < 2){
     if(m_verbose) printf("<%s>: We need at least two associated track jets.\r\n", APP_NAME);
     return -2;
