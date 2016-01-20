@@ -60,7 +60,7 @@ BoostedXbbTag::BoostedXbbTag( std::string working_point,
   m_muonSelectionTool(new CP::MuonSelectionTool("JSSU_MuonSelection")),
   m_bad_configuration(false),
   isB(SG::AuxElement::Decorator<int>(m_decor_prefix+"isB")),
-  matchedMuonLink(SG::AuxElement::Decorator<ElementLink<xAOD::IParticleContainer> >(m_decor_prefix+"MatchedMuonLink")),
+  matchedMuonsLink(SG::AuxElement::Decorator<std::vector<ElementLink<xAOD::IParticleContainer> > >(m_decor_prefix+"MatchedMuonsLink")),
   correctedJetDecor(SG::AuxElement::Decorator<TLorentzVector>(m_decor_prefix+"CorrectedJetP4")),
   massWindow(SG::AuxElement::Decorator<std::pair<float, float>>(m_decor_prefix+"MassWindow")),
   D2Pivot(SG::AuxElement::Decorator<std::pair<float, std::string>>(m_decor_prefix+"D2Pivot"))
@@ -444,7 +444,7 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
   }
 
   // Step 3
-  const xAOD::Muon* matched_muon(nullptr);
+  std::vector<const xAOD::Muon*> matched_muons;
   // first select the muons: Combined, Medium, pT > 10 GeV, |eta| < 2.5
   std::vector<const xAOD::Muon*> preselected_muons(muons->size(), nullptr);
   auto it = std::copy_if(muons->begin(), muons->end(), preselected_muons.begin(), [this](const xAOD::Muon* muon) -> bool { return (muon->pt()/1.e3 > 10.0 && m_muonSelectionTool->getQuality(*muon) <= xAOD::Muon::Medium && fabs(muon->eta()) < 2.5); });
@@ -460,40 +460,40 @@ int BoostedXbbTag::result(const xAOD::Jet& jet, std::string algorithm_name, cons
       // it's b-tagged, try to match it
       float maxDR(0.2);
       trackJet->getAttribute("SizeParameter", maxDR);
+      const xAOD::Muon *closest_muon(nullptr);
       for(const auto muon: preselected_muons){
         float DR( trackJet->p4().DeltaR(muon->p4()) );
         if(DR > maxDR) continue;
         maxDR = DR;
-        matched_muon = muon;
+        closest_muon = muon;
+      }
+      if(closest_muon) {
+        matched_muons.push_back(closest_muon);
       }
     }
   }
 
   // Step 4
-  TLorentzVector corrected_jet;
-  if(!matched_muon){
-    if(m_verbose) printf("<%s>: There is no matched muon.\r\n", APP_NAME);
-    //return -3;
-    corrected_jet = jet.p4();
-    matchedMuonLink(jet) = ElementLink<xAOD::IParticleContainer>(); // null constructor
-  } else {
-    // super optimized version, need to know name of Muons collection
-    // ElementLink< xAOD::IParticleContainer > el_muon( "Muons", matched_muon->index() );
-    ElementLink<xAOD::IParticleContainer> el_muon( *muons, matched_muon->index() );
-    matchedMuonLink(jet) = el_muon;
-
+  TLorentzVector corrected_jet = jet.p4(); 
+  if(m_verbose) printf("<%s>: There are %d matched muons.\r\n", APP_NAME, (int)matched_muons.size());
+  std::vector<ElementLink<xAOD::IParticleContainer> > matched_muons_links;
+  for(auto muon : matched_muons) {
     float eLoss(0.0);
-    matched_muon->parameter(eLoss,xAOD::Muon::EnergyLoss);
+    muon->parameter(eLoss,xAOD::Muon::EnergyLoss);
     if(m_debug) printf("<%s>: getELossTLV xAOD::Muon eLoss= %0.2f\r\n", APP_NAME, eLoss);
-    auto mTLV = matched_muon->p4();
+    auto mTLV = muon->p4();
     double eLossX = eLoss*sin(mTLV.Theta())*cos(mTLV.Phi());
     double eLossY = eLoss*sin(mTLV.Theta())*sin(mTLV.Phi());
     double eLossZ = eLoss*cos(mTLV.Theta());
     auto mLoss = TLorentzVector(eLossX,eLossY,eLossZ,eLoss);
-    corrected_jet = jet.p4() + mTLV - mLoss;
+    corrected_jet = corrected_jet + mTLV - mLoss;
+
+    ElementLink<xAOD::IParticleContainer> el_muon( *muons, muon->index() );
+    matched_muons_links.push_back(el_muon);
   }
   // may not always be the corrected jet, but always contains what is used to cut against
   correctedJetDecor(jet) = corrected_jet;
+  matchedMuonsLink(jet) = matched_muons_links;
 
   std::string buffer;
 
@@ -553,11 +553,20 @@ std::vector<const xAOD::Jet*> BoostedXbbTag::get_bTagged_trackJets(const xAOD::J
   return bTagged_trackJets;
 }
 
-const xAOD::Muon* BoostedXbbTag::get_matched_muon(const xAOD::Jet& jet) const {
-  auto muonLink = matchedMuonLink(jet);
-  if(!muonLink.isValid())
-    return nullptr;
-  return static_cast<const xAOD::Muon*>(*muonLink);
+std::vector<const xAOD::Muon*> BoostedXbbTag::get_matched_muons(const xAOD::Jet& jet) const {
+  std::vector<const xAOD::Muon*> muons;
+
+  auto muonsLink = matchedMuonsLink(jet);
+  for(auto muonLink : muonsLink) {
+    if(!muonLink.isValid()) {
+      muons.push_back(nullptr);
+    }
+    else {
+      muons.push_back(static_cast<const xAOD::Muon*>(*muonLink));
+    }
+  }
+	
+  return muons;
 }
 
 
