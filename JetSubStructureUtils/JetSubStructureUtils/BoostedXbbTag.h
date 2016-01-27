@@ -52,7 +52,7 @@ namespace JetSubStructureUtils {
       // return a vector of track jets which are btagged by the tool
       std::vector<const xAOD::Jet*> get_bTagged_trackJets(const xAOD::Jet& jet) const;
       // return the matched muon object (nullptr if there is not one)
-      const xAOD::Muon* get_matched_muon(const xAOD::Jet& jet) const;
+      std::vector<const xAOD::Muon*> get_matched_muons(const xAOD::Jet& jet) const;
       TLorentzVector get_correctedJet_TLV(const xAOD::Jet& jet) const;
       std::pair<float, float> get_mass_window(const xAOD::Jet& jet) const;
       std::pair<float, std::string> get_D2_pivot(const xAOD::Jet& jet) const;
@@ -110,7 +110,7 @@ namespace JetSubStructureUtils {
 
       // generic decorations used
       const SG::AuxElement::Decorator<int> isB;
-      const SG::AuxElement::Decorator<ElementLink<xAOD::IParticleContainer> > matchedMuonLink;
+      const SG::AuxElement::Decorator<std::vector<ElementLink<xAOD::IParticleContainer> > > matchedMuonsLink;
       const SG::AuxElement::Decorator<TLorentzVector> correctedJetDecor;
       const SG::AuxElement::Decorator<std::pair<float, float>> massWindow;
       const SG::AuxElement::Decorator<std::pair<float, std::string>> D2Pivot;
