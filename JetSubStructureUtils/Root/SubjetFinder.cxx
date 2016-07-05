@@ -3,13 +3,13 @@
 #include "fastjet/JetDefinition.hh"
 #include <iostream>
 
-#include "fastjet/EECambridgePlugin.hh" // -- JY: for CoM subjet --
+#include "fastjet/EECambridgePlugin.hh"
 
 using namespace std;
 using namespace JetSubStructureUtils;
 
 SubjetFinder::SubjetFinder(fastjet::JetAlgorithm fj_jetalg, float jet_radius, float pt_min, int exclusive_njets) :
-  m_fj_jetalg(fj_jetalg), m_jetrad(jet_radius), m_ptmin(pt_min), m_exclusivenjets(exclusive_njets),m_doCOM(false) // -- JY: for CoM option --
+  m_fj_jetalg(fj_jetalg), m_jetrad(jet_radius), m_ptmin(pt_min), m_exclusivenjets(exclusive_njets),m_doCOM(false)
 {
 }
 
@@ -23,7 +23,7 @@ vector<fastjet::PseudoJet> SubjetFinder::result(const fastjet::PseudoJet &jet) c
   }
 
 
-  // -- JY: adding option of CoM --
+  
   fastjet::ClusterSequence *clust_seq = NULL;
   if (!m_doCOM){ 
     fastjet::JetDefinition jet_def = fastjet::JetDefinition(m_fj_jetalg, m_jetrad, fastjet::E_scheme, fastjet::Best);
