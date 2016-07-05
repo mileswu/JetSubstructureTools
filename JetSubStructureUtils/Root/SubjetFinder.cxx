@@ -3,11 +3,13 @@
 #include "fastjet/JetDefinition.hh"
 #include <iostream>
 
+#include "fastjet/EECambridgePlugin.hh" // -- JY: for CoM subjet --
+
 using namespace std;
 using namespace JetSubStructureUtils;
 
 SubjetFinder::SubjetFinder(fastjet::JetAlgorithm fj_jetalg, float jet_radius, float pt_min, int exclusive_njets) :
-  m_fj_jetalg(fj_jetalg), m_jetrad(jet_radius), m_ptmin(pt_min), m_exclusivenjets(exclusive_njets)
+  m_fj_jetalg(fj_jetalg), m_jetrad(jet_radius), m_ptmin(pt_min), m_exclusivenjets(exclusive_njets),m_doCOM(false) // -- JY: for CoM option --
 {
 }
 
@@ -20,9 +22,17 @@ vector<fastjet::PseudoJet> SubjetFinder::result(const fastjet::PseudoJet &jet) c
     return subjets;
   }
 
-  fastjet::JetDefinition jet_def = fastjet::JetDefinition(m_fj_jetalg, m_jetrad,
-      fastjet::E_scheme, fastjet::Best);
-  fastjet::ClusterSequence *clust_seq = new fastjet::ClusterSequence(constit_pseudojets, jet_def);
+
+  // -- JY: adding option of CoM --
+  fastjet::ClusterSequence *clust_seq = NULL;
+  if (!m_doCOM){ 
+    fastjet::JetDefinition jet_def = fastjet::JetDefinition(m_fj_jetalg, m_jetrad, fastjet::E_scheme, fastjet::Best);
+    clust_seq = new fastjet::ClusterSequence(constit_pseudojets, jet_def);
+  } else{
+    fastjet::JetDefinition jet_def = fastjet::JetDefinition(new fastjet::EECambridgePlugin(m_jetrad));
+    clust_seq = new fastjet::ClusterSequence(constit_pseudojets, jet_def);
+  }
+
 
   if(m_exclusivenjets < 0) { // Inclusive
     subjets = fastjet::sorted_by_pt(clust_seq->inclusive_jets(m_ptmin));
