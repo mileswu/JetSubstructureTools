@@ -18,8 +18,7 @@ namespace JetSubStructureUtils {
       float m_jetrad;
       float m_ptmin;
       int m_exclusivenjets; 
-      
-      bool m_doCOM; // -- JY --
+      bool m_doCOM;
   };
 }
 
