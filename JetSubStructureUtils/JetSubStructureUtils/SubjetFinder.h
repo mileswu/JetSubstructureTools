@@ -17,7 +17,8 @@ namespace JetSubStructureUtils {
       fastjet::JetAlgorithm m_fj_jetalg;
       float m_jetrad;
       float m_ptmin;
-      int m_exclusivenjets;
+      int m_exclusivenjets; 
+      bool m_doCOM;
   };
 }
 
