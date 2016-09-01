@@ -13,7 +13,7 @@ namespace JetSubStructureUtils {
       using SubstructureCalculator::result;
       virtual std::vector<fastjet::PseudoJet> result(const fastjet::PseudoJet &jet) const;
       
-      virtual void SubjetFinder::setCOM(bool doCOM){ m_doCOM = doCOM;}
+      virtual void setCOM(bool doCOM){ m_doCOM = doCOM;}
 
     private:
       fastjet::JetAlgorithm m_fj_jetalg;
