@@ -9,7 +9,7 @@ using namespace std;
 using namespace JetSubStructureUtils;
 
 SubjetFinder::SubjetFinder(fastjet::JetAlgorithm fj_jetalg, float jet_radius, float pt_min, int exclusive_njets) :
-  m_fj_jetalg(fj_jetalg), m_jetrad(jet_radius), m_ptmin(pt_min), m_exclusivenjets(exclusive_njets),m_doCOM(false)
+  m_fj_jetalg(fj_jetalg), m_jetrad(jet_radius), m_ptmin(pt_min), m_exclusivenjets(exclusive_njets)
 {
 }
 
@@ -23,15 +23,19 @@ vector<fastjet::PseudoJet> SubjetFinder::result(const fastjet::PseudoJet &jet) c
   }
 
 
-  
   fastjet::ClusterSequence *clust_seq = NULL;
-  if (!m_doCOM){ 
-    fastjet::JetDefinition jet_def = fastjet::JetDefinition(m_fj_jetalg, m_jetrad, fastjet::E_scheme, fastjet::Best);
-    clust_seq = new fastjet::ClusterSequence(constit_pseudojets, jet_def);
-  } else{
+
+  if (m_fj_jetalg==fastjet::ee_kt_algorithm) {
+    fastjet::JetDefinition jet_def = fastjet::JetDefinition(fastjet::ee_kt_algorithm);
+    clust_seq =  new fastjet::ClusterSequence(constit_pseudojets, jet_def);
+  }else if (m_fj_jetalg==fastjet::plugin_algorithm) {
     fastjet::JetDefinition jet_def = fastjet::JetDefinition(new fastjet::EECambridgePlugin(m_jetrad));
-    clust_seq = new fastjet::ClusterSequence(constit_pseudojets, jet_def);
+    clust_seq =  new fastjet::ClusterSequence(constit_pseudojets, jet_def);
+  }else{
+    fastjet::JetDefinition jet_def = fastjet::JetDefinition(m_fj_jetalg, m_jetrad, fastjet::E_scheme, fastjet::Best);
+    clust_seq =  new fastjet::ClusterSequence(constit_pseudojets, jet_def);
   }
+
 
 
   if(m_exclusivenjets < 0) { // Inclusive
